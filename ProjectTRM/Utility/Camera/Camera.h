@@ -32,9 +32,9 @@ public:
 	Vector2D GetCameraPos();
 
 	/// <summary>
-	/// 追跡対象情報設定処理
+	///	カメラ座標指定処理
 	/// </summary>
-	/// <param name="player">追跡対象のポインタ</param>
-	void SetPlayer();
+	/// <param name="location">指定座標</param>
+	void SetCameraPos(Vector2D location);
 };
 

@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "../../Utility/StageData.h"
+#include "../../Utility/Camera/Camera.h"
 
 #define PLAYER_INITIAL_LOCATION 3 // プレイヤー初期位置(何ブロック目）
 
@@ -28,6 +29,11 @@ void InGame::Initialize()
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 
+	//カメラの情報を取得
+	Camera* camera = Camera::GetInstance();
+	//カメラ座標の初期化
+	camera->SetCameraPos(Vector2D(D_WIN_MAX_X / 2, D_WIN_MAX_Y / 2));
+
 }
 
 // 更新処理
@@ -35,6 +41,12 @@ eSceneType InGame::Update(const float& delta_second)
 {
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
+
+	//カメラの情報を取得
+	Camera* camera = Camera::GetInstance();
+
+	//カメラ情報の更新
+	camera->Update();
 
 	// リザルトシーンに遷移する
 	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)

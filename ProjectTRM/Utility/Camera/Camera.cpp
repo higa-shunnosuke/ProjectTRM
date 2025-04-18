@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "../ProjectConfig.h"
+#include "../Input/InputManager.h"
 
 // コンストラクタ
 Camera::Camera():
@@ -27,7 +28,16 @@ void Camera::Update()
 {
 	
 	//追跡処理
+	InputManager* input = InputManager::GetInstance();
 
+	if (input->GetLeftStick().x < 0.0f)
+	{
+		location.x -= 1.0f;
+	}
+	if (input->GetLeftStick().x > 0.3f)
+	{
+		location.x += 1.0f;
+	}
 
 	//ステージ外にいかないようにする処理
 	float right;
@@ -35,6 +45,10 @@ void Camera::Update()
 	if (location.x > right)
 	{
 		location.x = right;
+	}
+	if (location.x < D_WIN_MAX_X / 2)
+	{
+		location.x = D_WIN_MAX_X / 2;
 	}
 }
 
@@ -45,7 +59,7 @@ Vector2D Camera::GetCameraPos()
 }
 
 // 追跡対象情報設定処理
-void Camera::SetPlayer()
+void Camera::SetCameraPos(Vector2D location)
 {
-	
+	this->location = location;
 }
