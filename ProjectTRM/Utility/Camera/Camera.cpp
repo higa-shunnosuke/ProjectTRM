@@ -32,11 +32,11 @@ void Camera::Update()
 
 	if (input->GetLeftStick().x < 0.0f)
 	{
-		location.x -= 1.0f;
+		location.x += input->GetLeftStick().x;
 	}
 	if (input->GetLeftStick().x > 0.3f)
 	{
-		location.x += 1.0f;
+		location.x += input->GetLeftStick().x;
 	}
 
 	//ステージ外にいかないようにする処理

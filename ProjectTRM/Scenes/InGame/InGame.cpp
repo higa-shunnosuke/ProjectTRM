@@ -70,6 +70,12 @@ void InGame::Draw() const
 	SetFontSize(32);
 	DrawFormatString(100, 300, 0xffffff, "Enterを押してください");
 
+#if _DEBUG
+	Camera* camera = Camera::GetInstance();
+
+	DrawFormatString(0, 100, 0xffffff, "カメラX座標：%f", camera->GetCameraPos().x);
+#endif
+
 	// 親クラスの描画処理を呼び出す
 	__super::Draw();
 }
