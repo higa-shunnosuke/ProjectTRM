@@ -33,7 +33,7 @@ eSceneType Result::Update(const float& delta_second)
 	// ƒCƒ“ƒQ[ƒ€ƒV[ƒ“‚É‘JˆÚ‚·‚é
 	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
 	{
-		return eSceneType::title;
+		return eSceneType::end;
 	}
 	if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
 	{

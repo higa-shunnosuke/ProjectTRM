@@ -14,6 +14,7 @@ private:
 	LONGLONG old_time;		// 前回計測値
 	LONGLONG now_time;		// 現在計測値
 	float delta_second;		// １フレームあたりの時間
+	bool end_flg;			//	ゲーム終了フラグ
 
 public:
 	bool WakeUp()
@@ -55,6 +56,9 @@ public:
 		// 非アクティブ状態でも動作させる
 		SetAlwaysRunFlag(TRUE);
 
+		//終了フラグ
+		end_flg = false;
+
 		return true;
 	}
 
@@ -78,15 +82,21 @@ public:
 			// 実行処理
 			manager->Update(delta_second);
 		
-			// ゲームを終了するか確認する
+			// 強制終了するか確認する
 			if ((input->GetButtonState(XINPUT_BUTTON_BACK) == eInputState::Released) ||
 				(input->GetKeyState(KEY_INPUT_ESCAPE) == eInputState::Released))
+			{
+				break;
+			}
+			// ゲームを終了するか確認する
+			if (end_flg == true)
 			{
 				break;
 			}
 		}
 	}
 
+	//終了時処理
 	void Shutdown()
 	{
 		// シーンマネージャーを生成する
@@ -99,6 +109,11 @@ public:
 		DxLib_End();
 	}
 
+	//ゲーム終了通知処理
+	void QuitGame(bool flg)
+	{
+		this->end_flg = flg;
+	}
 private:
 	void UpdateDeltaTime()
 	{

@@ -1,42 +1,47 @@
-#include "Title.h"
+#include "End.h"
+#include "../../Application.h"
 
 // コンストラクタ
-Title::Title()
+End::End()
 {
 
 }
 
 // デストラクタ
-Title::~Title()
+End::~End()
 {
 
 }
 
 // 初期化処理
-void Title::Initialize()
+void End::Initialize()
 {
 	// 親クラスの初期化処理を呼び出す
 	__super::Initialize();
 
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
-	
+
 }
 
 // 更新処理
-eSceneType Title::Update(const float& delta_second)
+eSceneType End::Update(const float& delta_second)
 {
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
 
 	// インゲームシーンに遷移する
-	if (input->GetKeyState(KEY_INPUT_RETURN)==eInputState::Pressed)
+	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
 	{
-		return eSceneType::stage_select;
+		//ゲームを終了させる
+		Application* app = Application::GetInstance();
+		app->QuitGame(true);
 	}
-	if (input->GetButtonState(XINPUT_BUTTON_START)== eInputState::Pressed)
+	if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
 	{
-		return eSceneType::stage_select;
+		//ゲームを終了させる
+		Application* app = Application::GetInstance();
+		app->QuitGame(true);
 	}
 
 	// 親クラスの更新処理を呼び出す
@@ -44,10 +49,10 @@ eSceneType Title::Update(const float& delta_second)
 }
 
 // 描画処理
-void Title::Draw() const
+void End::Draw() const
 {
 	SetFontSize(60);
-	DrawFormatString(120, 140, 0xffffff, "Title");
+	DrawFormatString(120, 140, 0xffffff, "End");
 	SetFontSize(32);
 	DrawFormatString(100, 300, 0xffffff, "Enterを押してください");
 
@@ -57,14 +62,14 @@ void Title::Draw() const
 }
 
 // 終了処理
-void Title::Finalize()
+void End::Finalize()
 {
 	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();
 }
 
 // 現在のシーンタイプ取得処理
-const eSceneType Title::GetNowSceneType() const
+const eSceneType End::GetNowSceneType() const
 {
-	return eSceneType::title;
+	return eSceneType::end;
 }

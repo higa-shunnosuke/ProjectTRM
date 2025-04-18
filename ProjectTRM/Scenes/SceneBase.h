@@ -16,11 +16,12 @@
 /// </summary>
 enum class eSceneType
 {
-	title,		// タイトル
-	in_game,	// インゲーム
-	re_start,	// リスタート
-	result,		// リザルト
-	exit,		// 終了
+	title,			// タイトル
+	stage_select,	// ステージセレクト
+	in_game,		// インゲーム
+	re_start,		// リスタート
+	result,			// リザルト
+	end,			// 終了
 };
 
 /// <summary>
