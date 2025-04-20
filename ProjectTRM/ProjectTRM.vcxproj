@@ -132,6 +132,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
+    <ClCompile Include="Objects\Character\Enemy\Boss\Boss.cpp" />
+    <ClCompile Include="Objects\Character\Enemy\Tank\E_Tank.cpp" />
+    <ClCompile Include="Objects\Character\Enemy\Ranged\E_Ranged.cpp" />
+    <ClCompile Include="Objects\Character\Enemy\Melee\E_Melee.cpp" />
+    <ClCompile Include="Objects\Character\Enemy\Hertic\Heretic.cpp" />
+    <ClCompile Include="Objects\Character\Character.cpp" />
+    <ClCompile Include="Objects\Character\Player\Melee\P_Melee.cpp" />
+    <ClCompile Include="Objects\Character\Player\Oracle\Oracle.cpp" />
+    <ClCompile Include="Objects\Character\Player\Ranged\P_Ranged.cpp" />
+    <ClCompile Include="Objects\Character\Player\Ranged\Projectile.cpp" />
+    <ClCompile Include="Objects\Character\Player\Tank\P_Tank.cpp" />
     <ClCompile Include="Scenes\End\End.cpp" />
     <ClCompile Include="Objects\GameObject.cpp" />
     <ClCompile Include="Scenes\InGame\InGame.cpp" />
@@ -139,6 +150,7 @@
     <ClCompile Include="Scenes\SceneManager.cpp" />
     <ClCompile Include="Scenes\Title\Title.cpp" />
     <ClCompile Include="Scenes\StageSelect\StageSelect.cpp" />
+    <ClCompile Include="Objects\Character\Player\Melee\Torch.cpp" />
     <ClCompile Include="Utility\Camera\Camera.cpp" />
     <ClCompile Include="Utility\Collision.cpp" />
     <ClCompile Include="Utility\Input\InputEventManager.cpp" />
@@ -150,6 +162,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Objects\Character\Enemy\Boss\Boss.h" />
+    <ClInclude Include="Objects\Character\Enemy\Tank\E_Tank.h" />
+    <ClInclude Include="Objects\Character\Enemy\Ranged\E_Ranged.h" />
+    <ClInclude Include="Objects\Character\Enemy\Melee\E_Melee.h" />
+    <ClInclude Include="Objects\Character\Enemy\Hertic\Heretic.h" />
+    <ClInclude Include="Objects\Character\Character.h" />
+    <ClInclude Include="Objects\Character\Player\Melee\P_Melee.h" />
+    <ClInclude Include="Objects\Character\Player\Oracle\Oracle.h" />
+    <ClInclude Include="Objects\Character\Player\Ranged\P_Ranged.h" />
+    <ClInclude Include="Objects\Character\Player\Ranged\Projectile.h" />
+    <ClInclude Include="Objects\Character\Player\Tank\P_Tank.h" />
     <ClInclude Include="Scenes\End\End.h" />
     <ClInclude Include="Objects\GameObject.h" />
     <ClInclude Include="Objects\GameObjectManager.h" />
@@ -160,6 +183,7 @@
     <ClInclude Include="Scenes\SceneManager.h" />
     <ClInclude Include="Scenes\Title\Title.h" />
     <ClInclude Include="Scenes\StageSelect\StageSelect.h" />
+    <ClInclude Include="Objects\Character\Player\Melee\Torch.h" />
     <ClInclude Include="Utility\Camera\Camera.h" />
     <ClInclude Include="Utility\Collision.h" />
     <ClInclude Include="Utility\Input\InputEventManager.h" />
