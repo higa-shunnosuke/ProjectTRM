@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "../ProjectConfig.h"
 #include "../Input/InputManager.h"
+#include "DxLib.h"
 
 // コンストラクタ
 Camera::Camera():
@@ -39,16 +40,32 @@ void Camera::Update()
 		location.x += input->GetLeftStick().x;
 	}
 
-	//ステージ外にいかないようにする処理
-	float right;
-	right = STAGE_SIZE_X * BOX_SIZE - D_WIN_MAX_X / 2;
+#ifdef DEBUG
+	//キーボード操作
+	if (input->GetKeyState(KEY_INPUT_RIGHT) == eInputState::Hold)
+	{
+		location.x += 1.0f;
+	}
+	if (input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Hold)
+	{
+		location.x -= 1.0f;
+	}
+#endif
+
+	/// ステージ外にいかないようにする処理
+	float right,left;
+	right = D_WIN_MAX_X / 2 + 20;
+	left = right - D_WIN_MAX_X - 20;
+
+	//右端の制限
 	if (location.x > right)
 	{
 		location.x = right;
 	}
-	if (location.x < D_WIN_MAX_X / 2)
+	//左端の制限
+	if (location.x < left)
 	{
-		location.x = D_WIN_MAX_X / 2;
+		location.x = left;
 	}
 }
 

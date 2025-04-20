@@ -3,6 +3,7 @@
 #include "DxLib.h"
 #include "../Utility/Collision.h"
 #include "../Utility/ProjectConfig.h"
+#include "../Utility/ResourceManager.h"
 
 // ゲームオブジェクト基底クラス
 class GameObject

@@ -6,21 +6,11 @@
 // オブジェクトタイプ
 enum class eObjectType : unsigned char
 {
-	eNone,
-	ePlayer,
-	eGoomba,
-	eKoopa,
-	eBlock,
-	eFragment,
-	eWarp,
-	eGole,
-	eCastle,
-	eCoin,
-	eMushrooms,
-	eFireFlower,
-	e1UPMushrooms,
-	eStar,
-	eFireBall
+	None,
+	Player,
+	Enemy,
+	Ground,
+	
 };
 
 // 当たり判定基底クラス
@@ -38,7 +28,7 @@ public:
 		is_blocking(false),
 		box_size(0.0f),
 		pivot(0.0f),
-		object_type(eObjectType::eNone),
+		object_type(eObjectType::None),
 		hit_object_type()
 	{
 		

@@ -8,6 +8,7 @@
 #include "../Utility/ResourceManager.h"
 #include "../Utility/Input/InputManager.h"
 #include "../Utility/Input/InputEventManager.h"
+#include "../Utility/Camera/Camera.h"
 #include "../Objects/GameObjectManager.h"
 
 
@@ -31,7 +32,7 @@ class SceneBase
 {
 protected:
 	// 各シーンが所有する情報
-	
+	GameObjectManager* object;			// オブジェクトマネージャーのポインタ
 
 
 public:
@@ -53,7 +54,8 @@ public:
 	/// </summary>
 	virtual void Initialize()
 	{
-		
+		// オブジェクトマネージャーの情報を取得
+		object = GameObjectManager::GetInstance();
 	}
 
 	/// <summary>
@@ -63,6 +65,17 @@ public:
 	/// <returns>次のシーンタイプ情報</returns>
 	virtual eSceneType Update(const float& delta_second)
 	{
+		// 生成するオブジェクトがあれば、オブジェクトリスト内に挿入する
+		object->CheckCreateObject();
+
+		// リスト内のオブジェクトを更新する
+		for (GameObject* obj : object->GetObjectsList())
+		{
+			obj->Update(delta_second);
+		}
+
+		// デストロイリストの更新
+		object->CheckDestroyObject();
 
 		// 現在のシーン情報を返却する
 		return GetNowSceneType();
@@ -73,8 +86,14 @@ public:
 	/// </summary>
 	virtual void Draw() const
 	{
-		
-		
+		// カメラのポインタ
+		Camera* camera = Camera::GetInstance();
+
+		// オブジェクトリスト内のオブジェクトを描画する
+		for (GameObject* obj : object->GetObjectsList())
+		{
+			obj->Draw(camera->GetCameraPos());
+		}
 	}
 
 	/// <summary>
@@ -82,7 +101,8 @@ public:
 	/// </summary>
 	virtual void Finalize()
 	{
-		
+		// オブジェクトリスト内のオブジェクトを破棄
+		object->DestroyAllObject();
 	}
 
 	/// <summary>

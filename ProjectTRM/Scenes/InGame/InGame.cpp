@@ -5,6 +5,8 @@
 #include "../../Utility/StageData.h"
 #include "../../Utility/Camera/Camera.h"
 
+#include "../../Objects/Block/Ground.h"
+
 #define PLAYER_INITIAL_LOCATION 3 // プレイヤー初期位置(何ブロック目）
 
 // コンストラクタ
@@ -33,6 +35,9 @@ void InGame::Initialize()
 	Camera* camera = Camera::GetInstance();
 	//カメラ座標の初期化
 	camera->SetCameraPos(Vector2D(D_WIN_MAX_X / 2, D_WIN_MAX_Y / 2));
+
+	//ステージ読み込み
+	LoadStage();
 
 }
 
@@ -100,7 +105,7 @@ void InGame::LoadStage()
 	GameObjectManager* object = GameObjectManager::GetInstance();
 	
 	FILE* fp = NULL;
-	std::string file_name = "Resource/Map/Stage.csv";
+	std::string file_name = "Resource/Map/Stage1.csv";
 
 	// 指定されたファイルを開く
 	errno_t result = fopen_s(&fp, file_name.c_str(), "r");
@@ -120,26 +125,32 @@ void InGame::LoadStage()
 	{
 		//座標計算
 		Vector2D location;
-		location.x = (float)(x * BOX_SIZE + BOX_SIZE / 2);
+		location.x = (float)(x * BOX_SIZE + BOX_SIZE / 2 - D_WIN_MAX_X);
 		location.y = (float)(y * BOX_SIZE + BOX_SIZE / 2);
 
-		// ファイルから1文字抽出する
+		// ファイルから1文字抽出
 		int c = fgetc(fp);
 
-		// 抽出した文字がEOFならループ終了
+		// EOFならループ終了
 		if (c == EOF)
 		{
 			break;
 		}
-		// 抽出した文字が改行文字なら、次の行を見に行く
+		// 改行文字なら、次の行へ
 		else if (c == '\n')
 		{
 			x = 0;
 			y++;
 		}
-		// 抽出した文字が0なら、生成しないで次の文字を見に行く
+		// 0なら、次の文字へ
 		else if (c == '0')
 		{
+			x++;
+		}
+		// Gなら、地面を生成
+		else if (c == 'G')
+		{
+			object->CreateObject<Ground>(Vector2D(location.x, location.y));
 			x++;
 		}
 	}
