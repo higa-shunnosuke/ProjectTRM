@@ -42,13 +42,13 @@ void Camera::Update()
 
 #ifdef DEBUG
 	//キーボード操作
-	if (input->GetKeyState(KEY_INPUT_RIGHT) == eInputState::Hold)
+	if (input->GetKeyState(KEY_INPUT_D) == eInputState::Hold)
 	{
-		location.x += 1.0f;
+		location.x += 2.0f;
 	}
-	if (input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Hold)
+	if (input->GetKeyState(KEY_INPUT_A) == eInputState::Hold)
 	{
-		location.x -= 1.0f;
+		location.x -= 2.0f;
 	}
 #endif
 

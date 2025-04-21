@@ -19,6 +19,7 @@ class Collision
 public:
 	bool						is_blocking;		// すり抜けフラグ
 	Vector2D					box_size;			// オブジェクトのサイズ
+	Vector2D					attack_size;			// オブジェクトのサイズ
 	Vector2D					pivot;				// 始点と終点（相対座標）
 	eObjectType					object_type;		// 自身のオブジェクトタイプ
 	std::vector<eObjectType>	hit_object_type;	// 適用するオブジェクトタイプ

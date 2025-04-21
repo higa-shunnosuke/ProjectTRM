@@ -26,7 +26,7 @@ SceneManager::~SceneManager()
 void SceneManager::Initialize()
 {
 	// 最初のシーンをタイトル画面にする
-	ChangeScene(eSceneType::title);
+	ChangeScene(eSceneType::in_game);
 
 }
 
@@ -54,6 +54,7 @@ void SceneManager::Update(float delta_second)
 		{
 			for (int j = 0; j < objects_list.size(); j++)
 			{
+				// 自分同士の当たり判定確認処理はしない
 				if (i == j)
 				{
 					continue;

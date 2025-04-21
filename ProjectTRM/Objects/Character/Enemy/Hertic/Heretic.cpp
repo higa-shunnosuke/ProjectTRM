@@ -39,17 +39,17 @@ void Heretic::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
-	// オフセット値を基に画像の描画を行う
-	// 異端者の表示
+	// 異端者の描画
 	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, TRUE);
 
 #ifdef DEBUG
+	// 中心を表示
+	DrawCircle(position.x, position.y, 2, 0xff0000, TRUE);
 	// 当たり判定表示
 	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff0000, FALSE);
-	// 中心を描画
-	DrawCircle(position.x, position.y, 2, 0xffffff, TRUE);
+	
 #endif
 }
 

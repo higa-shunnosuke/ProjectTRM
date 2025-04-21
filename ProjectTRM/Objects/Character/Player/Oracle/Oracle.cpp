@@ -25,6 +25,11 @@ void Oracle::Initialize()
 	collision.object_type = eObjectType::Player;
 	collision.hit_object_type.push_back(eObjectType::Enemy);
 	collision.box_size = Vector2D(60.0f, 120.0f);
+	collision.attack_size = Vector2D(400.0f, 200.0f);
+	z_layer = 1;
+
+	// HP初期化
+	HP = 100;
 }
 
 // 更新処理
@@ -39,17 +44,19 @@ void Oracle::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
-	// オフセット値を基に画像の描画を行う
-	// 巫女の表示
+	// 巫女の描画
 	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffff00, TRUE);
+		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff0000, TRUE);
 
 #ifdef DEBUG
+	// 中心を表示
+	DrawCircle(position.x, position.y, 2, 0x0000ff, TRUE);
 	// 当たり判定表示
 	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff0000, FALSE);
-	// 中心を描画
-	DrawCircle(position.x, position.y, 2, 0xffffff, TRUE);
+		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
+	// 攻撃範囲を表示
+	DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
+		(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
 #endif
 }
 

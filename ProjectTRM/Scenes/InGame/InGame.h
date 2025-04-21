@@ -2,13 +2,18 @@
 
 #include "../SceneBase.h"
 
+#include "../../Objects/Character/Player/Oracle/Oracle.h"
+#include "../../Objects/Character/Enemy/Hertic/Heretic.h"
+
 #define SIZE_X 211
 #define SIZE_Y 16
 
 class InGame : public SceneBase
 {
 private:
-	float cooldown;
+	float cooldown;		// 召喚クールダウン
+	Oracle* player;		// 巫女のポインタ
+	Heretic* enemy;		// 異端者のポインタ
 
 public:
 	// コンストラクタ

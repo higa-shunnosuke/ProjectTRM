@@ -33,11 +33,13 @@ class SceneBase
 protected:
 	// 各シーンが所有する情報
 	GameObjectManager* object;	// オブジェクトマネージャーのポインタ
-
+	int cursor;					// カーソル
 
 public:
 	// コンストラクタ
-	SceneBase()
+	SceneBase():
+		object(nullptr),
+		cursor()
 	{
 		
 	}
