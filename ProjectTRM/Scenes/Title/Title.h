@@ -6,7 +6,9 @@
 class Title : public SceneBase
 {
 private:
-	
+
+	int		Anim_count;
+	float	Anim_flame;
 
 public:
 	// コンストラクタ

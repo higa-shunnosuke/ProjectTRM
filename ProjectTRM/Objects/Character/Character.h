@@ -23,6 +23,9 @@ protected:
 	std::vector<int> effect;
 	std::vector<int> animation;
 
+	int		Anim_count = 0;
+	float	Anim_flame = 0.0f;
+
 public:
 	//コンストラクタ
 	Character();

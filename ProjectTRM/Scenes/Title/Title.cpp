@@ -38,6 +38,24 @@ eSceneType Title::Update(const float& delta_second)
 	{
 		return eSceneType::stage_select;
 	}
+	if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+	{
+		return eSceneType::end;
+	}
+
+
+	Anim_flame += 1.0f;
+	if (Anim_flame == 60.0f)
+	{
+		Anim_count ++;
+		Anim_flame = 0.0f;
+	}
+	if (Anim_count == 4)
+	{
+		Anim_count = 0;
+		Anim_flame = 0.0f;
+	}
+
 
 	// 親クラスの更新処理を呼び出す
 	return __super::Update(delta_second);
@@ -46,10 +64,21 @@ eSceneType Title::Update(const float& delta_second)
 // 描画処理
 void Title::Draw() const
 {
+	SetFontSize(120);
+	DrawFormatString(500, 150, 0xff5500, "Project\n -TRM-");
 	SetFontSize(60);
-	DrawFormatString(120, 140, 0xffffff, "Title");
+
+	if (Anim_count <= 1)
+	{
+	DrawFormatString(500, 450, 0xff5500, "Press_AnyButton");
+	}
+
+#ifdef _DEBUG
+	SetFontSize(60);
+	DrawFormatString(100, 140, 0xffffff, "Title");
 	SetFontSize(32);
-	DrawFormatString(100, 300, 0xffffff, "Enterを押してください");
+	DrawFormatString(100, 300, 0xffffff, "Enterを押してね!");
+#endif
 
 	// 親クラスの描画処理を呼び出す
 	__super::Draw();
