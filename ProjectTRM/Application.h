@@ -14,7 +14,7 @@ private:
 	LONGLONG old_time;		// 前回計測値
 	LONGLONG now_time;		// 現在計測値
 	float delta_second;		// １フレームあたりの時間
-	bool end_flg;			//	ゲーム終了フラグ
+	bool end_flg;			// ゲーム終了フラグ
 
 public:
 	bool WakeUp()

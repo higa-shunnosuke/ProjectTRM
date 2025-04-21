@@ -1,37 +1,31 @@
 #include "Projectile.h"
 
+// コンストラクタ
 Projectile::Projectile() :
 	Damage()
 {
 
 }
 
+// デストラクタ
 Projectile::~Projectile()
 {
 
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
+// 初期化処理
 void Projectile::Initialize()
 {
 
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="delta_second">1フレームあたりの時間</param>
+// 更新処理
 void Projectile::Update(float delta_second)
 {
 
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="screen_offset">オフセット値</param>
+// 描画処理
 void Projectile::Draw(const Vector2D camera_pos) const
 {
 	Vector2D position = this->GetLocation();
@@ -41,44 +35,30 @@ void Projectile::Draw(const Vector2D camera_pos) const
 	DrawRotaGraphF(camera_pos.x, camera_pos.y, 1.0, 0.0, image, TRUE);
 }
 
-/// <summary>
-/// 終了時処理
-/// </summary>
+// 終了時処理
 void Projectile::Finalize()
 {
 
 }
 
-/// <summary>
-/// 当たり判定通知処理
-/// </summary>
-/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
+// 当たり判定通知処理
 void Projectile::OnHitCollision(GameObject* hit_object)
 {
 
 }
 
-/// <summary>
-/// 移動処理
-/// </summary>
-/// <param name="hit_object">1フレームあたりの時間</param>
+// 移動処理
 void Projectile::Movement(float delta_second)
 {
 
 }
 
-/// <summary>
-/// アニメーション制御処理
-/// </summary>
-/// <param name="hit_object">1フレームあたりの時間</param>
+// アニメーション制御処理
 void Projectile::AnimationControl(float delta_second)
 {
 
 }
-/// <summary>
-/// エフェクト制御処理
-/// </summary>
-/// <param name="hit_object">1フレームあたりの時間</param>
+// エフェクト制御処理
 void Projectile::EffectControl(float delta_second)
 {
 

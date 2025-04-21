@@ -69,13 +69,13 @@ void Camera::Update()
 	}
 }
 
-// カメラ情報取得処理
+// カメラ座標取得処理
 Vector2D Camera::GetCameraPos()
 {
 	return this->location;
 }
 
-// 追跡対象情報設定処理
+// カメラ座標設定処理
 void Camera::SetCameraPos(Vector2D location)
 {
 	this->location = location;

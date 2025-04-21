@@ -32,7 +32,7 @@ class SceneBase
 {
 protected:
 	// 各シーンが所有する情報
-	GameObjectManager* object;			// オブジェクトマネージャーのポインタ
+	GameObjectManager* object;	// オブジェクトマネージャーのポインタ
 
 
 public:

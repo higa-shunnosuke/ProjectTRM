@@ -1,37 +1,31 @@
 #include "Oracle.h"
 
+// コンストラクタ
 Oracle::Oracle() :
 	summon_flag()
 {
 
 }
 
+// デストラクタ
 Oracle::~Oracle()
 {
 
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
+// 初期化処理
 void Oracle::Initialize()
 {
 
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="delta_second">1フレームあたりの時間</param>
+// 更新処理
 void Oracle::Update(float delta_second)
 {
 
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="screen_offset">オフセット値</param>
+// 描画処理
 void Oracle::Draw(const Vector2D camera_pos) const
 {
 	Vector2D position = this->GetLocation();
@@ -41,62 +35,43 @@ void Oracle::Draw(const Vector2D camera_pos) const
 	DrawRotaGraphF(camera_pos.x, camera_pos.y, 1.0, 0.0, image, TRUE);
 }
 
-/// <summary>
-/// 終了時処理
-/// </summary>
+// 終了時処理
 void Oracle::Finalize()
 {
 
 }
 
-/// <summary>
-/// 当たり判定通知処理
-/// </summary>
-/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
+// 当たり判定通知処理
 void Oracle::OnHitCollision(GameObject* hit_object)
 {
 
 }
 
-/// <summary>
-/// HP管理処理
-/// </summary>
-/// <param name="hit_object">ダメージ</param>
+// HP管理処理
 void Oracle::HPControl(int Damage)
 {
 
 }
 
-/// <summary>
-/// 攻撃処理
-/// </summary>
-void Oracle::Attack()
-{
-
-}
-
-/// <summary>
-/// 移動処理
-/// </summary>
-/// <param name="hit_object">1フレームあたりの時間</param>
+// 移動処理
 void Oracle::Movement(float delta_second)
 {
 
 }
 
-/// <summary>
-/// アニメーション制御処理
-/// </summary>
-/// <param name="hit_object">1フレームあたりの時間</param>
+// アニメーション制御処理
 void Oracle::AnimationControl(float delta_second)
 {
 
 }
-/// <summary>
-/// エフェクト制御処理
-/// </summary>
-/// <param name="hit_object">1フレームあたりの時間</param>
+// エフェクト制御処理
 void Oracle::EffectControl(float delta_second)
+{
+
+}
+
+// 攻撃処理
+void Oracle::Attack()
 {
 
 }

@@ -8,7 +8,7 @@
 class InGame : public SceneBase
 {
 private:
-	
+	float cooldown;
 
 public:
 	// コンストラクタ
@@ -49,5 +49,10 @@ private:
 	/// ステージの生成処理
 	/// </summary>
 	void LoadStage();
+
+	/// <summary>
+	///	ユニット追召喚
+	/// </summary>
+	void UnitSelection();
 };
 

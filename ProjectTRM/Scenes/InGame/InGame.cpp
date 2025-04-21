@@ -157,3 +157,9 @@ void InGame::LoadStage()
 	// 開いたファイルを閉じる
 	fclose(fp);
 }
+
+//	ユニット追召喚
+void UnitSelection()
+{
+
+}

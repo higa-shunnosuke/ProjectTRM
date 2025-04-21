@@ -1,37 +1,31 @@
 #include "P_Tank.h"
 
+// コンストラクタ
 P_Tank::P_Tank() :
 	Damage()
 {
 
 }
 
+// デストラクタ
 P_Tank::~P_Tank()
 {
 
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
+// 初期化処理
 void P_Tank::Initialize()
 {
 
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="delta_second">1フレームあたりの時間</param>
+// 更新処理
 void P_Tank::Update(float delta_second)
 {
 
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="screen_offset">オフセット値</param>
+// 描画処理
 void P_Tank::Draw(const Vector2D camera_pos) const
 {
 	Vector2D position = this->GetLocation();
@@ -41,61 +35,42 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 	DrawRotaGraphF(camera_pos.x, camera_pos.y, 1.0, 0.0, image, TRUE);
 }
 
-/// <summary>
-/// 終了時処理
-/// </summary>
+// 終了時処理
 void P_Tank::Finalize()
 {
 
 }
 
-/// <summary>
-/// 当たり判定通知処理
-/// </summary>
-/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
+// 当たり判定通知処理
 void P_Tank::OnHitCollision(GameObject* hit_object)
 {
 
 }
 
-/// <summary>
-/// HP管理処理
-/// </summary>
-/// <param name="hit_object">ダメージ</param>
+// HP管理処理
 void P_Tank::HPControl(int Damage)
 {
 
 }
 
-/// <summary>
-/// 攻撃処理
-/// </summary>
+// 攻撃処理
 void P_Tank::Attack()
 {
 
 }
 
-/// <summary>
-/// 移動処理
-/// </summary>
-/// <param name="hit_object">1フレームあたりの時間</param>
+// 移動処理
 void P_Tank::Movement(float delta_second)
 {
 
 }
 
-/// <summary>
-/// アニメーション制御処理
-/// </summary>
-/// <param name="hit_object">1フレームあたりの時間</param>
+// アニメーション制御処理
 void P_Tank::AnimationControl(float delta_second)
 {
 
 }
-/// <summary>
-/// エフェクト制御処理
-/// </summary>
-/// <param name="hit_object">1フレームあたりの時間</param>
+// エフェクト制御処理
 void P_Tank::EffectControl(float delta_second)
 {
 

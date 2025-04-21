@@ -52,3 +52,9 @@ void Ground::Finalize()
 {
 
 }
+
+// “–‚½‚è”»’è’Ê’mˆ—
+void Ground::OnHitCollision(GameObject* hit_object)
+{
+
+}

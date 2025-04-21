@@ -1,36 +1,30 @@
 #include "Torch.h"
 
+// コンストラクタ
 Torch::Torch()
 {
 
 }
 
+// デストラクタ
 Torch::~Torch()
 {
 
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
+// 初期化処理
 void Torch::Initialize()
 {
 
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="delta_second">1フレームあたりの時間</param>
+// 更新処理
 void Torch::Update(float delta_second)
 {
 
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="screen_offset">オフセット値</param>
+// 描画処理
 void Torch::Draw(const Vector2D camera_pos) const
 {
 	Vector2D position = this->GetLocation();
@@ -40,35 +34,24 @@ void Torch::Draw(const Vector2D camera_pos) const
 	DrawRotaGraphF(camera_pos.x, camera_pos.y, 1.0, 0.0, image, TRUE);
 }
 
-/// <summary>
-/// 終了時処理
-/// </summary>
+// 終了時処理
 void Torch::Finalize()
 {
 
 }
 
-/// <summary>
-/// 当たり判定通知処理
-/// </summary>
-/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
+// 当たり判定通知処理
 void Torch::OnHitCollision(GameObject* hit_object)
 {
 
 }
 
-/// <summary>
-/// アニメーション制御処理
-/// </summary>
-/// <param name="hit_object">1フレームあたりの時間</param>
+// アニメーション制御処理
 void Torch::AnimationControl(float delta_second)
 {
 
 }
-/// <summary>
-/// エフェクト制御処理
-/// </summary>
-/// <param name="hit_object">1フレームあたりの時間</param>
+// エフェクト制御処理
 void Torch::EffectControl(float delta_second)
 {
 

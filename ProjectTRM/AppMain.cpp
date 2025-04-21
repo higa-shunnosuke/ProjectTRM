@@ -5,7 +5,7 @@
 #include "DxLib.h"
 #include "Application.h"
 
-// メイン関数（プログラムはここから始まります）
+// メイン関数
 int WINAPI WinMain(
 	_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -14,7 +14,7 @@ int WINAPI WinMain(
 {
 	try
 	{
-		// シーンマネージャーを生成する
+		// プロジェクトを生成する
 		Application* app = Application::GetInstance();
 
 		// 初期化処理
