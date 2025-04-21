@@ -6,6 +6,8 @@
 #include "../../Utility/Camera/Camera.h"
 
 #include "../../Objects/Block/Ground.h"
+#include "../../Objects/Character/Player/Oracle/Oracle.h"
+#include "../../Objects/Character/Enemy/Hertic/Heretic.h"
 
 #define PLAYER_INITIAL_LOCATION 3 // プレイヤー初期位置(何ブロック目）
 
@@ -151,6 +153,18 @@ void InGame::LoadStage()
 		else if (c == 'G')
 		{
 			object->CreateObject<Ground>(Vector2D(location.x, location.y));
+			x++;
+		}
+		// Oなら、巫女を生成
+		else if (c == 'O')
+		{
+			object->CreateObject<Oracle>(Vector2D(location.x, location.y - 30));
+			x++;
+		}
+		// Hなら、異端者
+		else if (c == 'H')
+		{
+			object->CreateObject<Heretic>(Vector2D(location.x, location.y - 30));
 			x++;
 		}
 	}

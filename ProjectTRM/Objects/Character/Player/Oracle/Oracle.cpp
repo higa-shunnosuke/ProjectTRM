@@ -16,7 +16,15 @@ Oracle::~Oracle()
 // 初期化処理
 void Oracle::Initialize()
 {
+	// 画像の読み込み
+	ResourceManager* rm = ResourceManager::GetInstance();
 
+	is_mobility = false;
+
+	collision.is_blocking = true;
+	collision.object_type = eObjectType::Player;
+	collision.hit_object_type.push_back(eObjectType::Enemy);
+	collision.box_size = Vector2D(60.0f, 120.0f);
 }
 
 // 更新処理
@@ -32,7 +40,17 @@ void Oracle::Draw(const Vector2D camera_pos) const
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
 	// オフセット値を基に画像の描画を行う
-	DrawRotaGraphF(camera_pos.x, camera_pos.y, 1.0, 0.0, image, TRUE);
+	// 巫女の表示
+	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffff00, TRUE);
+
+#ifdef DEBUG
+	// 当たり判定表示
+	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff0000, FALSE);
+	// 中心を描画
+	DrawCircle(position.x, position.y, 2, 0xffffff, TRUE);
+#endif
 }
 
 // 終了時処理
