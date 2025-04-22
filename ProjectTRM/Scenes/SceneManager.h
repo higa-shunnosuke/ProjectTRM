@@ -48,4 +48,11 @@ private:
 	/// <param name="target">1つ目のゲームオブジェクト</param>
 	/// <param name="partner">2つ目のゲームオブジェクト</param>
 	void CheckCollision(GameObject* target, GameObject* partner);
+
+	/// <summary>
+	/// 攻撃範囲検知処理
+	/// </summary>
+	/// <param name="target">1つ目のゲームオブジェクト</param>
+	/// <param name="partner">2つ目のゲームオブジェクト</param>
+	void CheckAreaDetection(GameObject* target, GameObject* partner);
 };

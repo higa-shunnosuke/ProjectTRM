@@ -9,11 +9,12 @@
 class GameObject
 {
 protected:
-	Vector2D			location;		// 位置座標
-	Collision			collision;		// 当たり判定情報
-	int					image;			// 画像情報
-	int					z_layer;		// レイヤー情報
-	bool				is_mobility;	// 可動性
+	Vector2D		location;		// 位置座標
+	Collision		collision;		// 当たり判定情報
+	int				image;			// 画像情報
+	int				z_layer;		// レイヤー情報
+	bool			is_mobility;	// 可動性
+	bool			is_aggressive;	// 攻撃性
 
 public:
 	GameObject();
@@ -43,6 +44,12 @@ public:
 	/// </summary>
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
 	virtual void OnHitCollision(GameObject* hit_object);
+
+	/// <summary>
+	/// 攻撃範囲通知処理
+	/// </summary>
+	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
+	virtual void OnAreaDetection(GameObject* hit_object);
 
 public:
 	/// <summary>
@@ -74,4 +81,10 @@ public:
 	/// </summary>
 	/// <returns>可動性情報</returns>
 	const bool GetMobility() const;
+	
+	/// <summary>
+	/// 攻撃性情報の取得処理
+	/// </summary>
+	/// <returns>可動性情報</returns>
+	const bool GetAggressive() const;
 };

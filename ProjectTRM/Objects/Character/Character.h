@@ -52,13 +52,6 @@ public:
 
 public:
 	/// <summary>
-	/// 当たり判定通知処理
-	/// </summary>
-	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
-	virtual void OnHitCollision(GameObject* hit_object);
-
-public:
-	/// <summary>
 	/// HP管理処理
 	/// </summary>
 	/// <param name="hit_object">ダメージ</param>

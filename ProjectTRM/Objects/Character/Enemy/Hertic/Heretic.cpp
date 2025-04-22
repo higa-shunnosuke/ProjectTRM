@@ -25,6 +25,11 @@ void Heretic::Initialize()
 	collision.object_type = eObjectType::Enemy;
 	collision.hit_object_type.push_back(eObjectType::Player);
 	collision.box_size = Vector2D(60.0f, 120.0f);
+	collision.attack_size = Vector2D(400.0f, 200.0f);
+	z_layer = 1;
+
+	// HP初期化
+	HP = 100;
 }
 
 // 更新処理
@@ -45,11 +50,13 @@ void Heretic::Draw(const Vector2D camera_pos) const
 
 #ifdef DEBUG
 	// 中心を表示
-	DrawCircle(position.x, position.y, 2, 0xff0000, TRUE);
+	DrawCircle((int)position.x, (int)position.y, 2, 0xff0000, TRUE);
 	// 当たり判定表示
 	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff0000, FALSE);
-	
+	// 攻撃範囲を表示
+	DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
+		(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0xff0000, FALSE);
 #endif
 }
 

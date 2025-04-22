@@ -50,7 +50,7 @@ void P_Ranged::Draw(const Vector2D camera_pos) const
 
 #ifdef DEBUG
 	// íÜêSÇï\é¶
-	DrawCircle(position.x, position.y, 2, 0x0000ff, TRUE);
+	DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
 	// ìñÇΩÇËîªíËï\é¶
 	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);

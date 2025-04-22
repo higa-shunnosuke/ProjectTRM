@@ -66,6 +66,29 @@ void SceneManager::Update(float delta_second)
 		}
 	}
 
+	// 攻撃範囲検知処理
+	for (int i = 0; i < objects_list.size(); i++)
+	{
+		if (objects_list[i]->GetAggressive() == false)
+		{
+			continue;
+		}
+		else
+		{
+			for (int j = 0; j < objects_list.size(); j++)
+			{
+				// 自分同士の当たり判定確認処理はしない
+				if (i == j)
+				{
+					continue;
+				}
+
+				// 当たり判定確認処理
+				CheckAreaDetection(objects_list[i], objects_list[j]);
+			}
+		}
+	}
+
 	// フォントサイズ変更
 	SetFontSize(32);
 
@@ -131,7 +154,7 @@ void SceneManager::ChangeScene(eSceneType next_type)
 	current_scene = next_scene;
 }
 
-/// 当たり判定確認処理
+// 当たり判定確認処理
 void SceneManager::CheckCollision(GameObject* target, GameObject* partner)
 {
 	// ヌルポチェック
@@ -164,6 +187,42 @@ void SceneManager::CheckCollision(GameObject* target, GameObject* partner)
 			// 当たっていることを通知する
 			target->OnHitCollision(partner);
 			partner->OnHitCollision(target);
+		}
+	}
+}
+
+// 攻撃範囲検知処理
+void SceneManager::CheckAreaDetection(GameObject* target, GameObject* partner)
+{
+	// ヌルポチェック
+	if (target == nullptr || partner == nullptr)
+	{
+		return;
+	}
+
+	// 当たり判定情報を取得
+	Collision tc = target->GetCollision();
+	Collision pc = partner->GetCollision();
+
+	if (tc.is_blocking == false || pc.is_blocking == false)
+	{
+		return;
+	}
+
+	// 当たり判定が有効か確認する
+	if (tc.IsCheckHitTarget(pc.object_type) || pc.IsCheckHitTarget(tc.object_type))
+	{
+		//２つのオブジェクトの距離を取得
+		Vector2D diff = target->GetLocation() - partner->GetLocation();
+
+		//２つのオブジェクトの当たり判定の大きさを取得
+		Vector2D box_size = (tc.box_size + pc.box_size) / 2.0f;
+		
+		// 矩形同士の当たり判定
+		if ((fabsf(diff.x) < box_size.x) && (fabsf(diff.y) < box_size.y))
+		{
+			// 当たっていることを通知する
+			target->OnAreaDetection(partner);
 		}
 	}
 }

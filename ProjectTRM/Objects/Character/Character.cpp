@@ -41,12 +41,6 @@ void Character::Finalize()
 
 }
 
-// “–‚½‚è”»’è’Ê’mˆ—
-void Character::OnHitCollision(GameObject* hit_object)
-{
-
-}
-
 // </summary>
 void Character::HPControl(int Damage)
 {

@@ -20,6 +20,7 @@ void Oracle::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 
 	is_mobility = false;
+	is_aggressive = true;
 
 	collision.is_blocking = true;
 	collision.object_type = eObjectType::Player;
@@ -50,7 +51,7 @@ void Oracle::Draw(const Vector2D camera_pos) const
 
 #ifdef DEBUG
 	// 中心を表示
-	DrawCircle(position.x, position.y, 2, 0x0000ff, TRUE);
+	DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
 	// 当たり判定表示
 	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
@@ -70,6 +71,12 @@ void Oracle::Finalize()
 void Oracle::OnHitCollision(GameObject* hit_object)
 {
 
+}
+
+// 攻撃範囲通知処理
+void Oracle::OnAreaDetection(GameObject* hit_object)
+{
+	HP = 100;
 }
 
 // HP管理処理

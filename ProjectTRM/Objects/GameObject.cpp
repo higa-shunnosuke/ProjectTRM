@@ -6,7 +6,8 @@ GameObject::GameObject() :
 	location(0.0f),
 	image(NULL),
 	z_layer(0),
-	is_mobility(false)
+	is_mobility(false),
+	is_aggressive(false)
 {
 
 }
@@ -50,6 +51,12 @@ void GameObject::OnHitCollision(GameObject* hit_object)
 
 }
 
+// UŒ‚”ÍˆÍ’Ê’mˆ—
+void GameObject::OnAreaDetection(GameObject* hit_object)
+{
+
+}
+
 // ˆÊ’uÀ•Wæ“¾ˆ—
 const Vector2D& GameObject::GetLocation() const
 {
@@ -78,4 +85,10 @@ const unsigned char GameObject::GetZLayer() const
 const bool GameObject::GetMobility() const
 {
 	return is_mobility;
+}
+
+// UŒ‚«î•ñ‚Ìæ“¾ˆ—
+const bool GameObject::GetAggressive() const
+{
+	return is_aggressive;
 }
