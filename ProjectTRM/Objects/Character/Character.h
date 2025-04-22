@@ -18,13 +18,14 @@ class Character:public GameObject
 protected:
 	Vector2D velocity;
 	bool flip_flag;
-	int HP;
 	State now_state;
 	std::vector<int> effect;
 	std::vector<int> animation;
 
 	int		Anim_count = 0;
 	float	Anim_flame = 0.0f;
+	float   attack_flame = 0.0f;
+	bool	attack_flag;
 
 public:
 	//コンストラクタ
@@ -50,13 +51,6 @@ public:
 	/// </summary>
 	virtual void Finalize();
 
-public:
-	/// <summary>
-	/// HP管理処理
-	/// </summary>
-	/// <param name="hit_object">ダメージ</param>
-	virtual void HPControl(int Damage);
-
 protected:
 	/// <summary>
 	/// 移動処理
@@ -76,5 +70,5 @@ protected:
 	/// <summary>
 	/// 攻撃処理
 	/// </summary>
-	virtual void Attack();
+	virtual void Attack(GameObject* hit_object);
 };

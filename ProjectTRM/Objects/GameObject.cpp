@@ -6,6 +6,7 @@ GameObject::GameObject() :
 	location(0.0f),
 	image(NULL),
 	z_layer(0),
+	HP(0),
 	is_mobility(false),
 	is_aggressive(false)
 {
@@ -91,4 +92,14 @@ const bool GameObject::GetMobility() const
 const bool GameObject::GetAggressive() const
 {
 	return is_aggressive;
+}
+
+void GameObject::HPControl(int Damage)
+{
+
+}
+
+const int GameObject::GetHP() const
+{
+	return this->HP;
 }

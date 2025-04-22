@@ -50,7 +50,7 @@ private:
 	/// <summary>
 	/// UŒ‚ˆ—
 	/// </summary>
-	virtual void Attack();
+	virtual void Attack(GameObject* hit_object);
 	/// <summary>
 	/// ˆÚ“®ˆ—
 	/// </summary>

@@ -39,6 +39,12 @@ public:
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
 	virtual void OnHitCollision(GameObject* hit_object);
 
+	/// <summary>
+	/// 攻撃範囲通知処理
+	/// </summary>
+	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
+	virtual void OnAreaDetection(GameObject* hit_object);
+
 public:
 	/// <summary>
 	/// HP管理処理
@@ -50,7 +56,7 @@ private:
 	/// <summary>
 	/// 攻撃処理
 	/// </summary>
-	virtual void Attack();
+	virtual void Attack(GameObject* hit_object);
 	/// <summary>
 	/// 移動処理
 	/// </summary>

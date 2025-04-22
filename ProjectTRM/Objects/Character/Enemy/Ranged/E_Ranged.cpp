@@ -70,7 +70,7 @@ void E_Ranged::EffectControl(float delta_second)
 }
 
 // UŒ‚ˆ—
-void E_Ranged::Attack()
+void E_Ranged::Attack(GameObject* hit_object)
 {
 
 }

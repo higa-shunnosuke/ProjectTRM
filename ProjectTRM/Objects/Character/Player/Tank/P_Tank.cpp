@@ -80,7 +80,7 @@ void P_Tank::HPControl(int Damage)
 }
 
 // UŒ‚ˆ—
-void P_Tank::Attack()
+void P_Tank::Attack(GameObject* hit_object)
 {
 
 }

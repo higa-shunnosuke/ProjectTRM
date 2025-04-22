@@ -41,12 +41,6 @@ void Character::Finalize()
 
 }
 
-// </summary>
-void Character::HPControl(int Damage)
-{
-
-}
-
 // ˆÚ“®ˆ—
 void Character::Movement(float delta_second)
 {
@@ -65,7 +59,7 @@ void Character::EffectControl(float delta_second)
 }
 
 // UŒ‚ˆ—
-void Character::Attack()
+void Character::Attack(GameObject* hit_object)
 {
 
 }

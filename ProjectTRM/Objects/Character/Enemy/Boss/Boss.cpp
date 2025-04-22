@@ -54,7 +54,7 @@ void Boss::HPControl(int Damage)
 }
 
 // UŒ‚ˆ—
-void Boss::Attack()
+void Boss::Attack(GameObject* hit_object)
 {
 
 }
