@@ -89,6 +89,15 @@ void SceneManager::Update(float delta_second)
 		}
 	}
 
+	//オブジェクト削除判定処理
+	for (int i = 0; i < objects_list.size(); i++)
+	{
+		if (objects_list[i]->GetHP() <= 0)
+		{
+			object->DestroyObject(objects_list[i]);
+		}
+	}
+
 	// フォントサイズ変更
 	SetFontSize(32);
 

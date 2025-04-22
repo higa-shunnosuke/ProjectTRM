@@ -24,6 +24,8 @@ void Ground::Initialize()
 	collision.hit_object_type.push_back(eObjectType::Enemy);
 	collision.box_size = Vector2D(60.0f, 60.0f);
 
+	HP = 1;
+
 }
 
 void Ground::Update(float delta_second)

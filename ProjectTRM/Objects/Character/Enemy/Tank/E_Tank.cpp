@@ -54,7 +54,7 @@ void E_Tank::HPControl(int Damage)
 }
 
 // UŒ‚ˆ—
-void E_Tank::Attack()
+void E_Tank::Attack(GameObject* hit_object)
 {
 
 }

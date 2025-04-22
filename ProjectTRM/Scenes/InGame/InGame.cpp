@@ -9,6 +9,7 @@
 #include "../../Objects/Character/Player/Melee/P_Melee.h"
 #include "../../Objects/Character/Player/Ranged/P_Ranged.h"
 #include "../../Objects/Character/Player/Tank/P_Tank.h"
+#include "../../Objects/Character/Enemy/Melee/E_Melee.h"
 
 #define PLAYER_INITIAL_LOCATION 3 // プレイヤー初期位置(何ブロック目）
 
@@ -259,5 +260,8 @@ void InGame::UnitSelection()
 			object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
 			break;
 		}
+
+		object->CreateObject<E_Melee>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
+
 	}
 }

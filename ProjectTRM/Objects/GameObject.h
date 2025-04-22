@@ -13,8 +13,10 @@ protected:
 	Collision		collision;		// 当たり判定情報
 	int				image;			// 画像情報
 	int				z_layer;		// レイヤー情報
+	int				HP;				// キャラクターのHP
 	bool			is_mobility;	// 可動性
 	bool			is_aggressive;	// 攻撃性
+
 
 public:
 	GameObject();
@@ -87,4 +89,16 @@ public:
 	/// </summary>
 	/// <returns>可動性情報</returns>
 	const bool GetAggressive() const;
+
+	/// <summary>
+	/// HP管理処理
+	/// </summary>
+	/// <param name="hit_object">ダメージ</param>
+	virtual void HPControl(int Damage);
+
+	/// <summary>
+	/// HP取得処理
+	/// </summary>
+	/// <returns>HPの情報</returns>
+	const virtual int GetHP() const;
 };
