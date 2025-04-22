@@ -11,9 +11,12 @@
 class InGame : public SceneBase
 {
 private:
-	float cooldown;		// 召喚クールダウン
-	Oracle* player;		// 巫女のポインタ
-	Heretic* enemy;		// 異端者のポインタ
+	int cost_count;				// コスト
+	float cost_time;			// コスト
+	int cooldown_count[3];	// 召喚クールダウン
+	float cooldown_time[3];		// 召喚クールダウン
+	Oracle* player;				// 巫女のポインタ
+	Heretic* enemy;				// 異端者のポインタ
 
 public:
 	// コンストラクタ
@@ -59,5 +62,14 @@ private:
 	///	ユニット追召喚
 	/// </summary>
 	void UnitSelection();
-};
 
+	/// <summary>
+	///	コスト管理処理
+	/// </summary>
+	void CostManagement(const float& delta_second);
+	
+	/// <summary>
+	/// クールダウン管理処理
+	/// </summary>
+	void CooldownManagement(const float& delta_second);
+};

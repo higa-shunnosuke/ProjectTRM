@@ -14,7 +14,12 @@
 
 // コンストラクタ
 InGame::InGame():
-	cooldown()
+	cost_count(),
+	cost_time(),
+	cooldown_count(),
+	cooldown_time(),
+	player(nullptr),
+	enemy(nullptr)
 {
 	
 }
@@ -45,6 +50,17 @@ void InGame::Initialize()
 
 	// カーソルの初期化
 	cursor = 1;
+
+	// コストの初期化
+	cost_count = 0;
+	cost_time = 0.0f;
+
+	// クールダウンの初期化
+	for (int i = 0; i < 3; i++)
+	{
+		cooldown_count[i] = 0;
+		cooldown_time[i] = 0.0f;
+	}
 }
 
 // 更新処理
@@ -71,6 +87,12 @@ eSceneType InGame::Update(const float& delta_second)
 	
 	// ユニット選択処理
 	UnitSelection();
+
+	// コスト管理処理
+	CostManagement(delta_second);
+
+	// クールダウン管理処理
+	CooldownManagement(delta_second);
 
 	// 親クラスの更新処理を呼び出す
 	return __super::Update(delta_second);
@@ -111,7 +133,7 @@ void InGame::Draw() const
 	}
 
 #if _DEBUG	
-	// パネルのマス目描画
+	// パネルのマス目表示
 	for (int i = 0; i < 6; i++)
 	{
 		for (int j = 0; j < 32; j++)
@@ -121,9 +143,19 @@ void InGame::Draw() const
 		}
 	}
 
+	// ユニットの種類表示
 	DrawFormatString(290, 155, 0x000000, "A");
 	DrawFormatString(635, 155, 0x000000, "B");
 	DrawFormatString(970, 155, 0x000000, "C");
+
+	// クールダウン表示
+	for (int i = 0; i < 3; i++)
+	{
+		DrawFormatString(250 + i * 330, 55, 0x000000, "%d",cooldown_count[i]);
+	}
+	
+	// コスト表示
+	DrawFormatString(1200, 10, 0xffffff,"%d",cost_count);
 
 	// シーン情報の描画
 	SetFontSize(60);
@@ -260,4 +292,16 @@ void InGame::UnitSelection()
 			break;
 		}
 	}
+}
+
+//	コスト蓄積処理
+void InGame::CostManagement(const float& delta_second)
+{
+	
+}
+
+// クールダウン処理
+void InGame::CooldownManagement(const float& delta_second)
+{
+
 }
