@@ -216,7 +216,7 @@ void SceneManager::CheckAreaDetection(GameObject* target, GameObject* partner)
 		Vector2D diff = target->GetLocation() - partner->GetLocation();
 
 		//２つのオブジェクトの当たり判定の大きさを取得
-		Vector2D box_size = (tc.box_size + pc.box_size) / 2.0f;
+		Vector2D box_size = (tc.attack_size + pc.box_size) / 2.0f;
 		
 		// 矩形同士の当たり判定
 		if ((fabsf(diff.x) < box_size.x) && (fabsf(diff.y) < box_size.y))
