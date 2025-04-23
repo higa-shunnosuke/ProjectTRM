@@ -55,6 +55,8 @@ public:
 	/// <returns>現在のシーンタイプ</returns>
 	virtual const eSceneType GetNowSceneType() const override;
 
+	void CreateEnemy(E_enemy e_enem);
+
 private:
 	/// <summary>
 	/// ステージの生成処理

@@ -179,6 +179,24 @@ const eSceneType InGame::GetNowSceneType() const
 	return eSceneType::in_game;
 }
 
+void InGame::CreateEnemy(E_enemy e_enem)
+{
+	switch (e_enem)
+	{
+	case Tank:
+		break;
+	case Melee:
+		object->CreateObject<E_Melee>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
+		break;
+	case Range:
+		break;
+	case Boss:
+		break;
+	default:
+		break;
+	}
+}
+
 // ステージ生成処理
 void InGame::LoadStage()
 {
@@ -244,6 +262,7 @@ void InGame::LoadStage()
 		else if (c == 'H')
 		{
 			enemy = object->CreateObject<Heretic>(Vector2D(location.x, location.y - 30));
+			enemy->SetInGamePoint(this);
 			x++;
 		}
 	}
@@ -310,7 +329,6 @@ void InGame::UnitSelection()
 			break;
 		}
 
-		object->CreateObject<E_Melee>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
 
 	}
 }

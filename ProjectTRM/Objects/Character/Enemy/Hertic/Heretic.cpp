@@ -1,4 +1,5 @@
 #include "Heretic.h"
+#include"../../../../Scenes/InGame/InGame.h"
 
 // コンストラクタ
 Heretic::Heretic() :
@@ -35,7 +36,11 @@ void Heretic::Initialize()
 // 更新処理
 void Heretic::Update(float delta_second)
 {
-
+	if (Fstflag)
+	{
+		Ingame->CreateEnemy(E_enemy::Melee);
+		Fstflag = false;
+	}
 }
 
 // 描画処理
@@ -64,6 +69,11 @@ void Heretic::Draw(const Vector2D camera_pos) const
 void Heretic::Finalize()
 {
 
+}
+
+void Heretic::SetInGamePoint(InGame* point)
+{
+	Ingame = point;
 }
 
 // 当たり判定通知処理

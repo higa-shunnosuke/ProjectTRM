@@ -2,11 +2,21 @@
 
 #include "../../Character.h"
 
+enum E_enemy :int
+{
+	Tank,
+	Melee,
+	Range,
+	Boss
+};
+
 // ゲームオブジェクト基底クラス
 class Heretic :public Character
 {
 private:
+	bool Fstflag = true;
 	bool summon_flag;	//召喚フラグ
+	class InGame* Ingame;
 
 public:
 	//コンストラクタ
@@ -31,6 +41,8 @@ public:
 	/// 終了時処理
 	/// </summary>
 	virtual void Finalize();
+
+	void SetInGamePoint(class InGame* point);
 
 public:
 	/// <summary>
