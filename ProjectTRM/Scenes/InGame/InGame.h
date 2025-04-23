@@ -5,18 +5,21 @@
 #include "../../Objects/Character/Player/Oracle/Oracle.h"
 #include "../../Objects/Character/Enemy/Hertic/Heretic.h"
 
+#include <chrono>
+
 #define SIZE_X 211
 #define SIZE_Y 16
 
 class InGame : public SceneBase
 {
 private:
-	int cost_count;				// コスト
-	float cost_time;			// コスト
-	int cooldown_count[3];	// 召喚クールダウン
-	float cooldown_time[3];		// 召喚クールダウン
-	Oracle* player;				// 巫女のポインタ
-	Heretic* enemy;				// 異端者のポインタ
+	std::chrono::steady_clock::time_point summon_time[3];	// 召喚開始時間
+	std::chrono::seconds cooldown[3];						// 召喚クールダウン
+	std::chrono::steady_clock::time_point cost_time;		// コスト待機時間
+	int cost;				// コスト
+	bool summon_flag[3];	// 召喚フラグ
+	Oracle* player;			// 巫女のポインタ
+	Heretic* enemy;			// 異端者のポインタ
 
 public:
 	// コンストラクタ

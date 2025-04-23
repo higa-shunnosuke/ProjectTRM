@@ -15,10 +15,9 @@
 
 // コンストラクタ
 InGame::InGame():
-	cost_count(),
-	cost_time(),
-	cooldown_count(),
-	cooldown_time(),
+	cost(),
+	cooldown(),
+	summon_flag(),
 	player(nullptr),
 	enemy(nullptr)
 {
@@ -53,14 +52,14 @@ void InGame::Initialize()
 	cursor = 1;
 
 	// コストの初期化
-	cost_count = 0;
-	cost_time = 0.0f;
+	cost = 0;
+	cost_time = std::chrono::steady_clock::now();
 
-	// クールダウンの初期化
+	// クールダウン / 召喚フラグの初期化
 	for (int i = 0; i < 3; i++)
 	{
-		cooldown_count[i] = 0;
-		cooldown_time[i] = 0.0f;
+		cooldown[i] = std::chrono::seconds((i+1) * 2);
+		summon_flag[i] = false;
 	}
 }
 
@@ -152,11 +151,11 @@ void InGame::Draw() const
 	// クールダウン表示
 	for (int i = 0; i < 3; i++)
 	{
-		DrawFormatString(250 + i * 330, 55, 0x000000, "%d",cooldown_count[i]);
+		DrawFormatString(250 + i * 330, 55, 0x000000, "%d",summon_flag[i]);
 	}
 	
 	// コスト表示
-	DrawFormatString(1200, 10, 0xffffff,"%d",cost_count);
+	DrawFormatString(1200, 10, 0xffffff,"%d",cost);
 
 	// シーン情報の描画
 	SetFontSize(60);
@@ -283,13 +282,31 @@ void InGame::UnitSelection()
 		switch (cursor)
 		{
 		case 1:
-			object->CreateObject<P_Melee>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+			if (summon_flag[cursor - 1] == false)
+			{
+				object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+				cost -= 10;
+				summon_flag[cursor - 1] = true;
+				summon_time[cursor - 1] = std::chrono::steady_clock::now();
+			}
 			break;
 		case 2:
-			object->CreateObject<P_Ranged>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+			if (summon_flag[cursor - 1] == false)
+			{
+				object->CreateObject<P_Melee>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+				cost -= 20;
+				summon_flag[cursor - 1] = true;
+				summon_time[cursor - 1] = std::chrono::steady_clock::now();
+			}
 			break;
 		case 3:
-			object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+			if (summon_flag[cursor - 1] == false)
+			{
+				object->CreateObject<P_Ranged>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+				cost -= 30;
+				summon_flag[cursor - 1] = true;
+				summon_time[cursor - 1] = std::chrono::steady_clock::now();
+			}
 			break;
 		}
 
@@ -301,11 +318,49 @@ void InGame::UnitSelection()
 //	コスト蓄積処理
 void InGame::CostManagement(const float& delta_second)
 {
-	
+	auto now_time = std::chrono::steady_clock::now();
+
+	if (now_time - cost_time > std::chrono::milliseconds(500))
+	{
+		cost++;
+		cost_time = std::chrono::steady_clock::now();
+	}
 }
 
 // クールダウン処理
 void InGame::CooldownManagement(const float& delta_second)
 {
+	auto now_time = std::chrono::steady_clock::now();
 
+	for (int i = 0; i < 3; i++)
+	{
+		if (summon_flag[i] == false)
+		{
+			continue;
+		}
+		else
+		{
+			switch (i)
+			{
+			case 0:
+				if (now_time - summon_time[0] >= cooldown[0])
+				{
+					summon_flag[0] = false;
+				}
+				break;
+			case 1:
+				if (now_time - summon_time[1] >= cooldown[1])
+				{
+					summon_flag[1] = false;
+				}
+				break;
+			case 2:
+				if (now_time - summon_time[2] >= cooldown[2])
+				{
+					summon_flag[2] = false;
+				}
+				break;
+			}
+		}
+	}
 }
