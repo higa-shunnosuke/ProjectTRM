@@ -26,7 +26,7 @@ public:
 		SetGraphMode(D_WIN_MAX_X, D_WIN_MAX_Y, D_COLOR_BIT);
 
 		// ウィンドウタイトルの設定
-		SetWindowText("Game Development SUPER-MARIO 2025");
+		SetWindowText("Game Development TGS 2025");
 
 		// 垂直同期を行わない
 		SetWaitVSyncFlag(FALSE);
