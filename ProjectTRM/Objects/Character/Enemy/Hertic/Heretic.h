@@ -2,6 +2,19 @@
 
 #include "../../Character.h"
 
+#define Enemy_Think_Standard
+
+#ifdef Enemy_Think_Standard//基本的な教本
+
+#define TANK_eva	 10
+#define MELEE_eva	 30
+#define RANGE_eva	 20
+#define BOSS_eva	 50
+
+#endif // Enemy_Think_Standard
+
+
+
 enum E_enemy :int
 {
 	Tank,
@@ -14,9 +27,19 @@ enum E_enemy :int
 class Heretic :public Character
 {
 private:
-	bool Fstflag = true;
-	bool summon_flag;	//召喚フラグ
-	class InGame* Ingame;
+	int Player_evaluation[4];
+	int Enemy_evaluation[3];
+	int Cost;
+#if _DEBUG
+	bool	Fstflag = true;	//初回生成用:Debugで敵の動きを確認したいでしょう？
+#endif // 
+	bool	summon_flag;	//召喚フラグ
+	class	GameObjectManager* GOM;
+	std::vector<GameObject*> ObjectList;
+
+	class	InGame* Ingame;	//InGameのポインター
+	float	CountFlame;		//flameの管理
+	int		CountTime;		//整数型での管理
 
 public:
 	//コンストラクタ
@@ -41,7 +64,10 @@ public:
 	/// 終了時処理
 	/// </summary>
 	virtual void Finalize();
-
+	/// <summary>
+	/// エネミー生成処理
+	/// </summary>
+	/// <param name = "point">: InGameSceneのPointer</param>
 	void SetInGamePoint(class InGame* point);
 
 public:

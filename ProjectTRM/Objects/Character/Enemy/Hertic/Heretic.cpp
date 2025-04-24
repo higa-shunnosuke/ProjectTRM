@@ -1,9 +1,28 @@
 #include "Heretic.h"
+
 #include"../../../../Scenes/InGame/InGame.h"
+
+#include "../../Player/Tank/P_Tank.h"
+#include "../../Player/Melee/P_Melee.h"
+#include "../../Player/Ranged/P_Ranged.h"
+
+#include "../Tank/E_Tank.h"
+#include "../Ranged/E_Ranged.h"
+#include "../Melee/E_Melee.h"
+
+#define Enemy_Plan_Evaluation // 戦場評価型
+#ifdef Enemy_Plan_Evaluation
+#else
+#define Enemy_Plan_WAVE//ウェーブ型
+#endif // Evalution
+
 
 // コンストラクタ
 Heretic::Heretic() :
-	summon_flag()
+	summon_flag(),
+	CountFlame(0.0f),
+	CountTime(0),
+	Cost(0)
 {
 
 }
@@ -19,6 +38,7 @@ void Heretic::Initialize()
 {
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
+	GOM = GOM->GetInstance();
 
 	is_mobility = false;
 
@@ -41,6 +61,34 @@ void Heretic::Update(float delta_second)
 		Ingame->CreateEnemy(E_enemy::Melee);
 		Fstflag = false;
 	}
+
+	CountFlame += 1.0f;
+	if (CountFlame < 60.0f)
+	{
+		CountTime++;
+		Cost++;
+		CountFlame = 0.0f;
+	}
+
+	int  count_sum =0;
+	int Ecount_sum =0;
+
+	int Ptank_count	  = (int)P_Tank::  GetCount() * TANK_eva;
+	int Pmelee_count  = (int)P_Melee:: GetCount() * MELEE_eva;
+	int Prange_count  = (int)P_Ranged::GetCount() * RANGE_eva;
+	count_sum += (Ptank_count + Pmelee_count + Prange_count);
+
+	int Etank_count  = (int)E_Tank::  GetCount() * TANK_eva;
+	int Emelee_count = (int)E_Melee:: GetCount() * MELEE_eva;
+	int Erange_count = (int)E_Ranged::GetCount() * RANGE_eva;
+	Ecount_sum += (Etank_count + Emelee_count + Erange_count);
+	/*
+	・コストが０以下になるなら生成しない。
+	・コストが最大になるなら手持ち最大コストを生成する。
+	・相手の評価が高くなった際に手持ち最大コストを生成する。
+	・相手の評価が低くなった際に手持ち最小コストを生成する。
+*/
+
 }
 
 // 描画処理

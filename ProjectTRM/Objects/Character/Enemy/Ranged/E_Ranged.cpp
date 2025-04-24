@@ -1,4 +1,9 @@
 #include "E_Ranged.h"
+size_t E_Ranged::count = 0;
+size_t E_Ranged::GetCount()
+{
+	return count;
+}
 
 // コンストラクタ
 E_Ranged::E_Ranged()

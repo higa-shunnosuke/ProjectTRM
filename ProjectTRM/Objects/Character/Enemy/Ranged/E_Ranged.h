@@ -6,6 +6,11 @@
 class E_Ranged :public Character
 {
 private:
+	static size_t count;
+
+public:
+	static size_t GetCount();
+private:
 
 public:
 	//コンストラクタ

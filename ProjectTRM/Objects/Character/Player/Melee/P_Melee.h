@@ -6,6 +6,12 @@
 class P_Melee :public Character
 {
 private:
+	static size_t count;
+
+public:
+	static size_t GetCount();
+
+private:
 	int Damage;	//ƒ_ƒ[ƒW
 
 public:

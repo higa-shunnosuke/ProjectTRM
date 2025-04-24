@@ -1,4 +1,10 @@
 #include "E_Tank.h"
+size_t E_Tank::count = 0;
+size_t E_Tank::GetCount()
+{
+	return count;
+}
+
 
 // コンストラクタ
 E_Tank::E_Tank() :

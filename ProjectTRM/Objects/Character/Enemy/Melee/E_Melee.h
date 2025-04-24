@@ -1,10 +1,15 @@
 #pragma once
 
 #include "../../Character.h"
-
 // ゲームオブジェクト基底クラス
 class E_Melee :public Character
 {
+private:
+	static size_t count;
+
+public:
+	static size_t GetCount();
+
 private:
 	int Damage;	//ダメージ
 

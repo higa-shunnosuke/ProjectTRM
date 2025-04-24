@@ -1,4 +1,9 @@
 #include "P_Ranged.h"
+size_t P_Ranged::count = 0;
+size_t P_Ranged::GetCount()
+{
+	return count;
+}
 
 // コンストラクタ
 P_Ranged::P_Ranged()

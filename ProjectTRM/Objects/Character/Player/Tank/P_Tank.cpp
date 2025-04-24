@@ -1,16 +1,21 @@
 #include "P_Tank.h"
+size_t P_Tank::count =0;
+size_t P_Tank::GetCount()
+{
+	return count;
+}
 
 // コンストラクタ
 P_Tank::P_Tank() :
 	Damage()
 {
-
+	count++;
 }
 
 // デストラクタ
 P_Tank::~P_Tank()
 {
-
+	count--;
 }
 
 // 初期化処理

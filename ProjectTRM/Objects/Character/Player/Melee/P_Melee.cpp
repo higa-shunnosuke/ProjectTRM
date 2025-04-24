@@ -1,16 +1,21 @@
 #include "P_Melee.h"
+size_t P_Melee:: count = 0;
+size_t P_Melee::GetCount()
+{
+	return count;
+}
 
 // コンストラクタ
 P_Melee::P_Melee() :
 	Damage()
 {
-
+	count++;
 }
 
 // デストラクタ
 P_Melee::~P_Melee()
 {
-
+	count--;
 }
 
 // 初期化処理

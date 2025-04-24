@@ -1,4 +1,9 @@
 #include "E_Melee.h"
+size_t E_Melee::count = 0;
+size_t E_Melee::GetCount()
+{
+	return count;
+}
 
 // コンストラクタ
 E_Melee::E_Melee() :
