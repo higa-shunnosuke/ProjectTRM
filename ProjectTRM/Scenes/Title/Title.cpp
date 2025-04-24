@@ -19,7 +19,7 @@ void Title::Initialize()
 	__super::Initialize();
 
 	// 画像の読み込み
-	ResourceManager* rm = ResourceManager::GetInstance();
+	LoadImages();
 	
 }
 
@@ -96,4 +96,16 @@ void Title::Finalize()
 const eSceneType Title::GetNowSceneType() const
 {
 	return eSceneType::title;
+}
+
+const void Title::LoadImages() const
+{
+	//リソースマネージャーのインスタンス取得
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+	//画像読込み
+	rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Unit/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
 }

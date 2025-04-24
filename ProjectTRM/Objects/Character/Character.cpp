@@ -2,7 +2,8 @@
 
 // コンストラクタ
 Character::Character():
-	now_state()
+	now_state(),
+	old_state()
 {
 
 }

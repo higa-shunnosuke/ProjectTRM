@@ -19,6 +19,7 @@ protected:
 	Vector2D velocity;
 	bool flip_flag;
 	State now_state;
+	State old_state;
 	std::vector<int> effect;
 	std::vector<int> animation;
 
@@ -26,6 +27,7 @@ protected:
 	float	Anim_flame = 0.0f;
 	float   attack_flame = 0.0f;
 	bool	attack_flag;
+	bool    count_flag;
 
 public:
 	//コンストラクタ

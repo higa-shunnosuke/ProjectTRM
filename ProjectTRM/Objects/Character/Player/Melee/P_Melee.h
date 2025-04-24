@@ -67,6 +67,7 @@ private:
 	/// </summary>
 	/// <param name="hit_object">1フレームあたりの時間</param>
 	virtual void AnimationControl(float delta_second);
+
 	/// <summary>
 	/// エフェクト制御処理
 	/// </summary>
