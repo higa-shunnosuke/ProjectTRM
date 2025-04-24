@@ -77,4 +77,10 @@ private:
 	/// クールダウン管理処理
 	/// </summary>
 	void CooldownManagement(const float& delta_second);
+
+	/// <summary>
+	/// 画像読込み処理
+	/// </summary>
+	/// <returns></returns>
+	const void LoadImages() const;
 };

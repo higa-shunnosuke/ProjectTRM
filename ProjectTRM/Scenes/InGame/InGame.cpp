@@ -48,6 +48,9 @@ void InGame::Initialize()
 	// ステージ読み込み
 	LoadStage();
 
+	// 画像の読み込み
+	LoadImages();
+
 	// カーソルの初期化
 	cursor = 1;
 
@@ -381,4 +384,23 @@ void InGame::CooldownManagement(const float& delta_second)
 			}
 		}
 	}
+}
+
+const void InGame::LoadImages() const
+{
+	//リソースマネージャーのインスタンス取得
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+	//画像読込み
+	rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Enemy/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Enemy/Tank/Tank_Walk.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Enemy/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Unit/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Unit/Tank/Tank_Attack.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Attack.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Enemy/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Enemy/Tank/Tank_Attack.png", 4, 4, 1, 32, 32);
 }

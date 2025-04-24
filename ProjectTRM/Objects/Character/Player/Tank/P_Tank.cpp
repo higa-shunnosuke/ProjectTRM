@@ -18,8 +18,10 @@ void P_Tank::Initialize()
 {
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
+	animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32);
 
 	is_mobility = true;
+	is_aggressive = true;
 
 	collision.is_blocking = true;
 	collision.object_type = eObjectType::Player;
@@ -28,8 +30,23 @@ void P_Tank::Initialize()
 	collision.attack_size = Vector2D(100.0f, 100.0f);
 	z_layer = 2;
 
+	//反転フラグ
+	flip_flag = true;
+
+	//攻撃フラグ
+	attack_flag = false;
+
+	//初期化
+	now_state = State::Move;
+
+	// 右へ移動
+	velocity.x = -3.0f;
+
+	//攻撃力
+	Damage = 1;
+
 	// HP初期化
-	HP = 50;
+	HP = 21;
 }
 
 // 更新処理
@@ -37,6 +54,29 @@ void P_Tank::Update(float delta_second)
 {
 	// 移動処理
 	Movement(delta_second);
+
+
+	if (attack_flag == true)
+	{
+		if (velocity.x < 0.0f)
+		{
+			now_state = State::Move;
+			attack_flame = 0.0f;
+		}
+		else
+		{
+			attack_flame -= delta_second;
+			now_state = State::Idle;
+		}
+		if (attack_flame <= 0.0f)
+		{
+			attack_flag = false;
+		}
+	}
+
+	AnimationControl(delta_second);
+
+	old_state = now_state;
 }
 
 // 描画処理
@@ -45,9 +85,11 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
-	// 近接ユニットの描画
-	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff00ff, TRUE);
+	// 灯守の描画
+	// オフセット値を基に画像の描画を行う
+	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
+	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff00ff, TRUE);*/
 
 #ifdef DEBUG
 	// 中心を表示
@@ -73,24 +115,41 @@ void P_Tank::OnHitCollision(GameObject* hit_object)
 
 }
 
-// HP管理処理
-void P_Tank::HPControl(int Damage)
+// 攻撃範囲通知処理
+void P_Tank::OnAreaDetection(GameObject* hit_object)
 {
-
+	Collision hit_col = hit_object->GetCollision();
+	if (hit_col.object_type == eObjectType::Enemy)
+	{
+		velocity.x = 0.0f;
+		if (attack_flag == false)
+		{
+			now_state = State::Attack;
+		}
+		else
+		{
+			if (attack_flame <= 0.0f)
+			{
+				Attack(hit_object);
+			}
+		}
+	}
+	else
+	{
+		velocity.x = -3.0f;
+	}
 }
 
 // 攻撃処理
 void P_Tank::Attack(GameObject* hit_object)
 {
-
+	hit_object->HPControl(Damage);
+	attack_flame = 2.0f;
 }
 
 // 移動処理
 void P_Tank::Movement(float delta_second)
 {
-	// 右へ移動
-	velocity.x = -1.0f;
-
 	// 移動の実行
 	location.x += velocity.x * 10 * delta_second;
 }
@@ -98,6 +157,65 @@ void P_Tank::Movement(float delta_second)
 // アニメーション制御処理
 void P_Tank::AnimationControl(float delta_second)
 {
+	// 画像の読み込み
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+	if (old_state != now_state)
+	{
+		Anim_flame = 0;
+		Anim_count = 0;
+		count_flag = false;
+	}
+
+	Anim_flame += delta_second;
+
+	if (Anim_flame >= 0.1f)
+	{
+		if (count_flag == false)
+		{
+			Anim_count++;
+		}
+		else
+		{
+			Anim_count--;
+		}
+		if (Anim_count >= 2)
+		{
+			count_flag = true;
+		}
+		else if (Anim_count <= 0)
+		{
+			count_flag = false;
+		}
+		Anim_flame = 0.0f;
+	}
+	switch (now_state)
+	{
+	case State::Idle:
+		if (Anim_count > 0)
+		{
+			image = animation[0];
+		}
+		break;
+	case State::Move:
+		animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32);
+		image = animation[1 + Anim_count];
+		break;
+	case State::Attack:
+		animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Attack.png", 4, 4, 1, 32, 32);
+		image = animation[1 + Anim_count];
+		if (count_flag == true)
+		{
+			attack_flag = true;
+		}
+		break;
+	case State::Damage:
+		break;
+	case State::Death:
+		break;
+	default:
+		break;
+	}
 
 }
 // エフェクト制御処理

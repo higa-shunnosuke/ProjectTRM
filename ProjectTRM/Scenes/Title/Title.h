@@ -43,12 +43,5 @@ public:
 	/// </summary>
 	/// <returns>現在のシーンタイプ</returns>
 	virtual const eSceneType GetNowSceneType() const override;
-
-private:
-	/// <summary>
-	/// 画像読込み処理
-	/// </summary>
-	/// <returns></returns>
-	const void LoadImages() const;
 };
 

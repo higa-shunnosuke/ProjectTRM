@@ -31,6 +31,7 @@ void P_Melee::Initialize()
 	z_layer = 2;
 
 	attack_flag = false;
+	flip_flag = true;
 
 	now_state = State::Move;
 
@@ -41,7 +42,7 @@ void P_Melee::Initialize()
 	Damage = 4;
 
 	// HP初期化
-	HP = 20;
+	HP = 10;
 }
 
 // 更新処理
@@ -57,12 +58,13 @@ void P_Melee::Update(float delta_second)
 		if (velocity.x < 0.0f)
 		{
 			now_state = State::Move;
+			attack_flame = 0.0f;
 		}
 		else
 		{
+			attack_flame -= delta_second;
 			now_state = State::Idle;
 		}
-		attack_flame -= delta_second;
 		if (attack_flame <= 0.0f)
 		{
 			attack_flag = false;
@@ -83,7 +85,7 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う
-	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, TRUE);
+	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffa000, TRUE);*/
 
@@ -118,7 +120,7 @@ void P_Melee::OnHitCollision(GameObject* hit_object)
 void P_Melee::OnAreaDetection(GameObject* hit_object)
 {
 	Collision hit_col = hit_object->GetCollision();
-	velocity.x = -5.0f;
+	
 	if (hit_col.object_type == eObjectType::Enemy)
 	{
 		velocity.x = 0.0f;
@@ -134,14 +136,12 @@ void P_Melee::OnAreaDetection(GameObject* hit_object)
 			}
 		}
 	}
+	else
+	{
+		velocity.x = -5.0f;
+	}
 }
 
-// HP管理処理
-void P_Melee::HPControl(int Damage)
-{
-	HP -= Damage;
-	DrawFormatString(location.x, location.y - 40, 0xffffff, "%d", HP);
-}
 
 // 攻撃処理
 void P_Melee::Attack(GameObject* hit_object)
@@ -172,7 +172,7 @@ void P_Melee::AnimationControl(float delta_second)
 
 	Anim_flame += delta_second;
 
-	if (Anim_flame >= 0.5f)
+	if (Anim_flame >= 0.1f)
 	{
 		if (count_flag == false)
 		{

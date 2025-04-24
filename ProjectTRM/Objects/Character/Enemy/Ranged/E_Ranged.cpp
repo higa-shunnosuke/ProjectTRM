@@ -46,8 +46,8 @@ void E_Ranged::OnHitCollision(GameObject* hit_object)
 
 }
 
-// HPŠÇ—ˆ—
-void E_Ranged::HPControl(int Damage)
+// UŒ‚”ÍˆÍ’Ê’mˆ—
+void E_Ranged::OnAreaDetection(GameObject* hit_object)
 {
 
 }
