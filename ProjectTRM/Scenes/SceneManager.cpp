@@ -130,6 +130,9 @@ void SceneManager::Draw() const
 	// ‰æ–Ê‚Ì‰Šú‰»
 	ClearDrawScreen();
 
+	// •`‰æ”ÍˆÍ‚Ì‰Šú‰»
+	SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
+
 	// ƒV[ƒ“‚Ì•`‰æˆ—
 	current_scene->Draw();
 

@@ -19,7 +19,8 @@ InGame::InGame():
 	cooldown(),
 	summon_flag(),
 	player(nullptr),
-	enemy(nullptr)
+	enemy(nullptr),
+	unit_ui()
 {
 	
 }
@@ -39,6 +40,9 @@ void InGame::Initialize()
 
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
+	unit_ui[0]= rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32)[0];
+	unit_ui[1]= rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32)[0]; 
+	unit_ui[2]= rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32)[0];
 
 	// カメラの情報を取得
 	Camera* camera = Camera::GetInstance();
@@ -52,7 +56,7 @@ void InGame::Initialize()
 	LoadImages();
 
 	// カーソルの初期化
-	cursor = 1;
+	cursor = 0;
 
 	// コストの初期化
 	cost = 0;
@@ -107,56 +111,60 @@ void InGame::Draw() const
 	// 親クラスの描画処理を呼び出す
 	__super::Draw();
 
-	//ユニット選択の描画
-	int options_size;	// 選択肢の拡大率
-	int space_size;		// 隙間の大きさ
+	// ボタンサイズ
+	const int button_width = 200;
+	const int button_height = 200;
 
-	// パネルの描画
-	DrawBox(100, 50, 1180, 290, 0xffffff, TRUE);
-	
-	// 選択肢の描画
-	for (int i = 0; i < 3; i++)
+	// ボタンの数
+	const int button_count = 3;
+
+	// ボタンの総合幅を計算
+	int total_buttons_width = button_count * button_width;
+	// 間隔の総合幅を計算
+	int total_spacing = D_WIN_MAX_X - total_buttons_width;
+	// ボタンの間隔の計算
+	int spacing = total_spacing / (button_count + 1);
+
+	for (int i = 0; i < button_count; ++i) 
 	{
-		if (i+1 == cursor)
-		{
-			options_size = 200;
-			space_size = 140;
+		//	選択肢の位置
+		int x = spacing + i * (button_width + spacing);
+		int y = 60;
 
-			DrawBox(60 + space_size + i * (options_size + space_size), 50 + 20,
-					60 + space_size + i * (options_size + space_size) + options_size, 50 + 20 + options_size, 0x00ff00, TRUE);
+		// 拡大用変数
+		int w = button_width;
+		int h = button_height;
+
+		if (i == cursor) 
+		{
+			// 選択中のものだけ拡大（1.2倍）
+			int w = (int)(button_width * 1.2);
+			int h = (int)(button_height * 1.2);
+
+			// 枠（背景）を描画
+			DrawBox(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h, GetColor(255, 255, 255), TRUE);
+			//キャラの描画範囲を制限
+			SetDrawArea(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h);
 		}
 		else
 		{
-			options_size = 160;
-			space_size = 170;
-
-			DrawBox(60 + space_size + i * (options_size + space_size), 50 + 40,
-					60 + space_size + i * (options_size + space_size) + options_size, 50 + 40 + options_size, 0xff0000, TRUE);
+			// 枠（背景）を描画
+			DrawBox(x, y, x + button_width, y + button_height, GetColor(100, 100, 100), TRUE);
+			//キャラの描画範囲を制限
+			SetDrawArea(x, y, x + button_width, y + button_height);
 		}
+
+		// キャラ画像を中心に描画
+		DrawExtendGraph(
+			(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
+			(int)(x + (button_width + w * 1.5) / 2), (int)(y + (button_height + h * 1.5) / 2),
+			unit_ui[i],TRUE);
+
+		// 描画範囲を元に戻す
+		SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
 	}
 
 #if _DEBUG	
-	// パネルのマス目表示
-	for (int i = 0; i < 6; i++)
-	{
-		for (int j = 0; j < 32; j++)
-		{
-			DrawBox(j * 40, 50 + i * 40,
-				(j + 1) * 40, 50 + (i + 1) * 40, 0x0000ff, FALSE);
-		}
-	}
-
-	// ユニットの種類表示
-	DrawFormatString(290, 155, 0x000000, "A");
-	DrawFormatString(635, 155, 0x000000, "B");
-	DrawFormatString(970, 155, 0x000000, "C");
-
-	// クールダウン表示
-	for (int i = 0; i < 3; i++)
-	{
-		DrawFormatString(250 + i * 330, 55, 0x000000, "%d",summon_flag[i]);
-	}
-	
 	// コスト表示
 	DrawFormatString(1200, 10, 0xffffff,"%d",cost);
 
@@ -166,7 +174,6 @@ void InGame::Draw() const
 	SetFontSize(32);
 	DrawFormatString(100, 300, 0xffffff, "Spaceを押してください");
 #endif
-
 }
 
 // 終了処理
@@ -282,14 +289,14 @@ void InGame::UnitSelection()
 	// カーソル操作
 	if (input->GetKeyState(KEY_INPUT_RIGHT) == eInputState::Pressed)
 	{
-		if (cursor < 3)
+		if (cursor < 2)
 		{
 			cursor++;
 		}
 	}
 	if (input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Pressed)
 	{
-		if (cursor > 1)
+		if (cursor > 0)
 		{
 			cursor--;
 		}
@@ -303,36 +310,34 @@ void InGame::UnitSelection()
 
 		switch (cursor)
 		{
-		case 1:
-			if (summon_flag[cursor - 1] == false)
+		case 0:
+			if (summon_flag[cursor] == false)
 			{
 				object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
 				cost -= 10;
-				summon_flag[cursor - 1] = true;
-				summon_time[cursor - 1] = std::chrono::steady_clock::now();
+				summon_flag[cursor] = true;
+				summon_time[cursor] = std::chrono::steady_clock::now();
 			}
 			break;
-		case 2:
-			if (summon_flag[cursor - 1] == false)
+		case 1:
+			if (summon_flag[cursor] == false)
 			{
 				object->CreateObject<P_Melee>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
 				cost -= 20;
-				summon_flag[cursor - 1] = true;
-				summon_time[cursor - 1] = std::chrono::steady_clock::now();
+				summon_flag[cursor] = true;
+				summon_time[cursor] = std::chrono::steady_clock::now();
 			}
 			break;
-		case 3:
-			if (summon_flag[cursor - 1] == false)
+		case 2:
+			if (summon_flag[cursor] == false)
 			{
 				object->CreateObject<P_Ranged>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
 				cost -= 30;
-				summon_flag[cursor - 1] = true;
-				summon_time[cursor - 1] = std::chrono::steady_clock::now();
+				summon_flag[cursor] = true;
+				summon_time[cursor] = std::chrono::steady_clock::now();
 			}
 			break;
 		}
-
-
 	}
 }
 

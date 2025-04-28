@@ -20,7 +20,7 @@ private:
 	bool summon_flag[3];	// 召喚フラグ
 	Oracle* player;			// 巫女のポインタ
 	Heretic* enemy;			// 異端者のポインタ
-
+	int unit_ui[3];			// ユニット選択UIの画像
 public:
 	// コンストラクタ
 	InGame();
