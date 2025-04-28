@@ -98,8 +98,8 @@ eSceneType InGame::Update(const float& delta_second)
 	// コスト管理処理
 	CostManagement(delta_second);
 
-	// クールダウン管理処理
-	CooldownManagement(delta_second);
+	//// クールダウン管理処理
+	//CooldownManagement(delta_second);
 
 	// 親クラスの更新処理を呼び出す
 	return __super::Update(delta_second);
@@ -164,9 +164,10 @@ void InGame::Draw() const
 		SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
 	}
 
-#if _DEBUG	
 	// コスト表示
-	DrawFormatString(1200, 10, 0xffffff,"%d",cost);
+	DrawFormatString(1200, 10, 0xffffff, "%d", cost);
+
+#if _DEBUG	
 
 	// シーン情報の描画
 	SetFontSize(60);
@@ -287,14 +288,16 @@ void InGame::UnitSelection()
 	InputManager* input = InputManager::GetInstance();
 
 	// カーソル操作
-	if (input->GetKeyState(KEY_INPUT_RIGHT) == eInputState::Pressed)
+	if (input->GetKeyState(KEY_INPUT_RIGHT) == eInputState::Pressed ||
+		input->GetButtonState(XINPUT_BUTTON_DPAD_RIGHT) == eInputState::Pressed)
 	{
 		if (cursor < 2)
 		{
 			cursor++;
 		}
 	}
-	if (input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Pressed)
+	if (input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Pressed ||
+		input->GetButtonState(XINPUT_BUTTON_DPAD_LEFT) == eInputState::Pressed)
 	{
 		if (cursor > 0)
 		{
@@ -303,7 +306,8 @@ void InGame::UnitSelection()
 	}
 
 	// 決定
-	if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+	if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed ||
+		input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 	{
 		// オブジェクトマネージャーのポインタ
 		GameObjectManager* object = GameObjectManager::GetInstance();

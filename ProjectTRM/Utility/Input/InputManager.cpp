@@ -16,7 +16,7 @@ void InputManager::Update()
 	for (int i = 0; i < D_BUTTON_MAX; i++)
 	{
 		old_button[i] = now_button[i];
-		now_button[i] = static_cast<bool>(input.Buttons[i]);
+		now_button[i] = input.Buttons[i] != 0;
 	}
 	trigger[0] = TriggerNormalize(input.LeftTrigger);
 	trigger[1] = TriggerNormalize(input.RightTrigger);
