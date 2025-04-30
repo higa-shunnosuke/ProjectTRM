@@ -3,6 +3,7 @@
 #include "../../Character.h"
 
 #define Enemy_Think_Standard
+#define ENEMY_BOTTOM_COST 50
 
 #ifdef Enemy_Think_Standard//基本的な教本
 
@@ -30,9 +31,7 @@ private:
 	int Player_evaluation[4];
 	int Enemy_evaluation[3];
 	int Cost;
-#if _DEBUG
-	bool	Fstflag = true;	//初回生成用:Debugで敵の動きを確認したいでしょう？
-#endif // 
+	bool	Fstflag = true;	//初回生成用:Debugで敵の動きを確認したいでしょう？s
 	bool	summon_flag;	//召喚フラグ
 	class	GameObjectManager* GOM;
 	std::vector<GameObject*> ObjectList;
