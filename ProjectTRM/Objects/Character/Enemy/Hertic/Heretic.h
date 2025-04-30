@@ -11,6 +11,11 @@
 #define MELEE_eva	 30
 #define RANGE_eva	 20
 #define BOSS_eva	 50
+#define TANK_cost	 50
+#define MELEE_cost	 100
+#define RANGE_cost	 300
+#define BOSS_cost	 500
+
 
 #endif // Enemy_Think_Standard
 
