@@ -235,7 +235,7 @@ void InGame::LoadStage()
 	{
 		//座標計算
 		Vector2D location;
-		location.x = (float)(x * BOX_SIZE + BOX_SIZE / 2 - D_WIN_MAX_X);
+		location.x = (float)(x * BOX_SIZE + BOX_SIZE / 2);
 		location.y = (float)(y * BOX_SIZE + BOX_SIZE / 2);
 
 		// ファイルから1文字抽出
@@ -319,7 +319,7 @@ void InGame::UnitSelection()
 			{
 				object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
 				cost -= 10;
-				summon_flag[cursor] = true;
+				//summon_flag[cursor] = true;
 				summon_time[cursor] = std::chrono::steady_clock::now();
 			}
 			break;
@@ -328,7 +328,7 @@ void InGame::UnitSelection()
 			{
 				object->CreateObject<P_Melee>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
 				cost -= 20;
-				summon_flag[cursor] = true;
+				//summon_flag[cursor] = true;
 				summon_time[cursor] = std::chrono::steady_clock::now();
 			}
 			break;
@@ -337,7 +337,7 @@ void InGame::UnitSelection()
 			{
 				object->CreateObject<P_Ranged>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
 				cost -= 30;
-				summon_flag[cursor] = true;
+				//summon_flag[cursor] = true;
 				summon_time[cursor] = std::chrono::steady_clock::now();
 			}
 			break;
