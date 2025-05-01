@@ -13,6 +13,9 @@ public:
 
 private:
 	int Damage;	//ダメージ
+	int old_HP;
+	int alpha;	
+	int add;
 
 public:
 	//コンストラクタ

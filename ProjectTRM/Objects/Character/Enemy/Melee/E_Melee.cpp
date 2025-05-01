@@ -168,29 +168,20 @@ void E_Melee::AnimationControl(float delta_second)
 	{
 		Anim_flame = 0;
 		Anim_count = 0;
-		count_flag = false;
+		count = 1;
 	}
 
 	Anim_flame += delta_second;
 
 	if (Anim_flame >= 0.1f)
 	{
-		if (count_flag == false)
+		Anim_count += count;
+
+		if (Anim_count <= 0 || Anim_count >= 2)
 		{
-			Anim_count++;
+			count *= -1;
 		}
-		else
-		{
-			Anim_count--;
-		}
-		if (Anim_count >= 2)
-		{
-			count_flag = true;
-		}
-		else if (Anim_count <= 0)
-		{
-			count_flag = false;
-		}
+
 		Anim_flame = 0.0f;
 	}
 	switch (now_state)
@@ -208,7 +199,7 @@ void E_Melee::AnimationControl(float delta_second)
 	case State::Attack:
 		animation = rm->GetImages("Resource/Images/Enemy/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
 		image = animation[1 + Anim_count];
-		if (count_flag == true)
+		if (Anim_count >= 2)
 		{
 			attack_flag = true;
 		}

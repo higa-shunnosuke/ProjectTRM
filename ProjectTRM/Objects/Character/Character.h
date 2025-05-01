@@ -25,9 +25,10 @@ protected:
 
 	int		Anim_count = 0;
 	float	Anim_flame = 0.0f;
+	int     count;
 	float   attack_flame = 0.0f;
 	bool	attack_flag;
-	bool    count_flag;
+	float   dmage_flame = 0.0f;
 
 public:
 	//コンストラクタ
