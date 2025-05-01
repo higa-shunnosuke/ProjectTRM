@@ -27,7 +27,6 @@ void Camera::Initialize()
 // 更新処理
 void Camera::Update()
 {
-	
 	//追跡処理
 	InputManager* input = InputManager::GetInstance();
 
@@ -54,8 +53,8 @@ void Camera::Update()
 
 	/// ステージ外にいかないようにする処理
 	float right,left;
-	right = D_WIN_MAX_X / 2 + 20;
-	left = right - D_WIN_MAX_X - 20;
+	right = D_WIN_MAX_X / 2 + 40;
+	left = D_WIN_MAX_X / 2;
 
 	//右端の制限
 	if (location.x > right)

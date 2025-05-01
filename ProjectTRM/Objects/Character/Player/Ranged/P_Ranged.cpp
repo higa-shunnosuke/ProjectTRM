@@ -1,4 +1,6 @@
 #include "P_Ranged.h"
+#include "Projectile.h"
+#include "../../../GameObjectManager.h"
 size_t P_Ranged::count = 0;
 size_t P_Ranged::GetCount()
 {
@@ -22,8 +24,10 @@ void P_Ranged::Initialize()
 {
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
+	animation = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32);
 
 	is_mobility = true;
+	is_aggressive = true;
 
 	collision.is_blocking = true;
 	collision.object_type = eObjectType::Player;
@@ -32,6 +36,11 @@ void P_Ranged::Initialize()
 	collision.attack_size = Vector2D(100.0f, 100.0f);
 	z_layer = 2;
 
+	attack_flag = false;
+	flip_flag = true;
+
+	now_state = State::Move;
+
 	// HP初期化
 	HP = 10;
 }
@@ -39,8 +48,31 @@ void P_Ranged::Initialize()
 // 更新処理
 void P_Ranged::Update(float delta_second)
 {
-	// 移動処理
+	//移動処理
 	Movement(delta_second);
+
+
+	if (attack_flag == true)
+	{
+		if (velocity.x < 0.0f)
+		{
+			now_state = State::Move;
+			attack_flame = 0.0f;
+		}
+		else
+		{
+			attack_flame -= delta_second;
+			now_state = State::Idle;
+		}
+		if (attack_flame <= 0.0f)
+		{
+			attack_flag = false;
+		}
+	}
+
+	AnimationControl(delta_second);
+
+	old_state = now_state;
 }
 
 // 描画処理
@@ -50,8 +82,10 @@ void P_Ranged::Draw(const Vector2D camera_pos) const
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
 	// 近接ユニットの描画
-	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffff00, TRUE);
+		// オフセット値を基に画像の描画を行う
+	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
+	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffa000, TRUE);*/
 
 #ifdef DEBUG
 	// 中心を表示
@@ -80,15 +114,32 @@ void P_Ranged::OnHitCollision(GameObject* hit_object)
 // 攻撃範囲通知処理
 void P_Ranged::OnAreaDetection(GameObject* hit_object)
 {
+	Collision hit_col = hit_object->GetCollision();
 
+	if (hit_col.object_type == eObjectType::Enemy)
+	{
+		velocity.x = 0.0f;
+		if (attack_flag == false)
+		{
+			now_state = State::Attack;
+		}
+		else
+		{
+			if (attack_flame <= 0.0f)
+			{
+				Attack(hit_object);
+			}
+		}
+	}
+	else
+	{
+		velocity.x = -5.0f;
+	}
 }
 
 // 移動処理
 void P_Ranged::Movement(float delta_second)
 {
-	// 右へ移動
-	velocity.x = -1.0f;
-
 	// 移動の実行
 	location.x += velocity.x * 10 * delta_second;
 }
@@ -96,6 +147,65 @@ void P_Ranged::Movement(float delta_second)
 // アニメーション制御処理
 void P_Ranged::AnimationControl(float delta_second)
 {
+	// 画像の読み込み
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+	if (old_state != now_state)
+	{
+		Anim_flame = 0;
+		Anim_count = 0;
+		count_flag = false;
+	}
+
+	Anim_flame += delta_second;
+
+	if (Anim_flame >= 0.1f)
+	{
+		if (count_flag == false)
+		{
+			Anim_count++;
+		}
+		else
+		{
+			Anim_count--;
+		}
+		if (Anim_count >= 2)
+		{
+			count_flag = true;
+		}
+		else if (Anim_count <= 0)
+		{
+			count_flag = false;
+		}
+		Anim_flame = 0.0f;
+	}
+	switch (now_state)
+	{
+	case State::Idle:
+		if (Anim_count > 0)
+		{
+			image = animation[0];
+		}
+		break;
+	case State::Move:
+		animation = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32);
+		image = animation[1 + Anim_count];
+		break;
+	case State::Attack:
+		animation = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Attack.png", 4, 4, 1, 32, 32);
+		image = animation[1 + Anim_count];
+		if (count_flag == true)
+		{
+			attack_flag = true;
+		}
+		break;
+	case State::Damage:
+		break;
+	case State::Death:
+		break;
+	default:
+		break;
+	}
 
 }
 // エフェクト制御処理
@@ -107,5 +217,5 @@ void P_Ranged::EffectControl(float delta_second)
 // 攻撃処理
 void P_Ranged::Attack(GameObject* hit_object)
 {
-
+	attack_flame = 2.0f;
 }

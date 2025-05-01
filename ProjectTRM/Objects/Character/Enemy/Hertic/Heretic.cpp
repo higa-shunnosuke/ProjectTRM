@@ -66,28 +66,65 @@ void Heretic::Update(float delta_second)
 	if (CountFlame < 60.0f)
 	{
 		CountTime++;
-		Cost++;
+		Cost+= 10;
 		CountFlame = 0.0f;
 	}
 
-	int  count_sum =0;
+	int Pcount_sum =0;
 	int Ecount_sum =0;
 
 	int Ptank_count	  = (int)P_Tank::  GetCount() * TANK_eva;
 	int Pmelee_count  = (int)P_Melee:: GetCount() * MELEE_eva;
 	int Prange_count  = (int)P_Ranged::GetCount() * RANGE_eva;
-	count_sum += (Ptank_count + Pmelee_count + Prange_count);
+	Pcount_sum += (Ptank_count + Pmelee_count + Prange_count);
 
 	int Etank_count  = (int)E_Tank::  GetCount() * TANK_eva;
 	int Emelee_count = (int)E_Melee:: GetCount() * MELEE_eva;
 	int Erange_count = (int)E_Ranged::GetCount() * RANGE_eva;
 	Ecount_sum += (Etank_count + Emelee_count + Erange_count);
-	/*
-	・コストが０以下になるなら生成しない。
-	・コストが最大になるなら手持ち最大コストを生成する。
-	・相手の評価が高くなった際に手持ち最大コストを生成する。
-	・相手の評価が低くなった際に手持ち最小コストを生成する。
-*/
+
+	//・コストが最大になるなら手持ち最大コストを生成する。
+	if (Cost >= 500)
+	{
+		//・生成するでな
+		//この辺の処理は関数に飛ばそうかな…
+	}
+
+	//・コストが０以下になるなら生成しない。
+	if (Cost >= ENEMY_BOTTOM_COST)
+	{
+		//・生成するでな
+		//タンクは一定数をキープ
+		//前衛が少ないと出す
+		//前衛が多いと後衛を出す
+		if ((Etank_count / TANK_eva) < 5)
+		{
+			Cost -= TANK_cost;
+			Ingame->CreateEnemy(E_enemy::Tank);
+		}
+		else if ((Emelee_count / MELEE_eva) < (Erange_count / RANGE_eva))
+		{
+			Cost -= MELEE_cost;
+			Ingame->CreateEnemy(E_enemy::Melee);
+		}
+		else
+		{
+			Cost -= RANGE_cost;
+			Ingame->CreateEnemy(E_enemy::Range);
+		}
+		//この辺の処理は関数に飛ばそうかな…
+	}
+
+	//・相手の評価が高くなった際に手持ち最大コストを生成する。
+	if (Pcount_sum > Ecount_sum)
+	{
+
+	}
+	//・相手の評価が低くなった際に手持ち最小コストを生成する。
+	else
+	{
+
+	}
 
 }
 
