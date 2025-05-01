@@ -7,6 +7,8 @@ class Oracle :public Character
 {
 private:
 	bool summon_flag;	//召喚フラグ
+	Oracle* player;			// 巫女のポインタ
+	int max_Hp = 100;
 
 public:
 	//コンストラクタ
