@@ -1,4 +1,7 @@
 #include "Oracle.h"
+#include "../Tank/P_Tank.h"
+#include "../../../../Scenes/InGame/InGame.h"
+
 
 // コンストラクタ
 Oracle::Oracle() :
@@ -29,6 +32,8 @@ void Oracle::Initialize()
 	collision.attack_size = Vector2D(400.0f, 200.0f);
 	z_layer = 1;
 
+	summon_flag = false;
+
 	// HP初期化
 	HP = 100;
 }
@@ -36,7 +41,10 @@ void Oracle::Initialize()
 // 更新処理
 void Oracle::Update(float delta_second)
 {
-
+	/*if (summon_flag == true)
+	{
+		attack_flame += delta_second;
+	}*/
 }
 
 // 描画処理
@@ -50,6 +58,8 @@ void Oracle::Draw(const Vector2D camera_pos) const
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff0000, TRUE);
 
 #ifdef DEBUG
+	//残りHPの表示
+	DrawFormatString(position.x, position.y - 40.0f, 0xffffff, "%d", HP);
 	// 中心を表示
 	DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
 	// 当たり判定表示
@@ -76,12 +86,45 @@ void Oracle::OnHitCollision(GameObject* hit_object)
 // 攻撃範囲通知処理
 void Oracle::OnAreaDetection(GameObject* hit_object)
 {
-	HP = 100;
+	//Collision hit_col = hit_object->GetCollision();
+	//velocity.x = -1.0f;
+	//if (hit_col.object_type == eObjectType::Enemy)
+	//{
+	//	summon_flag = true;
+	//	velocity.x = 0.0f;
+	//	if (attack_flame >= 2.0f)
+	//	{
+	//		//ここでユニットの召喚をする？
+
+	//	}
+	//}
 }
+
+// 攻撃処理
+void Oracle::Attack()
+{
+	
+}
+
 
 // HP管理処理
 void Oracle::HPControl(int Damage)
 {
+	HP -= Damage;
+	
+	GameObjectManager* object = GameObjectManager::GetInstance();
+
+	if (!summon_flag)
+	{
+		if ( HP<= max_Hp / 2)
+		{
+			summon_flag = true;
+		}
+		else 
+		{
+			object->CreateObject<P_Tank>(Vector2D(location.x, location.y + 30.0f));
+		}
+	}
 
 }
 
@@ -98,12 +141,6 @@ void Oracle::AnimationControl(float delta_second)
 }
 // エフェクト制御処理
 void Oracle::EffectControl(float delta_second)
-{
-
-}
-
-// 攻撃処理
-void Oracle::Attack()
 {
 
 }
