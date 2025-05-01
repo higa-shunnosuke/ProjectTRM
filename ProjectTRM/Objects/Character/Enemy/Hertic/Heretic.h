@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Character.h"
+#include"vector"
 
 #define Enemy_Think_Standard
 #define ENEMY_BOTTOM_COST 50
@@ -11,6 +12,7 @@
 #define MELEE_eva	 30
 #define RANGE_eva	 20
 #define BOSS_eva	 50
+
 #define TANK_cost	 50
 #define MELEE_cost	 100
 #define RANGE_cost	 300
@@ -33,12 +35,12 @@ enum E_enemy :int
 class Heretic :public Character
 {
 private:
+	int EffectImage[13];
 	int Player_evaluation[4];
 	int Enemy_evaluation[3];
 	int Cost;
 	bool	Fstflag = true;	//初回生成用:Debugで敵の動きを確認したいでしょう？s
 	bool	summon_flag;	//召喚フラグ
-	class	GameObjectManager* GOM;
 	std::vector<GameObject*> ObjectList;
 
 	class	InGame* Ingame;	//InGameのポインター

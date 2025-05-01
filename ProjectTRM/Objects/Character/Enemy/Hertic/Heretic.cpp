@@ -9,6 +9,7 @@
 #include "../Tank/E_Tank.h"
 #include "../Ranged/E_Ranged.h"
 #include "../Melee/E_Melee.h"
+#include "../Boss/Boss.h"
 
 #define Enemy_Plan_Evaluation // 戦場評価型
 #ifdef Enemy_Plan_Evaluation
@@ -38,7 +39,7 @@ void Heretic::Initialize()
 {
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
-	GOM = GOM->GetInstance();
+	//LoadDivGraph("../../../../Resource/Images/Effect/EnemyPawn.png", 13, 13, 1, 60, 60, EffectImage);
 
 	is_mobility = false;
 
@@ -87,7 +88,25 @@ void Heretic::Update(float delta_second)
 	if (Cost >= 500)
 	{
 		//・生成するでな
+		Cost -= RANGE_cost;
+		Ingame->CreateEnemy(E_enemy::Range);
 		//この辺の処理は関数に飛ばそうかな…
+	}
+
+	//・相手の評価が高くなった際に手持ち最大コストを生成する。
+	if (Pcount_sum > Ecount_sum + 100 && Cost >= MELEE_cost)
+	{
+
+		//【プロト版のみ】
+		//コストをマイナスになっても借金して出しましょう
+		Cost -= BOSS_cost;
+		Ingame->CreateEnemy(E_enemy::Boss);
+	}
+	//・相手の評価が低くなった際に手持ち最小コストを生成する。
+	else if (Cost >= ENEMY_BOTTOM_COST)
+	{
+		Cost -= TANK_cost;
+		Ingame->CreateEnemy(E_enemy::Tank);
 	}
 
 	//・コストが０以下になるなら生成しない。
@@ -97,12 +116,12 @@ void Heretic::Update(float delta_second)
 		//タンクは一定数をキープ
 		//前衛が少ないと出す
 		//前衛が多いと後衛を出す
-		if ((Etank_count / TANK_eva) < 5)
+		if ((Etank_count / TANK_eva) <= 5)
 		{
 			Cost -= TANK_cost;
 			Ingame->CreateEnemy(E_enemy::Tank);
 		}
-		else if ((Emelee_count / MELEE_eva) < (Erange_count / RANGE_eva))
+		else if ((Emelee_count / MELEE_eva) <= (Erange_count / RANGE_eva)+3)
 		{
 			Cost -= MELEE_cost;
 			Ingame->CreateEnemy(E_enemy::Melee);
@@ -114,18 +133,6 @@ void Heretic::Update(float delta_second)
 		}
 		//この辺の処理は関数に飛ばそうかな…
 	}
-
-	//・相手の評価が高くなった際に手持ち最大コストを生成する。
-	if (Pcount_sum > Ecount_sum)
-	{
-
-	}
-	//・相手の評価が低くなった際に手持ち最小コストを生成する。
-	else
-	{
-
-	}
-
 }
 
 // 描画処理
@@ -134,9 +141,19 @@ void Heretic::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
+	
+
 	// 異端者の描画
 	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, TRUE);
+
+	DrawBoxAA(position.x - 50.0f, position.y - 90.0f, position.x + (50.0f - (100- HP)), position.y - 75.0f, 0xFFFFFF, true);
+
+	for (int i = 0; i < 13; i++)
+	{
+		DrawGraph(position.x + 50, position.y, EffectImage[i], false);
+	}
+
 
 #ifdef DEBUG
 	// 中心を表示
