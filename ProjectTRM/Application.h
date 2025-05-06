@@ -14,9 +14,11 @@ private:
 	LONGLONG old_time;		// 前回計測値
 	LONGLONG now_time;		// 現在計測値
 	float delta_second;		// １フレームあたりの時間
-	bool end_flg;			// ゲーム終了フラグ
+	bool end_flg = false;	// ゲーム終了フラグ
 
 public:
+
+	// 起動
 	bool WakeUp()
 	{
 		// ウィンドウモードで起動する
@@ -47,27 +49,25 @@ public:
 		// 描画先を表画面に反映する
 		SetDrawScreen(DX_SCREEN_BACK);
 
-		// シーンマネージャーを生成する
+		// シーンマネージャー情報を取得
 		SceneManager* manager = SceneManager::GetInstance();
 
-		// 初期化処理
+		// シーンマネージャーを初期化
 		manager->Initialize();
 
 		// 非アクティブ状態でも動作させる
 		SetAlwaysRunFlag(TRUE);
 
-		//終了フラグ
-		end_flg = false;
-
 		return true;
 	}
 
+	// 実行
 	void Run()
 	{
-		// シーンマネージャーを生成する
+		// シーンマネージャー情報を取得
 		SceneManager* manager = SceneManager::GetInstance();
 
-		// 入力情報を取得する
+		// 入力情報を取得
 		InputManager* input = InputManager::GetInstance();
 
 		// メインループ
@@ -79,27 +79,30 @@ public:
 			// フレームレートの制御
 			UpdateDeltaTime();
 
-			// 実行処理
+			// シーンマネージャーを更新
 			manager->Update(delta_second);
 		
-			// 強制終了するか確認する
+			// 強制終了するか確認
 			if ((input->GetButtonState(XINPUT_BUTTON_BACK) == eInputState::Released) ||
 				(input->GetKeyState(KEY_INPUT_ESCAPE) == eInputState::Released))
 			{
-				break;
+				// ゲームを終了
+				QuitGame();
 			}
-			// ゲームを終了するか確認する
+
+			// ゲームを終了するか確認
 			if (end_flg == true)
 			{
+				// メインループを終了
 				break;
 			}
 		}
 	}
 
-	//終了時処理
+	//終了
 	void Shutdown()
 	{
-		// シーンマネージャーを生成する
+		// シーンマネージャー情報を取得
 		SceneManager* manager = SceneManager::GetInstance();
 
 		// 終了時処理
@@ -110,10 +113,12 @@ public:
 	}
 
 	//ゲーム終了通知処理
-	void QuitGame(bool flg)
+	void QuitGame()
 	{
-		this->end_flg = flg;
+		// ゲーム終了フラグを立てる
+		this->end_flg = true;
 	}
+
 private:
 	void UpdateDeltaTime()
 	{

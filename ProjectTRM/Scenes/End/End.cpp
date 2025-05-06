@@ -30,18 +30,13 @@ eSceneType End::Update(const float& delta_second)
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
 
-	// インゲームシーンに遷移する
-	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
+	// ENTERキー、STARTボタンを押されたら
+	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed ||
+		input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
 	{
 		//ゲームを終了させる
 		Application* app = Application::GetInstance();
-		app->QuitGame(true);
-	}
-	if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
-	{
-		//ゲームを終了させる
-		Application* app = Application::GetInstance();
-		app->QuitGame(true);
+		app->QuitGame();
 	}
 
 	// 親クラスの更新処理を呼び出す
