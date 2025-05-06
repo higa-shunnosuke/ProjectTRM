@@ -54,5 +54,5 @@ private:
 	/// </summary>
 	/// <param name="target">1つ目のゲームオブジェクト</param>
 	/// <param name="partner">2つ目のゲームオブジェクト</param>
-	void CheckAreaDetection(GameObject* target, GameObject* partner);
+	void CheckHitBox(GameObject* target, GameObject* partner);
 };

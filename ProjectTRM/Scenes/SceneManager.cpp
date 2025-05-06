@@ -1,12 +1,5 @@
 #include "SceneManager.h"
 #include "SceneFactory.h"
-#include "DxLib.h"
-
-#include "../Utility/Input/InputManager.h"
-#include "../Utility/ResourceManager.h"
-#include "../Objects/GameObjectManager.h"
-#include "../Objects/GameObject.h"
-
 
 // コンストラクタ
 SceneManager::SceneManager() :
@@ -27,7 +20,6 @@ void SceneManager::Initialize()
 {
 	// 最初のシーンをタイトル画面にする
 	ChangeScene(eSceneType::in_game);
-
 }
 
 //  更新処理
@@ -36,7 +28,9 @@ void SceneManager::Update(float delta_second)
 	// シーンの更新
 	eSceneType next_scene_type = current_scene->Update(delta_second);
 
-	GameObjectManager* object;			// オブジェクトマネージャーのポインタ
+	// オブジェクトマネージャーの情報取得
+	GameObjectManager* object;
+	// オブジェクトマネージャーを初期化
 	object = GameObjectManager::GetInstance();
 
 	// オブジェクトリストを取得
@@ -66,9 +60,10 @@ void SceneManager::Update(float delta_second)
 		}
 	}
 
-	// 攻撃範囲検知処理
+	// 攻撃判定確認処理
 	for (int i = 0; i < objects_list.size(); i++)
 	{
+		// 攻撃性がないオブジェクトの場合攻撃判定確認処理はしない
 		if (objects_list[i]->GetAggressive() == false)
 		{
 			continue;
@@ -77,14 +72,14 @@ void SceneManager::Update(float delta_second)
 		{
 			for (int j = 0; j < objects_list.size(); j++)
 			{
-				// 自分同士の当たり判定確認処理はしない
+				// 自分同士の当たり範囲検知処理はしない
 				if (i == j)
 				{
 					continue;
 				}
 
-				// 当たり判定確認処理
-				CheckAreaDetection(objects_list[i], objects_list[j]);
+				// 攻撃判定確認処理
+				CheckHitBox(objects_list[i], objects_list[j]);
 			}
 		}
 	}
@@ -179,6 +174,7 @@ void SceneManager::CheckCollision(GameObject* target, GameObject* partner)
 	Collision tc = target->GetCollision();
 	Collision pc = partner->GetCollision();
 
+	// 通り抜けられないオブジェクト同士は当たり判定確認処理はしない
 	if (tc.is_blocking == false || pc.is_blocking == false)
 	{
 		return;
@@ -203,8 +199,8 @@ void SceneManager::CheckCollision(GameObject* target, GameObject* partner)
 	}
 }
 
-// 攻撃範囲検知処理
-void SceneManager::CheckAreaDetection(GameObject* target, GameObject* partner)
+// 攻撃判定確認処理
+void SceneManager::CheckHitBox(GameObject* target, GameObject* partner)
 {
 	// ヌルポチェック
 	if (target == nullptr || partner == nullptr)
@@ -216,12 +212,7 @@ void SceneManager::CheckAreaDetection(GameObject* target, GameObject* partner)
 	Collision tc = target->GetCollision();
 	Collision pc = partner->GetCollision();
 
-	if (tc.is_blocking == false || pc.is_blocking == false)
-	{
-		return;
-	}
-
-	// 当たり判定が有効か確認する
+	// 攻撃判定が有効か確認する
 	if (tc.IsCheckHitTarget(pc.object_type) || pc.IsCheckHitTarget(tc.object_type))
 	{
 		//２つのオブジェクトの距離を取得

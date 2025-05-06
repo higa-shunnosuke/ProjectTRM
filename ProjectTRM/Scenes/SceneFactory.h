@@ -21,20 +21,24 @@ public:
 		// シーンタイプによって、生成するシーンを切り替える
 		switch (next_type)
 		{
+			// タイトル
 		case eSceneType::title:
 			return dynamic_cast<SceneBase*>(new Title());
+			// ステージセレクト
 		case eSceneType::stage_select:
 			return dynamic_cast<SceneBase*>(new StageSelect);
+			// インゲーム、リスタート
 		case eSceneType::in_game:
 		case eSceneType::re_start:
 			return dynamic_cast<SceneBase*>(new InGame());
+			// リザルト
 		case eSceneType::result:
 			return dynamic_cast<SceneBase*>(new Result());
+			// エンド
 		case eSceneType::end:
 			return dynamic_cast<SceneBase*>(new End());
 		default:
 			return nullptr;
 		}
 	}
-
 };
