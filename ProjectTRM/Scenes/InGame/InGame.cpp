@@ -47,7 +47,7 @@ void InGame::Initialize()
 	// カメラの情報を取得
 	Camera* camera = Camera::GetInstance();
 	// カメラ座標の初期化
-	camera->SetCameraPos(Vector2D(D_WIN_MAX_X / 2, D_WIN_MAX_Y / 2));
+	camera->Initialize();
 
 	// ステージ読み込み
 	LoadStage();
@@ -58,8 +58,8 @@ void InGame::Initialize()
 	// カーソルの初期化
 	cursor = 0;
 
-	// コストの初期化
-	cost = 0;
+	// コストの初期化 
+	cost = 100;
 	cost_time = std::chrono::steady_clock::now();
 
 	// クールダウン / 召喚フラグの初期化
@@ -100,6 +100,10 @@ eSceneType InGame::Update(const float& delta_second)
 
 	//// クールダウン管理処理
 	//CooldownManagement(delta_second);
+
+#ifdef DEBUG
+	
+#endif // DEBUG
 
 	// 親クラスの更新処理を呼び出す
 	return __super::Update(delta_second);
@@ -145,6 +149,12 @@ void InGame::Draw() const
 			DrawBox(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h, GetColor(255, 255, 255), TRUE);
 			//キャラの描画範囲を制限
 			SetDrawArea(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h);
+
+			// キャラ画像を中心に描画
+			DrawExtendGraph(
+				(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
+				(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
+				unit_ui[i], TRUE);
 		}
 		else
 		{
@@ -152,13 +162,13 @@ void InGame::Draw() const
 			DrawBox(x, y, x + button_width, y + button_height, GetColor(100, 100, 100), TRUE);
 			//キャラの描画範囲を制限
 			SetDrawArea(x, y, x + button_width, y + button_height);
-		}
 
-		// キャラ画像を中心に描画
-		DrawExtendGraph(
-			(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
-			(int)(x + (button_width + w * 1.5) / 2), (int)(y + (button_height + h * 1.5) / 2),
-			unit_ui[i],TRUE);
+			// キャラ画像を中心に描画
+			DrawExtendGraph(
+				(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
+				(int)(x + (button_width + w * 1.5) / 2), (int)(y + (button_height + h * 1.5) / 2),
+				unit_ui[i], TRUE);
+		}
 
 		// 描画範囲を元に戻す
 		SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
@@ -167,7 +177,10 @@ void InGame::Draw() const
 	// コスト表示
 	DrawFormatString(1200, 10, 0xffffff, "%d", cost);
 
-#if _DEBUG	
+#if _DEBUG
+	Camera* camera = Camera::GetInstance();
+	// カメラ座標描画
+	DrawFormatString(500, 300, 0xffffff, "%f", camera->GetCameraPos().x);
 
 	// シーン情報の描画
 	SetFontSize(60);
@@ -281,7 +294,7 @@ void InGame::LoadStage()
 	fclose(fp);
 }
 
-//	ユニット追召喚
+//	ユニット召喚
 void InGame::UnitSelection()
 {
 	// 入力情報を取得
@@ -317,28 +330,37 @@ void InGame::UnitSelection()
 		case 0:
 			if (summon_flag[cursor] == false)
 			{
-				object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
-				cost -= 10;
-				//summon_flag[cursor] = true;
-				summon_time[cursor] = std::chrono::steady_clock::now();
+				if (cost - 10 >= 0)
+				{
+					object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+					cost -= 10;
+					//summon_flag[cursor] = true;
+					summon_time[cursor] = std::chrono::steady_clock::now();
+				}
 			}
 			break;
 		case 1:
 			if (summon_flag[cursor] == false)
 			{
-				object->CreateObject<P_Melee>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
-				cost -= 20;
-				//summon_flag[cursor] = true;
-				summon_time[cursor] = std::chrono::steady_clock::now();
+				if (cost - 20 >= 0)
+				{
+					object->CreateObject<P_Melee>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+					cost -= 20;
+					//summon_flag[cursor] = true;
+					summon_time[cursor] = std::chrono::steady_clock::now();
+				}
 			}
 			break;
 		case 2:
 			if (summon_flag[cursor] == false)
 			{
-				object->CreateObject<P_Ranged>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
-				cost -= 30;
-				//summon_flag[cursor] = true;
-				summon_time[cursor] = std::chrono::steady_clock::now();
+				if (cost - 30 >= 0)
+				{
+					object->CreateObject<P_Ranged>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+					cost -= 30;
+					//summon_flag[cursor] = true;
+					summon_time[cursor] = std::chrono::steady_clock::now();
+				}
 			}
 			break;
 		}

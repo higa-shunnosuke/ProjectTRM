@@ -20,7 +20,7 @@ Camera::~Camera()
 void Camera::Initialize()
 {
 	// ƒJƒƒ‰‚Ì‰ŠúÀ•W‚ðÝ’è
-	this->location.x = D_WIN_MAX_X / 2;
+	this->location.x = BOX_SIZE * STAGE_SIZE_X - (D_WIN_MAX_X / 2);
 	this->location.y = D_WIN_MAX_Y / 2;
 }
 
