@@ -10,7 +10,7 @@ private:
 public:
 	static size_t GetCount();
 private:
-
+	int old_HP;
 public:
 	//コンストラクタ
 	P_Ranged();

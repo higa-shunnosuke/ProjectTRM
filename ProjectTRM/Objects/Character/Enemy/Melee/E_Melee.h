@@ -12,6 +12,7 @@ public:
 
 private:
 	int Damage;	//ダメージ
+	int old_HP;
 
 public:
 	//コンストラクタ

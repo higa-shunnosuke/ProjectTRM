@@ -24,6 +24,7 @@ void P_Melee::Initialize()
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 	animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
+	Effect = rm->GetImages("Resource/Images/Effect/Melee_Attack_Effect.png", 3, 3, 1, 32, 32);
 
 	is_mobility = true;
 	is_aggressive = true;
@@ -50,8 +51,8 @@ void P_Melee::Initialize()
 	HP = 10;
 	old_HP = HP;
 
-	alpha = 255;
-	add = -5;
+	alpha = MAX_ALPHA;
+	add = -ALPHA_ADD;
 }
 
 // 更新処理
@@ -86,13 +87,15 @@ void P_Melee::Update(float delta_second)
 	
 	AnimationControl(delta_second);
 
+	EffectControl(delta_second);
+
 	dmage_flame -= delta_second;
 
 	if (dmage_flame <= 0.0f)
 	{
 		dmage_flame = 0.0f;
-		alpha = 255;
-		add = -5;
+		alpha = MAX_ALPHA;
+		add = -ALPHA_ADD;
 	}
 
 	old_state = now_state;
@@ -106,17 +109,23 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
+
+
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	if (now_state == State::Attack)
+	{
+		DrawRotaGraphF(position.x - (collision.box_size.x / 2), position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
+	}
+
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffa000, TRUE);*/
 
 #ifdef DEBUG
-	//残りHPの表示
-	DrawFormatString(position.x, position.y - 40.0f, 0xffffff, "%d", HP);
 
 	// 中心を表示
 	DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
@@ -225,10 +234,12 @@ void P_Melee::AnimationControl(float delta_second)
 	case State::Attack:
 		animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
 		image = animation[1 + Anim_count];
+
 		if (Anim_count >= 2)
 		{
 			attack_flag = true;
 		}
+
 		break;
 	case State::Damage:
 		alpha += add;
@@ -248,5 +259,20 @@ void P_Melee::AnimationControl(float delta_second)
 // エフェクト制御処理
 void P_Melee::EffectControl(float delta_second)
 {
-
+	switch (now_state)
+	{
+	case State::Idle:
+		break;
+	case State::Move:
+		break;
+	case State::Attack:	
+		effect_image = Effect[Anim_count];
+		break;
+	case State::Damage:
+		break;
+	case State::Death:
+		break;
+	default:
+		break;
+	}
 }

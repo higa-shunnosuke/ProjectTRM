@@ -4,6 +4,8 @@
 #include "string"
 #include "vector"
 
+
+
 enum State {
 	Idle,
 	Move,
@@ -11,6 +13,9 @@ enum State {
 	Damage,
 	Death
 };
+
+#define MAX_ALPHA (255);
+#define ALPHA_ADD (15);
 
 // ゲームオブジェクト基底クラス
 class Character:public GameObject
@@ -29,6 +34,9 @@ protected:
 	float   attack_flame = 0.0f;
 	bool	attack_flag;
 	float   dmage_flame = 0.0f;
+
+	int alpha;
+	int add;
 
 public:
 	//コンストラクタ

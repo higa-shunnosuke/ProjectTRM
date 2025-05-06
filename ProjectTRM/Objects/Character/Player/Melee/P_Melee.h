@@ -2,6 +2,8 @@
 
 #include "../../Character.h"
 
+
+
 // ゲームオブジェクト基底クラス
 class P_Melee :public Character
 {
@@ -12,10 +14,11 @@ public:
 	static size_t GetCount();
 
 private:
+	std::vector<int> Effect;
+	int effect_image;
 	int Damage;	//ダメージ
 	int old_HP;
-	int alpha;	
-	int add;
+
 
 public:
 	//コンストラクタ

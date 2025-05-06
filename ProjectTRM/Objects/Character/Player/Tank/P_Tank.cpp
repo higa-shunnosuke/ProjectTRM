@@ -52,6 +52,10 @@ void P_Tank::Initialize()
 
 	// HP初期化
 	HP = 21;
+	old_HP = HP;
+
+	alpha = MAX_ALPHA;
+	add = -ALPHA_ADD;
 }
 
 // 更新処理
@@ -78,10 +82,25 @@ void P_Tank::Update(float delta_second)
 			attack_flag = false;
 		}
 	}
+	if (old_HP != HP)
+	{
+		now_state = State::Damage;
+		dmage_flame = 1.0f;
+	}
 
 	AnimationControl(delta_second);
 
+	dmage_flame -= delta_second;
+
+	if (dmage_flame <= 0.0f)
+	{
+		dmage_flame = 0.0f;
+		alpha = MAX_ALPHA;
+		add = -ALPHA_ADD;
+	}
+
 	old_state = now_state;
+	old_HP = HP;
 }
 
 // 描画処理
@@ -92,7 +111,9 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 
 	// 灯守の描画
 	// オフセット値を基に画像の描画を行う
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff00ff, TRUE);*/
 
@@ -207,6 +228,12 @@ void P_Tank::AnimationControl(float delta_second)
 		}
 		break;
 	case State::Damage:
+		alpha += add;
+		if (alpha <= 0 || alpha >= 255)
+		{
+			add = -add;
+		}
+		image = animation[0];
 		break;
 	case State::Death:
 		break;

@@ -12,6 +12,7 @@ public:
 	static size_t GetCount();
 private:
 	int Damage;	//ダメージ
+	int old_HP;
 
 public:
 	//コンストラクタ
