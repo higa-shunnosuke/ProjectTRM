@@ -53,7 +53,7 @@ void Camera::Update()
 
 	/// ステージ外にいかないようにする処理
 	float right,left;
-	right = D_WIN_MAX_X / 2 + 40;
+	right = BOX_SIZE * STAGE_SIZE_X - (D_WIN_MAX_X / 2);
 	left = D_WIN_MAX_X / 2;
 
 	//右端の制限
