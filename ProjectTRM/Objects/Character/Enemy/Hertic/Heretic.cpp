@@ -11,6 +11,8 @@
 #include "../Melee/E_Melee.h"
 #include "../Boss/Boss.h"
 
+//#define TEST
+
 #define Enemy_Plan_Evaluation // 戦場評価型
 #ifdef Enemy_Plan_Evaluation
 #else
@@ -41,7 +43,8 @@ void Heretic::Initialize()
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 
-	EffectImage = rm->GetImages("Resource/Images/Effect/EnemyPawn.png", 13,13,1,64,64);
+	EffectImage = rm->GetImages("Resource/Images/Effect/EnemyPawn.png", 13, 13, 1, 64, 64);
+	image = rm->GetImages("Resource/Images/Enemy/Heretic/Heretic_Stand.png")[0];
 
 	is_mobility = false;
 	
@@ -59,6 +62,11 @@ void Heretic::Initialize()
 // 更新処理
 void Heretic::Update(float delta_second)
 {
+
+	if (CheckHitKey(KEY_INPUT_4))
+	{
+		HP--;
+	}
 
 	summon_flag = false;
 
@@ -89,6 +97,8 @@ void Heretic::Update(float delta_second)
 	int Erange_count = (int)E_Ranged::GetCount() * RANGE_eva;
 	Ecount_sum += (Etank_count + Emelee_count + Erange_count);
 
+#ifdef TEST
+#else
 	//・コストが最大になるなら手持ち最大コストを生成する。
 	if (Cost >= 500)
 	{
@@ -111,7 +121,6 @@ void Heretic::Update(float delta_second)
 	//・相手の評価が低くなった際に手持ち最小コストを生成する。
 	else if (Cost >= ENEMY_BOTTOM_COST)
 	{
-		summon_flag = true;
 		//・生成するでな
 		//タンクは一定数をキープ
 		//前衛が少ないと出す
@@ -120,20 +129,23 @@ void Heretic::Update(float delta_second)
 		{
 			Cost -= TANK_cost;
 			Ingame->CreateEnemy(E_enemy::Tank);
+			summon_flag = true;
 		}
-		else if ((Emelee_count / MELEE_eva) <= (Erange_count / RANGE_eva) + 3)
+		else if (((Emelee_count / MELEE_eva) <= (Erange_count / RANGE_eva) + 3) && Cost >= MELEE_cost)
 		{
 			Cost -= MELEE_cost;
 			Ingame->CreateEnemy(E_enemy::Melee);
+			summon_flag = true;
 		}
-		else
+		else if(Cost >= RANGE_cost)
 		{
 			Cost -= RANGE_cost;
 			Ingame->CreateEnemy(E_enemy::Range);
+			summon_flag = true;
 		}
 		//この辺の処理は関数に飛ばそうかな…
-
 	}
+#endif
 
 	if (summon_flag)
 	{
@@ -165,17 +177,23 @@ void Heretic::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
-	
+#ifdef DEBUG
+	//背景で見えない…いっそ縁白くするか迷い中
+	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffffff, TRUE);
+#endif
+
+	DrawGraphF(position.x - collision.box_size.x / 2 - 10.0f, position.y - collision.box_size.y / 2, image, true);
 
 	// 異端者の描画
-	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, TRUE);
+	//DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+	//	(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, TRUE);
 
 	DrawBoxAA(position.x - 50.0f, position.y - 90.0f, position.x + (50.0f - (100 - HP)), position.y - 75.0f, 0xFFFFFF, true);
 
 	if (summon_effect)
 	{
-		DrawGraph(position.x, position.y, EffectImage[Anim_count], true);
+		DrawGraphF(position.x, position.y, EffectImage[Anim_count], true);
 	}
 
 
@@ -212,7 +230,6 @@ void Heretic::OnHitCollision(GameObject* hit_object)
 // HP管理処理
 void Heretic::HPControl(int Damage)
 {
-	this->HP -= Damage;
 }
 
 // 移動処理

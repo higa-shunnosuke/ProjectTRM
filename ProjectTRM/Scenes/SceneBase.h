@@ -32,7 +32,7 @@ class SceneBase
 protected:
 	// 各シーンが所有する情報
 	int cursor;					// カーソル
-
+	bool win_flg;				//プレイヤーが勝利したかどうか
 public:
 	// コンストラクタ
 	SceneBase():
@@ -115,6 +115,11 @@ public:
 	/// </summary>
 	/// <returns>現在のシーンタイプ情報</returns>
 	virtual const eSceneType GetNowSceneType() const = 0;
+
+	  void IsPlayerWin(bool setflg) 
+	{
+		win_flg = setflg;
+	}
 
 };
 

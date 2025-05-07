@@ -41,6 +41,13 @@ void Oracle::Initialize()
 // XVˆ—
 void Oracle::Update(float delta_second)
 {
+
+
+	if (CheckHitKey(KEY_INPUT_6))
+	{
+		HP--;
+	}
+
 	/*if (summon_flag == true)
 	{
 		attack_flame += delta_second;

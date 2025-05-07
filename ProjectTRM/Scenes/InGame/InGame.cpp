@@ -42,8 +42,8 @@ void InGame::Initialize()
 
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
-	unit_ui[0]= rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32)[0];
-	unit_ui[1]= rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32)[0]; 
+	unit_ui[0]= rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32)[0]	;
+	unit_ui[1]= rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32)[0]	;
 	unit_ui[2]= rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32)[0];
 
 	// カメラの情報を取得
@@ -75,6 +75,21 @@ void InGame::Initialize()
 // 更新処理
 eSceneType InGame::Update(const float& delta_second)
 {
+
+	if (enemy->GetHP() <= 0 || player->GetHP() <= 0)
+	{
+		if(enemy->GetHP() <= 0) 
+		{
+			IsPlayerWin(true);
+		}
+		else	
+		{
+			IsPlayerWin(false);
+		}
+
+		return eSceneType::result;
+	}
+
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
 
@@ -196,6 +211,9 @@ void InGame::Finalize()
 {
 	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();
+
+	SceneBase::win_flg = this->win_flg;
+
 }
 
 // 現在のシーンタイプ情報を取得する
