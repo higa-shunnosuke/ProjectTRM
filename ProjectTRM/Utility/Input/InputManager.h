@@ -23,14 +23,14 @@ class InputManager : public Singleton<InputManager>
 {
 private:
 	// キー入力情報
-	char now_key[D_KEYCODE_MAX];		// 現在の入力値
-	char old_key[D_KEYCODE_MAX];		// 前回の入力値
+	char now_key[D_KEYCODE_MAX] = {};		// 現在の入力値
+	char old_key[D_KEYCODE_MAX] = {};		// 前回の入力値
 
 	// コントローラー入力情報
-	bool now_button[D_BUTTON_MAX];		// 現在のボタン入力値
-	bool old_button[D_BUTTON_MAX];		// 前回のボタン入力値
-	float trigger[2];					// トリガー入力値（0.0f～1.0f）
-	Vector2D stick[2];					// スティック入力値（-1.0f～1.0f）
+	bool now_button[D_BUTTON_MAX] = {};		// 現在のボタン入力値
+	bool old_button[D_BUTTON_MAX] = {};		// 前回のボタン入力値
+	float trigger[2] = {};					// トリガー入力値（0.0f～1.0f）
+	Vector2D stick[2] = {};					// スティック入力値（-1.0f～1.0f）
 
 public:
 	/// <summary>

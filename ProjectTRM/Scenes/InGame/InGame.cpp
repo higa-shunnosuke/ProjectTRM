@@ -11,7 +11,6 @@
 #include "../../Objects/Character/Player/Tank/P_Tank.h"
 #include "../../Objects/Character/Enemy/Melee/E_Melee.h"
 
-#define PLAYER_INITIAL_LOCATION 3 // プレイヤー初期位置(何ブロック目）
 
 // コンストラクタ
 InGame::InGame():
@@ -60,14 +59,14 @@ void InGame::Initialize()
 
 	// コストの初期化 
 	cost = 100;
-	cost_time = std::chrono::steady_clock::now();
+	prev_time = std::chrono::steady_clock::now();
 
-	// クールダウン / 召喚フラグの初期化
-	for (int i = 0; i < 3; i++)
-	{
-		cooldown[i] = std::chrono::seconds((i+1) * 2);
-		summon_flag[i] = false;
-	}
+	//// クールダウン / 召喚フラグの初期化
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	cooldown[i] = std::chrono::seconds((i+1) * 2);
+	//	summon_flag[i] = false;
+	//}
 }
 
 // 更新処理
@@ -78,8 +77,7 @@ eSceneType InGame::Update(const float& delta_second)
 
 	//カメラの情報を取得
 	Camera* camera = Camera::GetInstance();
-
-	//カメラ情報の更新
+	//カメラの更新
 	camera->Update();
 
 	// リザルトシーンに遷移する
@@ -96,7 +94,7 @@ eSceneType InGame::Update(const float& delta_second)
 	UnitSelection();
 
 	// コスト管理処理
-	CostManagement(delta_second);
+	RegenerateCost();
 
 	//// クールダウン管理処理
 	//CooldownManagement(delta_second);
@@ -203,8 +201,13 @@ const eSceneType InGame::GetNowSceneType() const
 	return eSceneType::in_game;
 }
 
+
+// 敵生成処理
 void InGame::CreateEnemy(E_enemy e_enem)
 {
+	// オブジェクトマネージャーの情報を取得
+	GameObjectManager* object = GameObjectManager::GetInstance();
+
 	switch (e_enem)
 	{
 	case Tank:
@@ -367,20 +370,20 @@ void InGame::UnitSelection()
 	}
 }
 
-//	コスト蓄積処理
-void InGame::CostManagement(const float& delta_second)
+//	コスト管理処理
+void InGame::RegenerateCost()
 {
 	auto now_time = std::chrono::steady_clock::now();
 
-	if (now_time - cost_time > std::chrono::milliseconds(500))
+	if (now_time - prev_time > std::chrono::milliseconds(500))
 	{
 		cost++;
-		cost_time = std::chrono::steady_clock::now();
+		prev_time = std::chrono::steady_clock::now();
 	}
 }
 
 // クールダウン処理
-void InGame::CooldownManagement(const float& delta_second)
+void InGame::CooldownManagement()
 {
 	auto now_time = std::chrono::steady_clock::now();
 

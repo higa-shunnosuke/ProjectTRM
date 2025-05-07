@@ -31,13 +31,11 @@ class SceneBase
 {
 protected:
 	// 各シーンが所有する情報
-	GameObjectManager* object;	// オブジェクトマネージャーのポインタ
 	int cursor;					// カーソル
 
 public:
 	// コンストラクタ
 	SceneBase():
-		object(nullptr),
 		cursor()
 	{
 		
@@ -55,8 +53,7 @@ public:
 	/// </summary>
 	virtual void Initialize()
 	{
-		// オブジェクトマネージャーの情報を取得
-		object = GameObjectManager::GetInstance();
+		
 	}
 
 	/// <summary>
@@ -66,7 +63,9 @@ public:
 	/// <returns>次のシーンタイプ情報</returns>
 	virtual eSceneType Update(const float& delta_second)
 	{
-		// 生成するオブジェクトがあれば、オブジェクトリスト内に挿入する
+		// オブジェクトマネージャーの情報を取得
+		GameObjectManager* object = GameObjectManager::GetInstance();
+		// オブジェクトリストの更新
 		object->CheckCreateObject();
 
 		// リスト内のオブジェクトを更新する
@@ -87,12 +86,15 @@ public:
 	/// </summary>
 	virtual void Draw() const
 	{
-		// カメラのポインタ
+		// カメラの情報取得
 		Camera* camera = Camera::GetInstance();
 
+		// オブジェクトマネージャーの情報を取得
+		GameObjectManager* object = GameObjectManager::GetInstance();
 		// オブジェクトリスト内のオブジェクトを描画する
 		for (GameObject* obj : object->GetObjectsList())
 		{
+			// カメラの座標を引数で渡す
 			obj->Draw(camera->GetCameraPos());
 		}
 	}
@@ -102,6 +104,8 @@ public:
 	/// </summary>
 	virtual void Finalize()
 	{
+		// オブジェクトマネージャーの情報を取得
+		GameObjectManager* object = GameObjectManager::GetInstance();
 		// オブジェクトリスト内のオブジェクトを破棄
 		object->DestroyAllObject();
 	}

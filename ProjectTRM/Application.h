@@ -11,10 +11,10 @@ class Application : public Singleton<Application>
 {
 private:
 	// グローバル変数定義
-	LONGLONG old_time;		// 前回計測値
-	LONGLONG now_time;		// 現在計測値
-	float delta_second;		// １フレームあたりの時間
-	bool end_flg = false;	// ゲーム終了フラグ
+	LONGLONG old_time = 0;			// 前回計測値
+	LONGLONG now_time = 0;			// 現在計測値
+	float delta_second = 0.0f;		// １フレームあたりの時間
+	bool end_flg = false;			// ゲーム終了フラグ
 
 public:
 

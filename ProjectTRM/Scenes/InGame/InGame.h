@@ -7,20 +7,19 @@
 
 #include <chrono>
 
-#define SIZE_X 211
-#define SIZE_Y 16
-
 class InGame : public SceneBase
 {
 private:
-	std::chrono::steady_clock::time_point summon_time[3];	// 召喚開始時間
-	std::chrono::seconds cooldown[3];						// 召喚クールダウン
-	std::chrono::steady_clock::time_point cost_time;		// コスト待機時間
-	int cost;				// コスト
-	bool summon_flag[3];	// 召喚フラグ
-	Oracle* player;			// 巫女のポインタ
-	Heretic* enemy;			// 異端者のポインタ
-	int unit_ui[3];			// ユニット選択UIの画像
+	std::chrono::steady_clock::time_point	summon_time[3];		// 召喚開始時間
+	std::chrono::seconds					cooldown[3];		// 召喚クールダウン
+	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数
+
+	int			cost;				// コスト
+	bool		summon_flag[3];		// 召喚フラグ
+	Oracle*		player;				// 巫女のポインタ
+	Heretic*	enemy;				// 異端者のポインタ
+	int			unit_ui[3];			// ユニット選択UIの画像
+
 public:
 	// コンストラクタ
 	InGame();
@@ -55,6 +54,10 @@ public:
 	/// <returns>現在のシーンタイプ</returns>
 	virtual const eSceneType GetNowSceneType() const override;
 
+	/// <summary>
+	/// 敵生成処理
+	/// </summary>
+	/// <param name="e_enem">敵の種類</param>
 	void CreateEnemy(E_enemy e_enem);
 
 private:
@@ -71,12 +74,12 @@ private:
 	/// <summary>
 	///	コスト管理処理
 	/// </summary>
-	void CostManagement(const float& delta_second);
+	void RegenerateCost();
 	
 	/// <summary>
 	/// クールダウン管理処理
 	/// </summary>
-	void CooldownManagement(const float& delta_second);
+	void CooldownManagement();
 
 	/// <summary>
 	/// 画像読込み処理

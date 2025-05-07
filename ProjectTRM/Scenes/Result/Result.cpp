@@ -3,8 +3,7 @@
 // コンストラクタ
 Result::Result()
 {
-	// 親クラスの初期化処理を呼び出す
-	__super::Initialize();
+	
 }
 
 // デストラクタ
@@ -37,7 +36,7 @@ eSceneType Result::Update(const float& delta_second)
 	}
 	if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
 	{
-		return eSceneType::title;
+		return eSceneType::end;
 	}
 
 	// 親クラスの更新処理を呼び出す
