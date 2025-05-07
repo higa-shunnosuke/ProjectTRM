@@ -25,10 +25,6 @@ E_Melee::~E_Melee()
 // 初期化処理
 void E_Melee::Initialize()
 {
-	// 画像の読み込み
-	ResourceManager* rm = ResourceManager::GetInstance();
-	animation = rm->GetImages("Resource/Images/Enemy/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
-
 	// 現在時刻を取得
 	anime_time = std::chrono::steady_clock::now();
 
@@ -44,6 +40,7 @@ void E_Melee::Initialize()
 
 	flip_flag = false;
 
+	// 最初の状態を移動にする
 	now_state = State::Move;
 
 	//攻撃力
@@ -51,7 +48,6 @@ void E_Melee::Initialize()
 
 	// HP初期化
 	HP = 20;
-	old_HP = HP;
 
 	alpha = MAX_ALPHA;
 	add = -ALPHA_ADD;
@@ -84,7 +80,6 @@ void E_Melee::Update(float delta_second)
 
 	// 状態更新処理
 	old_state = now_state;
-	old_HP = HP;
 }
 
 // 描画処理
@@ -94,7 +89,7 @@ void E_Melee::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
-	// 近接ユニットの描画
+	// 敵近接の描画
 	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
 
 #ifdef DEBUG
@@ -195,24 +190,46 @@ void E_Melee::AnimationControl(float delta_second)
 	if (old_state != now_state)
 	{
 		Anim_count = 0;
+
+		// 画像の読み込み
+		ResourceManager* rm = ResourceManager::GetInstance();
+
+		// 各状態のアニメーション画像に差し替え
+		switch (now_state)
+		{
+		case State::Idle:
+			animation = rm->GetImages("Resource/Images/Enemy/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
+			break;
+		case State::Move:
+			animation = rm->GetImages("Resource/Images/Enemy/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
+			break;
+		case State::Attack:
+			animation = rm->GetImages("Resource/Images/Enemy/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
+			image = animation[Anim_count];
+			// 硬直開始
+			if (Anim_count == 3)
+			{
+				now_state = State::Idle;
+				recovery_time = std::chrono::steady_clock::now();
+			}
+			break;
+		case State::Damage:
+			break;
+		case State::Death:
+			break;
+		}
 	}
 
-	// 画像の読み込み
-	ResourceManager* rm = ResourceManager::GetInstance();
-
-	// 各状態のアニメーション画像に差し替え
+	// アニメーションの実行
 	switch (now_state)
 	{
 	case State::Idle:
-		animation = rm->GetImages("Resource/Images/Enemy/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
 		image = animation[0];
 		break;
 	case State::Move:
-		animation = rm->GetImages("Resource/Images/Enemy/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
 		image = animation[Anim_count];
 		break;
 	case State::Attack:
-		animation = rm->GetImages("Resource/Images/Enemy/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
 		image = animation[Anim_count];
 		// 硬直開始
 		if (Anim_count == 3)
@@ -226,8 +243,6 @@ void E_Melee::AnimationControl(float delta_second)
 		recovery_time = std::chrono::steady_clock::now();
 		break;
 	case State::Death:
-		break;
-	default:
 		break;
 	}
 

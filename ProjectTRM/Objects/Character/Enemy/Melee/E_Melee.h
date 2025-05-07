@@ -8,7 +8,7 @@ class E_Melee :public Character
 {
 private:
 	static size_t count;	// 敵近接のカウンタ
-	std::chrono::steady_clock::time_point anime_time;	// アニメーション開始時間
+	std::chrono::steady_clock::time_point anime_time;		// アニメーション開始時間
 	std::chrono::steady_clock::time_point recovery_time;	// 硬直開始時間
 
 public:
@@ -20,7 +20,6 @@ public:
 
 private:
 	int Damage;	//ダメージ
-	int old_HP;
 
 public:
 	//コンストラクタ
