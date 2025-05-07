@@ -1,13 +1,21 @@
 #pragma once
 
 #include "../../Character.h"
+#include <chrono>
+
 // ゲームオブジェクト基底クラス
 class E_Melee :public Character
 {
 private:
-	static size_t count;
+	static size_t count;	// 敵近接のカウンタ
+	std::chrono::steady_clock::time_point anime_time;	// アニメーション開始時間
+	std::chrono::steady_clock::time_point recovery_time;	// 硬直開始時間
 
 public:
+	/// <summary>
+	/// 敵近接のカウント取得処理
+	/// </summary>
+	/// <returns>敵近接の数</returns>
 	static size_t GetCount();
 
 private:
@@ -46,10 +54,16 @@ public:
 	virtual void OnHitCollision(GameObject* hit_object);
 
 	/// <summary>
-/// 攻撃範囲通知処理
-/// </summary>
-/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
+	/// 攻撃範囲通知処理
+	/// </summary>
+	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
 	virtual void OnAreaDetection(GameObject* hit_object);
+
+	/// <summary>
+	/// HP管理処理
+	/// </summary>
+	/// <param name="hit_object">ダメージ</param>
+	virtual void HPControl(int Damage) override;
 
 private:
 	/// <summary>
