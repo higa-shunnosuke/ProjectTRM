@@ -12,12 +12,13 @@ size_t E_Ranged::GetCount()
 // コンストラクタ
 E_Ranged::E_Ranged()
 {
-
+	count++;
 }
 
 // デストラクタ
 E_Ranged::~E_Ranged()
 {
+	count--;
 
 }
 

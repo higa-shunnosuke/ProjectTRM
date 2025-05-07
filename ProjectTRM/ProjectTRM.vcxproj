@@ -199,9 +199,6 @@
     <ClInclude Include="Utility\StageData.h" />
     <ClInclude Include="Utility\Vector2D.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resource\Images\Effect\EnemyPawn.png" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -14,13 +14,13 @@ size_t E_Tank::GetCount()
 E_Tank::E_Tank() :
 	Damage()
 {
-
+	count++;
 }
 
 // デストラクタ
 E_Tank::~E_Tank()
 {
-
+	count--;
 }
 
 // 初期化処理

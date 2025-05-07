@@ -23,7 +23,8 @@ Heretic::Heretic() :
 	summon_flag(),
 	CountFlame(0.0f),
 	CountTime(0),
-	Cost(0)
+	Cost(0),
+	summon_effect()
 {
 
 }
@@ -39,10 +40,11 @@ void Heretic::Initialize()
 {
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
-	//LoadDivGraph("../../../../Resource/Images/Effect/EnemyPawn.png", 13, 13, 1, 60, 60, EffectImage);
+
+	EffectImage = rm->GetImages("Resource/Images/Effect/EnemyPawn.png", 13,13,1,64,64);
 
 	is_mobility = false;
-
+	
 	collision.is_blocking = true;
 	collision.object_type = eObjectType::Enemy;
 	collision.hit_object_type.push_back(eObjectType::Player);
@@ -57,6 +59,9 @@ void Heretic::Initialize()
 // 更新処理
 void Heretic::Update(float delta_second)
 {
+
+	summon_flag = false;
+
 	if (Fstflag)
 	{
 		Ingame->CreateEnemy(E_enemy::Melee);
@@ -64,7 +69,7 @@ void Heretic::Update(float delta_second)
 	}
 
 	CountFlame += 1.0f;
-	if (CountFlame < 60.0f)
+	if (CountFlame > 60.0f)
 	{
 		CountTime++;
 		Cost+= 10;
@@ -90,38 +95,33 @@ void Heretic::Update(float delta_second)
 		//・生成するでな
 		Cost -= RANGE_cost;
 		Ingame->CreateEnemy(E_enemy::Range);
+		summon_flag = true;
 		//この辺の処理は関数に飛ばそうかな…
 	}
 
 	//・相手の評価が高くなった際に手持ち最大コストを生成する。
 	if (Pcount_sum > Ecount_sum + 100 && Cost >= MELEE_cost)
 	{
-
 		//【プロト版のみ】
 		//コストをマイナスになっても借金して出しましょう
 		Cost -= BOSS_cost;
 		Ingame->CreateEnemy(E_enemy::Boss);
+		summon_flag = true;
 	}
 	//・相手の評価が低くなった際に手持ち最小コストを生成する。
 	else if (Cost >= ENEMY_BOTTOM_COST)
 	{
-		Cost -= TANK_cost;
-		Ingame->CreateEnemy(E_enemy::Tank);
-	}
-
-	//・コストが０以下になるなら生成しない。
-	if (Cost >= ENEMY_BOTTOM_COST)
-	{
+		summon_flag = true;
 		//・生成するでな
 		//タンクは一定数をキープ
 		//前衛が少ないと出す
 		//前衛が多いと後衛を出す
-		if ((Etank_count / TANK_eva) <= 5)
+		if ((Etank_count / TANK_eva) < 5)
 		{
 			Cost -= TANK_cost;
 			Ingame->CreateEnemy(E_enemy::Tank);
 		}
-		else if ((Emelee_count / MELEE_eva) <= (Erange_count / RANGE_eva)+3)
+		else if ((Emelee_count / MELEE_eva) <= (Erange_count / RANGE_eva) + 3)
 		{
 			Cost -= MELEE_cost;
 			Ingame->CreateEnemy(E_enemy::Melee);
@@ -132,7 +132,31 @@ void Heretic::Update(float delta_second)
 			Ingame->CreateEnemy(E_enemy::Range);
 		}
 		//この辺の処理は関数に飛ばそうかな…
+
 	}
+
+	if (summon_flag)
+	{
+		summon_effect = true;
+	}
+
+	if (summon_effect)
+	{
+		Anim_flame += 1.0f;
+		if (Anim_flame >= 10.0f)
+		{
+			Anim_count++;
+			Anim_flame = 0.0f;
+		}
+		if (Anim_count > EffectImage.size()-1)
+		{
+			Anim_count = 0;
+			summon_effect = false;
+		}
+	}
+
+
+	
 }
 
 // 描画処理
@@ -147,15 +171,16 @@ void Heretic::Draw(const Vector2D camera_pos) const
 	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, TRUE);
 
-	DrawBoxAA(position.x - 50.0f, position.y - 90.0f, position.x + (50.0f - (100- HP)), position.y - 75.0f, 0xFFFFFF, true);
+	DrawBoxAA(position.x - 50.0f, position.y - 90.0f, position.x + (50.0f - (100 - HP)), position.y - 75.0f, 0xFFFFFF, true);
 
-	for (int i = 0; i < 13; i++)
+	if (summon_effect)
 	{
-		DrawGraph(position.x + 50, position.y, EffectImage[i], false);
+		DrawGraph(position.x, position.y, EffectImage[Anim_count], true);
 	}
 
 
 #ifdef DEBUG
+	DrawFormatString(0, 50, 0xFFFFFF, "EC:%d", Cost);
 	// 中心を表示
 	DrawCircle((int)position.x, (int)position.y, 2, 0xff0000, TRUE);
 	// 当たり判定表示
@@ -170,7 +195,7 @@ void Heretic::Draw(const Vector2D camera_pos) const
 // 終了時処理
 void Heretic::Finalize()
 {
-
+	EffectImage.clear();
 }
 
 void Heretic::SetInGamePoint(InGame* point)
@@ -187,7 +212,7 @@ void Heretic::OnHitCollision(GameObject* hit_object)
 // HP管理処理
 void Heretic::HPControl(int Damage)
 {
-
+	this->HP -= Damage;
 }
 
 // 移動処理

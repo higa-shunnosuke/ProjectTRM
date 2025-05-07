@@ -13,13 +13,13 @@ size_t E_Melee::GetCount()
 E_Melee::E_Melee() :
 	Damage()
 {
-
+	count++;
 }
 
 // デストラクタ
 E_Melee::~E_Melee()
 {
-
+	count--;
 }
 
 // 初期化処理

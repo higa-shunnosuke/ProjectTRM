@@ -204,9 +204,4 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resource\Images\Effect\EnemyPawn.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-  </ItemGroup>
 </Project>

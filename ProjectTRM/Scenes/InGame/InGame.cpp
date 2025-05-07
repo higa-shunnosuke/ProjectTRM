@@ -9,7 +9,10 @@
 #include "../../Objects/Character/Player/Melee/P_Melee.h"
 #include "../../Objects/Character/Player/Ranged/P_Ranged.h"
 #include "../../Objects/Character/Player/Tank/P_Tank.h"
+
 #include "../../Objects/Character/Enemy/Melee/E_Melee.h"
+#include "../../Objects/Character/Enemy/Tank/E_Tank.h"
+#include "../../Objects/Character/Enemy/Ranged/E_Ranged.h"
 
 
 // コンストラクタ
@@ -211,11 +214,14 @@ void InGame::CreateEnemy(E_enemy e_enem)
 	switch (e_enem)
 	{
 	case Tank:
+		object->CreateObject<E_Tank>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
 		break;
 	case Melee:
 		object->CreateObject<E_Melee>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
 		break;
 	case Range:
+		object->CreateObject<E_Ranged>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
+
 		break;
 	case Boss:
 		break;
