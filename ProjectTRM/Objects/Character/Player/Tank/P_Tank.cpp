@@ -191,7 +191,7 @@ void P_Tank::AnimationControl(float delta_second)
 	{
 		Anim_flame = 0;
 		Anim_count = 0;
-		count = 1;
+		con = 1;
 	}
 
 	Anim_flame += delta_second;
@@ -199,11 +199,11 @@ void P_Tank::AnimationControl(float delta_second)
 	if (Anim_flame >= 0.1f)
 	{
 
-		Anim_count += count;
+		Anim_count += con;
 
 		if (Anim_count <= 0 || Anim_count >= 2)
 		{
-			count *= -1;
+			con *= -1;
 		}
 		Anim_flame = 0.0f;
 	}
