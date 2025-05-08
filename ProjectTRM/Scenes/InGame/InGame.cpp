@@ -78,16 +78,20 @@ eSceneType InGame::Update(const float& delta_second)
 
 	if (enemy->GetHP() <= 0 || player->GetHP() <= 0)
 	{
-		if(enemy->GetHP() <= 0) 
+		if(player->GetHP() <= 0)
 		{
-			IsPlayerWin(true);
+			IsPlayerWin(false);
+		return eSceneType::result;
 		}
 		else	
 		{
-			IsPlayerWin(false);
+			IsPlayerWin(true);
+			return eSceneType::result;
 		}
+	}
+	if (enemy->GetDead())
+	{
 
-		return eSceneType::result;
 	}
 
 	// “ü—Íî•ñ‚ğæ“¾

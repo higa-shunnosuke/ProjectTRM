@@ -32,8 +32,11 @@ class SceneBase
 protected:
 	// 各シーンが所有する情報
 	int cursor;					// カーソル
-	bool win_flg;				//プレイヤーが勝利したかどうか
 public:
+
+	bool win_flg;				//プレイヤーが勝利したかどうか
+
+
 	// コンストラクタ
 	SceneBase():
 		cursor()
@@ -120,6 +123,5 @@ public:
 	{
 		win_flg = setflg;
 	}
-
 };
 

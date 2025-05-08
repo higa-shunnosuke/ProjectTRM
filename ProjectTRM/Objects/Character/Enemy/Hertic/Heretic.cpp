@@ -11,6 +11,10 @@
 #include "../Melee/E_Melee.h"
 #include "../Boss/Boss.h"
 
+#define COST_CHARGE 60.0f
+#define COST_UPNUM 1
+
+
 //#define TEST
 
 #define Enemy_Plan_Evaluation // 戦場評価型
@@ -45,7 +49,13 @@ void Heretic::Initialize()
 
 	EffectImage = rm->GetImages("Resource/Images/Effect/EnemyPawn.png", 13, 13, 1, 64, 64);
 	image = rm->GetImages("Resource/Images/Enemy/Heretic/Heretic_Stand.png")[0];
+	DeadImage[0] = rm->GetImages("Resource/Images/Enemy/Heretic/NotDead.png")[0];
+	DeadImage[1] = rm->GetImages("Resource/Images/Enemy/Heretic/ImDead.png")[0];
 
+	if (image == NULL || DeadImage == NULL)
+	{
+		printf("WTF");
+	}
 	is_mobility = false;
 	
 	collision.is_blocking = true;
@@ -77,73 +87,21 @@ void Heretic::Update(float delta_second)
 	}
 
 	CountFlame += 1.0f;
-	if (CountFlame > 60.0f)
+	if (CountFlame > COST_CHARGE)
 	{
 		CountTime++;
-		Cost+= 10;
+		if (CountTime == 0)
+		{
+			nowsta = State::Idle;
+		}
+		Cost+= COST_UPNUM;
 		CountFlame = 0.0f;
 	}
-
-	int Pcount_sum =0;
-	int Ecount_sum =0;
-
-	int Ptank_count	  = (int)P_Tank::  GetCount() * TANK_eva;
-	int Pmelee_count  = (int)P_Melee:: GetCount() * MELEE_eva;
-	int Prange_count  = (int)P_Ranged::GetCount() * RANGE_eva;
-	Pcount_sum += (Ptank_count + Pmelee_count + Prange_count);
-
-	int Etank_count  = (int)E_Tank::  GetCount() * TANK_eva;
-	int Emelee_count = (int)E_Melee:: GetCount() * MELEE_eva;
-	int Erange_count = (int)E_Ranged::GetCount() * RANGE_eva;
-	Ecount_sum += (Etank_count + Emelee_count + Erange_count);
-
 #ifdef TEST
 #else
-	//・コストが最大になるなら手持ち最大コストを生成する。
-	if (Cost >= 500)
+	if (Cost >= ENEMY_BOTTOM_COST)
 	{
-		//・生成するでな
-		Cost -= RANGE_cost;
-		Ingame->CreateEnemy(E_enemy::Range);
-		summon_flag = true;
-		//この辺の処理は関数に飛ばそうかな…
-	}
-
-	//・相手の評価が高くなった際に手持ち最大コストを生成する。
-	if (Pcount_sum > Ecount_sum + 100 && Cost >= MELEE_cost)
-	{
-		//【プロト版のみ】
-		//コストをマイナスになっても借金して出しましょう
-		Cost -= BOSS_cost;
-		Ingame->CreateEnemy(E_enemy::Boss);
-		summon_flag = true;
-	}
-	//・相手の評価が低くなった際に手持ち最小コストを生成する。
-	else if (Cost >= ENEMY_BOTTOM_COST)
-	{
-		//・生成するでな
-		//タンクは一定数をキープ
-		//前衛が少ないと出す
-		//前衛が多いと後衛を出す
-		if ((Etank_count / TANK_eva) < 5)
-		{
-			Cost -= TANK_cost;
-			Ingame->CreateEnemy(E_enemy::Tank);
-			summon_flag = true;
-		}
-		else if (((Emelee_count / MELEE_eva) <= (Erange_count / RANGE_eva) + 3) && Cost >= MELEE_cost)
-		{
-			Cost -= MELEE_cost;
-			Ingame->CreateEnemy(E_enemy::Melee);
-			summon_flag = true;
-		}
-		else if(Cost >= RANGE_cost)
-		{
-			Cost -= RANGE_cost;
-			Ingame->CreateEnemy(E_enemy::Range);
-			summon_flag = true;
-		}
-		//この辺の処理は関数に飛ばそうかな…
+	ThinkingEnemy();
 	}
 #endif
 
@@ -183,11 +141,24 @@ void Heretic::Draw(const Vector2D camera_pos) const
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffffff, TRUE);
 #endif
 
+	if (nowsta == State::Damage)
+	{
+		if (CountTime == -2)
+		{
+			position.x -= 5.0f;
+		}
+		else if (CountTime == -1)
+		{
+			position.x += 5.0f;
+		}
+	}
+
 	DrawGraphF(position.x - collision.box_size.x / 2 - 10.0f, position.y - collision.box_size.y / 2, image, true);
 
 	// 異端者の描画
 	//DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 	//	(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, TRUE);
+
 
 	DrawBoxAA(position.x - 50.0f, position.y - 90.0f, position.x + (50.0f - (100 - HP)), position.y - 75.0f, 0xFFFFFF, true);
 
@@ -195,6 +166,8 @@ void Heretic::Draw(const Vector2D camera_pos) const
 	{
 		DrawGraphF(position.x, position.y, EffectImage[Anim_count], true);
 	}
+
+
 
 
 #ifdef DEBUG
@@ -221,6 +194,68 @@ void Heretic::SetInGamePoint(InGame* point)
 	Ingame = point;
 }
 
+void Heretic::ThinkingEnemy()
+{
+	int Pcount_sum = 0;
+	int Ecount_sum = 0;
+
+	int Ptank_count = (int)P_Tank::GetCount() * TANK_eva;
+	int Pmelee_count = (int)P_Melee::GetCount() * MELEE_eva;
+	int Prange_count = (int)P_Ranged::GetCount() * RANGE_eva;
+	Pcount_sum += (Ptank_count + Pmelee_count + Prange_count);
+
+	int Etank_count = (int)E_Tank::GetCount() * TANK_eva;
+	int Emelee_count = (int)E_Melee::GetCount() * MELEE_eva;
+	int Erange_count = (int)E_Ranged::GetCount() * RANGE_eva;
+	Ecount_sum += (Etank_count + Emelee_count + Erange_count);
+
+	//・コストが最大になるなら手持ち最大コストを生成する。
+	if (Cost >= 500)
+	{
+		//・生成するでな
+		Cost -= RANGE_cost;
+		Ingame->CreateEnemy(E_enemy::Range);
+		summon_flag = true;
+		//この辺の処理は関数に飛ばそうかな…
+	}
+
+	//・相手の評価が高くなった際に手持ち最大コストを生成する。
+	if (Pcount_sum > Ecount_sum + 100 && Cost >= MELEE_cost)
+	{
+		//【プロト版のみ】
+		//コストをマイナスになっても借金して出しましょう
+		Cost -= BOSS_cost;
+		Ingame->CreateEnemy(E_enemy::Boss);
+		summon_flag = true;
+	}
+	//・相手の評価が低くなった際に手持ち最小コストを生成する。
+	else if (Cost >= ENEMY_BOTTOM_COST)
+	{
+		//・生成するでな
+		//タンクは一定数をキープ
+		//前衛が少ないと出す
+		//前衛が多いと後衛を出す
+		if ((Etank_count / TANK_eva) < 5)
+		{
+			Cost -= TANK_cost;
+			Ingame->CreateEnemy(E_enemy::Tank);
+			summon_flag = true;
+		}
+		else if (((Emelee_count / MELEE_eva) <= (Erange_count / RANGE_eva) + 3) && Cost >= MELEE_cost)
+		{
+			Cost -= MELEE_cost;
+			Ingame->CreateEnemy(E_enemy::Melee);
+			summon_flag = true;
+		}
+		else if (Cost >= RANGE_cost)
+		{
+			Cost -= RANGE_cost;
+			Ingame->CreateEnemy(E_enemy::Range);
+			summon_flag = true;
+		}
+	}
+}
+
 // 当たり判定通知処理
 void Heretic::OnHitCollision(GameObject* hit_object)
 {
@@ -230,6 +265,21 @@ void Heretic::OnHitCollision(GameObject* hit_object)
 // HP管理処理
 void Heretic::HPControl(int Damage)
 {
+	__super::HPControl(Damage);
+	
+
+	nowsta = State::Damage;
+
+	if (CountTime > 0)
+	{
+	CountTime = -2;
+	}
+
+}
+
+bool Heretic::GetDead()
+{
+	return JustDead;
 }
 
 // 移動処理

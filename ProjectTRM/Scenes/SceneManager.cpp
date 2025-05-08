@@ -147,6 +147,11 @@ void SceneManager::ChangeScene(eSceneType next_type)
 		throw ("シーンが生成できませんでした\n");
 	}
 
+	if (next_scene != nullptr && current_scene != nullptr)
+	{
+	next_scene->win_flg = current_scene->win_flg;
+	}
+
 	// シーン情報が格納されていたら、削除する
 	if (current_scene != nullptr)
 	{

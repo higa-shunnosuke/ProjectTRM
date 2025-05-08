@@ -30,6 +30,49 @@ eSceneType Result::Update(const float& delta_second)
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
 
+	if (win_flg)
+	{
+		// ステージ選択シーンに遷移する
+		if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+		{
+			return eSceneType::stage_select;
+		}
+		else if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
+		{
+			return eSceneType::stage_select;
+		}
+
+		// タイトルシーンに遷移する
+		if (input->GetKeyState(KEY_INPUT_X) == eInputState::Pressed)
+		{
+			return eSceneType::title;
+		}
+		else if (input->GetButtonState(XINPUT_BUTTON_X) == eInputState::Pressed)
+		{
+			return eSceneType::title;
+		}
+	}
+	else
+	{
+		// インゲームシーンに遷移する
+		if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+		{
+			return eSceneType::in_game;
+		}
+		else if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
+		{
+			return eSceneType::in_game;
+		}
+		// インゲームシーンに遷移する
+		else if (input->GetKeyState(KEY_INPUT_X) == eInputState::Pressed)
+		{
+			return eSceneType::title;
+		}
+		else if (input->GetButtonState(XINPUT_BUTTON_X) == eInputState::Pressed)
+		{
+			return eSceneType::title;
+		}
+	}
 
 
 	// インゲームシーンに遷移する
@@ -55,11 +98,20 @@ void Result::Draw() const
 	SetFontSize(32);
 	if (win_flg)
 	{
-		DrawString(100, 100, "Pless Space", 0xffffff);
+#ifdef DEBUG
+
+		DrawString(500, 500, "Space : Stage Select", 0xffffff);
+		DrawString(570, 550, "X : Title", 0xffffff);
+#endif // DEBUG
+
 	}
 	else
 	{
-		DrawString(100, 100, "Pless ESC", 0xffffff);
+#ifdef DEBUG
+
+		DrawString(500, 500, "Space : Retry", 0xffffff);
+		DrawString(570, 550, "X : Title", 0xffffff);
+#endif // DEBUG
 
 	}
 

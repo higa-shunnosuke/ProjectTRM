@@ -34,14 +34,17 @@ enum E_enemy :int
 class Heretic :public Character
 {
 private:
+	State nowsta = State::Idle;
 	std::vector<int> EffectImage;
 	int Player_evaluation[4];
 	int Enemy_evaluation[3];
 	int Cost;
+	bool	JustDead = false;	//死亡時アニメーションも終わって丁度死んだ
 	bool	Fstflag = false;	//初回生成用:Debugで敵の動きを確認したいでしょう？s
 	bool	summon_flag;	//召喚フラグ
 	bool	summon_effect;	//召喚フラグ
 	std::vector<GameObject*> ObjectList;
+	int DeadImage[2];
 
 	class	InGame* Ingame;	//InGameのポインター
 	float	CountFlame;		//flameの管理
@@ -79,6 +82,9 @@ public:
 	/// <param name = "point">: InGameSceneのPointer</param>
 	void SetInGamePoint(class InGame* point);
 
+	void ThinkingEnemy();
+
+
 public:
 	/// <summary>
 	/// 当たり判定通知処理
@@ -92,6 +98,8 @@ public:
 	/// </summary>
 	/// <param name="hit_object">ダメージ</param>
 	virtual void HPControl(int Damage);
+
+	bool GetDead();
 
 private:
 	/// <summary>
