@@ -62,18 +62,18 @@ void E_Melee::Update(float delta_second)
 		Movement(delta_second);
 	}
 
-	// 硬直処理
-	if (now_state == State::Damage)
-	{
-		// 現在時刻を取得
-		auto now_time = std::chrono::steady_clock::now();
+	//// 硬直処理
+	//if (now_state == State::Damage)
+	//{
+	//	// 現在時刻を取得
+	//	auto now_time = std::chrono::steady_clock::now();
 
-		// 硬直時間
-		if (now_time - recovery_time > std::chrono::milliseconds(1000))
-		{
-			now_state = State::Move;
-		}
-	}
+	//	// 硬直時間
+	//	if (now_time - recovery_time > std::chrono::milliseconds(1000))
+	//	{
+	//		now_state = State::Move;
+	//	}
+	//}
 
 	// アニメーション管理処理
 	AnimationControl(delta_second);
@@ -134,8 +134,6 @@ void E_Melee::OnAreaDetection(GameObject* hit_object)
 		if (now_state == State::Move)
 		{
 			now_state = State::Attack;
-			// 攻撃処理
-			Attack(hit_object);
 		}
 		// 待機状態なら攻撃状態にする
 		else if (now_state == State::Idle)
@@ -144,11 +142,23 @@ void E_Melee::OnAreaDetection(GameObject* hit_object)
 			auto now_time = std::chrono::steady_clock::now();
 
 			// 待機時間
-			if (now_time - recovery_time > std::chrono::milliseconds(2000))
+			if (now_time - recovery_time > std::chrono::milliseconds(1000))
 			{
 				now_state = State::Attack;
+			}
+		}
+		else if (now_state == State::Attack)
+		{
+			if (Anim_count == 3)
+			{
 				// 攻撃処理
 				Attack(hit_object);
+			}
+
+			// 攻撃対象が死んだら移動状態にする
+			if (hit_object->GetHP() <= 0)
+			{
+				now_state = State::Move;
 			}
 		}
 	}
@@ -250,7 +260,7 @@ void E_Melee::AnimationControl(float delta_second)
 	auto now_time = std::chrono::steady_clock::now();
 
 	// アニメーション間隔
-	if (now_time - anime_time > std::chrono::milliseconds(500))
+	if (now_time - anime_time > std::chrono::milliseconds(200))
 	{
 		// 次のアニメーションに進める
 		if (Anim_count < 3)
