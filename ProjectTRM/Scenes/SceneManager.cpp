@@ -78,8 +78,17 @@ void SceneManager::Update(float delta_second)
 					continue;
 				}
 
+				//UŒ‚‘O‚Ì‘ÎÛ‚ÌHP
+				int old_HP = objects_list[j]->GetHP();
+
 				// UŒ‚”»’èŠm”Fˆ—
 				CheckHitBox(objects_list[i], objects_list[j]);
+
+				// UŒ‚‚µ‚Ä‚¢‚½‚çƒ‹[ƒv‚ð”²‚¯‚é
+				if (old_HP > objects_list[j]->GetHP())
+				{
+					break;
+				}
 			}
 		}
 	}

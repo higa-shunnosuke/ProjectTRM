@@ -14,6 +14,7 @@ private:
 	std::vector<GameObject*> light_list;	// 追従リスト
 	int light_graph;						// 光の画像
 	int light_screen;						// ライトマップ
+	int screen_brightness;					// 画面の明るさ（0～255）
 
 public:
 
@@ -28,6 +29,8 @@ public:
 		
 		// ライトマップを生成
 		light_screen = MakeScreen(D_WIN_MAX_X, D_WIN_MAX_Y, TRUE);
+
+		screen_brightness = 100;
 	}
 
 	/// <summary>
@@ -60,7 +63,9 @@ public:
 		// 描画先をライトマップに反映する
 		SetDrawScreen(light_screen);
 		// ライトマップの初期化（暗いグレーで塗る）
-		DrawBox(0, 0, 1280, 720, GetColor(50, 50, 50), TRUE);
+		DrawBox(0, 0, 1280, 720,
+			GetColor(screen_brightness, screen_brightness, screen_brightness),
+			TRUE);
 		
 		// 追跡リスト内の座標に光の画像を加算合成
 		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
@@ -72,7 +77,8 @@ public:
 				Vector2D light_pos = obj->GetLocation();
 
 				// ライトマップ上に光を描画
-				DrawRotaGraphF(light_pos.x, light_pos.y, 1.0, 0.0, light_graph, TRUE,0);
+				DrawRotaGraphF(light_pos.x, light_pos.y,
+					1.0, 0.0,light_graph, TRUE,0);
 			}
 		}
 		// ブレンドモードを初期化
@@ -92,5 +98,15 @@ public:
 		
 		// ブレンドモードを初期化
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+
+	/// <summary>
+	/// 画面の明るさ調整処理
+	/// </summary>
+	/// <param name="value">明るさ（0～255）</param>
+	void SetBrightness(int value)
+	{
+		// 画面の明るさを調整
+		screen_brightness = value;
 	}
 };
