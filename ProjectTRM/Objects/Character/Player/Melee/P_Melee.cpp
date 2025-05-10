@@ -1,4 +1,6 @@
 #include "P_Melee.h"
+
+
 size_t P_Melee:: count = 0;
 size_t P_Melee::GetCount()
 {
@@ -7,7 +9,10 @@ size_t P_Melee::GetCount()
 
 // コンストラクタ
 P_Melee::P_Melee() :
-	Damage()
+	Damage(),
+	effect_image(),
+	old_HP(),
+	lane()
 {
 	count++;
 }
@@ -34,10 +39,13 @@ void P_Melee::Initialize()
 	collision.hit_object_type.push_back(eObjectType::Enemy);
 	collision.box_size = Vector2D(60.0f, 60.0f);
 	collision.attack_size = Vector2D(100.0f, 100.0f);
-	z_layer = 2;
+	z_layer = 3;
 
 	attack_flag = false;
 	flip_flag = true;
+
+	//交戦中描画用の座標をずらすためのフラグ
+	flag = false;
 
 	now_state = State::Move;
 
@@ -51,6 +59,10 @@ void P_Melee::Initialize()
 	HP = 10;
 	old_HP = HP;
 
+	object = GameObjectManager::GetInstance();
+
+	lane = rand() % 3 + 1;
+
 	alpha = MAX_ALPHA;
 	add = -ALPHA_ADD;
 }
@@ -58,33 +70,30 @@ void P_Melee::Initialize()
 // 更新処理
 void P_Melee::Update(float delta_second)
 {
-
 	// 移動処理
 	Movement(delta_second);
 
+	if (now_state != State::Death)
+	{
+		if (attack_flag == true)
+		{
+			if (velocity.x < 0.0f)
+			{
+				now_state = State::Move;
+				attack_flame = 0.0f;
+				flag = false;
+			}
+			else
+			{
+				attack_flame -= delta_second;
+			}
+			if (attack_flame <= 0.0f)
+			{
+				attack_flag = false;
+			}
+		}
+	}
 
-	if (attack_flag == true)
-	{
-		if (velocity.x < 0.0f)
-		{
-			now_state = State::Move;
-			attack_flame = 0.0f;
-		}
-		else
-		{
-			attack_flame -= delta_second;
-		}
-		if (attack_flame <= 0.0f)
-		{
-			attack_flag = false;
-		}
-	}
-	if (old_HP != HP)
-	{
-		now_state = State::Damage;
-		dmage_flame = 1.0f;
-	}
-	
 	AnimationControl(delta_second);
 
 	EffectControl(delta_second);
@@ -101,6 +110,11 @@ void P_Melee::Update(float delta_second)
 	old_state = now_state;
 	old_HP = HP;
 
+	if (HP <= 0)
+	{
+		now_state = State::Death;
+	}
+
 }
 
 // 描画処理
@@ -109,7 +123,10 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
-
+	if (flag == true)
+	{
+		position.x -= lane * 5;
+	}
 
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う
@@ -153,27 +170,45 @@ void P_Melee::OnHitCollision(GameObject* hit_object)
 // 攻撃範囲通知処理
 void P_Melee::OnAreaDetection(GameObject* hit_object)
 {
-	Collision hit_col = hit_object->GetCollision();
-	
-	if (hit_col.object_type == eObjectType::Enemy)
+	//現在のステータスが死亡状態かどうか
+	if (now_state != State::Death)
 	{
-		velocity.x = 0.0f;
-		if (attack_flag == false)
+		Collision hit_col = hit_object->GetCollision();
+
+		if (hit_col.object_type == eObjectType::Enemy)
 		{
-			now_state = State::Attack;
-		}
-		else 
-		{
-			if (attack_flame <= 0.0f)
+			flag = true;
+			velocity.x = 0.0f;
+			if (attack_flag == false)
 			{
-				Attack(hit_object);
+				now_state = State::Attack;
+			}
+			else
+			{
+				if (attack_flame <= 0.0f)
+				{
+					Attack(hit_object);
+				}
 			}
 		}
+		else
+		{
+			velocity.x = -5.0f;
+		}
 	}
-	else
+}
+
+// HP管理処理
+void P_Melee::HPControl(int Damage)
+{
+	// 攻撃状態でなければダメージ状態にする
+	if (now_state != State::Attack)
 	{
-		velocity.x = -5.0f;
+		now_state = State::Damage;
+		dmage_flame = 1.0f;
 	}
+
+	__super::HPControl(Damage);
 }
 
 
@@ -182,14 +217,13 @@ void P_Melee::Attack(GameObject* hit_object)
 {
 	hit_object->HPControl(Damage);
 	attack_flame = 2.0f;
-	now_state = State::Idle;
 }
 
 // 移動処理
 void P_Melee::Movement(float delta_second)
 {
-		// 移動の実行
-		location.x += velocity.x * 10 * delta_second;
+	// 移動の実行
+	location.x += velocity.x * 10 * delta_second;
 }
 
 // アニメーション制御処理
@@ -204,6 +238,30 @@ void P_Melee::AnimationControl(float delta_second)
 		Anim_flame = 0;
 		Anim_count = 0;
 		con = 1;
+		switch (now_state)
+		{
+		case State::Idle:
+			animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Down.png", 3, 3, 1, 32, 32);
+			break;
+		case State::Move:
+			animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 3, 3, 1, 32, 32);
+			break;
+		case State::Attack:
+			animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
+			if (Anim_count >= 2)
+			{
+				attack_flag = true;
+				now_state = State::Idle;
+			}
+			break;
+		case State::Damage:
+			break;
+		case State::Death:
+			animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Down.png", 3, 3, 1, 32, 32);
+			break;
+		default:
+			break;
+		}
 	}
 
 	Anim_flame += delta_second;
@@ -219,27 +277,24 @@ void P_Melee::AnimationControl(float delta_second)
 
 		Anim_flame = 0.0f;
 	}
+
 	switch (now_state)
 	{
-	case State::Idle:
-		if (Anim_count > 0)
-		{
-			image = animation[0];
-		}
+	case State::Idle:	
+		image = animation[0];
 		break;
 	case State::Move:
-		animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
+
 		image = animation[1 + Anim_count];
 		break;
 	case State::Attack:
-		animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
 		image = animation[1 + Anim_count];
-
 		if (Anim_count >= 2)
 		{
 			attack_flag = true;
-		}
+			now_state = State::Idle;
 
+		}
 		break;
 	case State::Damage:
 		alpha += add;
@@ -250,6 +305,11 @@ void P_Melee::AnimationControl(float delta_second)
 		image = animation[0];
 		break;
 	case State::Death:
+		image = animation[Anim_count];
+		if (Anim_count >= 2)
+		{
+			object->DestroyObject(this);
+		}
 		break;
 	default:
 		break;

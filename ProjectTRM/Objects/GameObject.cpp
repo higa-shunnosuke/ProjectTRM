@@ -97,6 +97,10 @@ const bool GameObject::GetAggressive() const
 void GameObject::HPControl(int Damage)
 {
 	this->HP -= Damage;
+	if (this->HP < 0)
+	{
+		this->HP = 0;
+	}
 }
 
 const int GameObject::GetHP() const

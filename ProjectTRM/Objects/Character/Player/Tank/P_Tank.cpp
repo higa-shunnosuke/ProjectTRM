@@ -33,7 +33,7 @@ void P_Tank::Initialize()
 	collision.hit_object_type.push_back(eObjectType::Enemy);
 	collision.box_size = Vector2D(60.0f, 60.0f);
 	collision.attack_size = Vector2D(100.0f, 100.0f);
-	z_layer = 2;
+	z_layer = 1;
 
 	//”½“]ƒtƒ‰ƒO
 	flip_flag = true;
