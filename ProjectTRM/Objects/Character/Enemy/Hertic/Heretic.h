@@ -2,6 +2,8 @@
 
 #include "../../Character.h"
 
+#include <chrono>
+
 #define Enemy_Think_Standard
 #define ENEMY_BOTTOM_COST 50
 
@@ -36,6 +38,7 @@ class Heretic :public Character
 private:
 	State nowsta = State::Idle;
 	std::vector<int> EffectImage;
+	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数
 	int Player_evaluation[4];
 	int Enemy_evaluation[3];
 	int Cost;
@@ -44,7 +47,6 @@ private:
 	bool	summon_flag;	//召喚フラグ
 	bool	summon_effect;	//召喚フラグ
 	std::vector<GameObject*> ObjectList;
-	int DeadImage[2];
 
 	class	InGame* Ingame;	//InGameのポインター
 	float	CountFlame;		//flameの管理

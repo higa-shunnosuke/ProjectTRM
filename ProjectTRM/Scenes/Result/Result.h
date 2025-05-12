@@ -1,10 +1,14 @@
 #pragma once
 
 #include "../SceneBase.h"
+#include <chrono>
 
 class Result : public SceneBase
 {
 private:
+	int DeadImage[2];
+	int count = 10;
+	std::chrono::steady_clock::time_point	prev_time;			// 加算用変数
 
 public:
 	// コンストラクタ
