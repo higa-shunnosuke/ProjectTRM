@@ -1,5 +1,5 @@
 #include "P_Ranged.h"
-#include "Projectile.h"
+#include "P_Projectile.h"
 #include "../../../GameObjectManager.h"
 size_t P_Ranged::count = 0;
 size_t P_Ranged::GetCount()

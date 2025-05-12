@@ -1,4 +1,6 @@
 #include "P_Tank.h"
+#include "../../../GameObjectManager.h"
+
 size_t P_Tank::count =0;
 size_t P_Tank::GetCount()
 {
@@ -24,6 +26,12 @@ void P_Tank::Initialize()
 	// ‰æ‘œ‚Ì“Ç‚İ‚İ
 	ResourceManager* rm = ResourceManager::GetInstance();
 	animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32);
+
+	light = LightMapManager::GetInstance();
+	LightDetail detail;
+	detail.object = this;
+	detail.size = 1.0f;
+	light->AddLight(detail);
 
 	is_mobility = true;
 	is_aggressive = true;
@@ -132,7 +140,9 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 // I—¹ˆ—
 void P_Tank::Finalize()
 {
-
+	GameObjectManager* object = GameObjectManager::GetInstance();
+	light->DeleteLight(this);
+	object->DestroyObject(this);
 }
 
 // “–‚½‚è”»’è’Ê’mˆ—

@@ -4,6 +4,8 @@
 #include "../../../GameObjectManager.h"
 
 
+#define MAX_HP (10)
+
 // ゲームオブジェクト基底クラス
 class P_Melee :public Character
 {
@@ -17,7 +19,6 @@ private:
 	std::vector<int> Effect;
 	int effect_image;
 	int Damage;	//ダメージ
-	int old_HP;
 	int lane;
 	bool flag;
 	GameObjectManager* object;

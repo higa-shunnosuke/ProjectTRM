@@ -6,6 +6,7 @@
 class Torch :public Character
 {
 private:
+	float life_second;
 
 public:
 	//コンストラクタ

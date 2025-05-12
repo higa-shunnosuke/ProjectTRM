@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Character.h"
+#include "../../../../Utility/LightMapManager.h"
 
 // ゲームオブジェクト基底クラス
 class P_Tank :public Character
@@ -13,6 +14,8 @@ public:
 private:
 	int Damage;	//ダメージ
 	int old_HP;
+	LightMapManager* light;
+
 
 public:
 	//コンストラクタ

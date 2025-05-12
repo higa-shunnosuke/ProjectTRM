@@ -1,5 +1,6 @@
 #include "P_Melee.h"
-
+#include "Torch.h"
+#include "../../../../Utility/LightMapManager.h"
 
 size_t P_Melee:: count = 0;
 size_t P_Melee::GetCount()
@@ -11,7 +12,6 @@ size_t P_Melee::GetCount()
 P_Melee::P_Melee() :
 	Damage(),
 	effect_image(),
-	old_HP(),
 	lane()
 {
 	count++;
@@ -30,6 +30,12 @@ void P_Melee::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
 	Effect = rm->GetImages("Resource/Images/Effect/Melee_Attack_Effect.png", 3, 3, 1, 32, 32);
+
+	LightMapManager* light = LightMapManager::GetInstance();
+	LightDetail detail;
+	detail.object = this;
+	detail.size = 0.5f;
+	light->AddLight(detail);
 
 	is_mobility = true;
 	is_aggressive = true;
@@ -56,8 +62,7 @@ void P_Melee::Initialize()
 	Damage = 4;
 
 	// HPèâä˙âª
-	HP = 10;
-	old_HP = HP;
+	HP = MAX_HP;
 
 	object = GameObjectManager::GetInstance();
 
@@ -94,6 +99,11 @@ void P_Melee::Update(float delta_second)
 		}
 	}
 
+	if (HP <= 0)
+	{
+		now_state = State::Death;
+	}
+
 	AnimationControl(delta_second);
 
 	EffectControl(delta_second);
@@ -108,12 +118,8 @@ void P_Melee::Update(float delta_second)
 	}
 
 	old_state = now_state;
-	old_HP = HP;
 
-	if (HP <= 0)
-	{
-		now_state = State::Death;
-	}
+
 
 }
 
@@ -158,7 +164,10 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 // èIóπéûèàóù
 void P_Melee::Finalize()
 {
-
+	LightMapManager* light = LightMapManager::GetInstance();
+	object->CreateObject<Torch>(this->location);
+	light->DeleteLight(this);
+	object->DestroyObject(this);
 }
 
 // ìñÇΩÇËîªíËí ímèàóù
@@ -308,7 +317,7 @@ void P_Melee::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		if (Anim_count >= 2)
 		{
-			object->DestroyObject(this);
+			Finalize();
 		}
 		break;
 	default:

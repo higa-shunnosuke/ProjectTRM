@@ -3,16 +3,16 @@
 #include "../../Character.h"
 
 // ゲームオブジェクト基底クラス
-class Projectile :public Character
+class P_Projectile :public Character
 {
 private:
 	int Damage;	//ダメージ
 
 public:
 	//コンストラクタ
-	Projectile();
+	P_Projectile();
 	//デストラクタ
-	virtual ~Projectile();
+	virtual ~P_Projectile();
 
 	/// <summary>
 	/// 初期化処理

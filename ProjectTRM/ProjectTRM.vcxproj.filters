@@ -84,7 +84,7 @@
     <ClCompile Include="Objects\Character\Player\Ranged\P_Ranged.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Character\Player\Ranged\Projectile.cpp">
+    <ClCompile Include="Objects\Character\Player\Ranged\P_Projectile.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Objects\Character\Player\Tank\P_Tank.cpp">
@@ -185,7 +185,7 @@
     <ClInclude Include="Objects\Character\Player\Ranged\P_Ranged.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Objects\Character\Player\Ranged\Projectile.h">
+    <ClInclude Include="Objects\Character\Player\Ranged\P_Projectile.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Objects\Character\Player\Tank\P_Tank.h">

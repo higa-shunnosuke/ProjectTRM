@@ -145,7 +145,7 @@
     <ClCompile Include="Objects\Character\Player\Melee\P_Melee.cpp" />
     <ClCompile Include="Objects\Character\Player\Oracle\Oracle.cpp" />
     <ClCompile Include="Objects\Character\Player\Ranged\P_Ranged.cpp" />
-    <ClCompile Include="Objects\Character\Player\Ranged\Projectile.cpp" />
+    <ClCompile Include="Objects\Character\Player\Ranged\P_Projectile.cpp" />
     <ClCompile Include="Objects\Character\Player\Tank\P_Tank.cpp" />
     <ClCompile Include="Scenes\End\End.cpp" />
     <ClCompile Include="Objects\GameObject.cpp" />
@@ -176,7 +176,7 @@
     <ClInclude Include="Objects\Character\Player\Melee\P_Melee.h" />
     <ClInclude Include="Objects\Character\Player\Oracle\Oracle.h" />
     <ClInclude Include="Objects\Character\Player\Ranged\P_Ranged.h" />
-    <ClInclude Include="Objects\Character\Player\Ranged\Projectile.h" />
+    <ClInclude Include="Objects\Character\Player\Ranged\P_Projectile.h" />
     <ClInclude Include="Objects\Character\Player\Tank\P_Tank.h" />
     <ClInclude Include="Scenes\End\End.h" />
     <ClInclude Include="Objects\GameObject.h" />
