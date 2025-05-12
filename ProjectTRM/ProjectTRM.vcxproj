@@ -193,14 +193,12 @@
     <ClInclude Include="Utility\Collision.h" />
     <ClInclude Include="Utility\Input\InputEventManager.h" />
     <ClInclude Include="Utility\Input\InputManager.h" />
+    <ClInclude Include="Utility\LightMapManager.h" />
     <ClInclude Include="Utility\ProjectConfig.h" />
     <ClInclude Include="Utility\ResourceManager.h" />
     <ClInclude Include="Utility\Singleton.h" />
     <ClInclude Include="Utility\StageData.h" />
     <ClInclude Include="Utility\Vector2D.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resource\Images\Effect\EnemyPawn.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

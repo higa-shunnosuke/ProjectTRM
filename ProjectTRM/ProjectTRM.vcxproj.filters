@@ -203,10 +203,8 @@
     <ClInclude Include="Objects\Block\Ground.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resource\Images\Effect\EnemyPawn.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
+    <ClInclude Include="Utility\LightMapManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

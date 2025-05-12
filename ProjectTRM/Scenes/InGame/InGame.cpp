@@ -4,13 +4,16 @@
 
 #include "../../Utility/StageData.h"
 #include "../../Utility/Camera/Camera.h"
+#include "../../Utility/LightMapManager.h"
 
 #include "../../Objects/Block/Ground.h"
 #include "../../Objects/Character/Player/Melee/P_Melee.h"
 #include "../../Objects/Character/Player/Ranged/P_Ranged.h"
 #include "../../Objects/Character/Player/Tank/P_Tank.h"
-#include "../../Objects/Character/Enemy/Melee/E_Melee.h"
 
+#include "../../Objects/Character/Enemy/Melee/E_Melee.h"
+#include "../../Objects/Character/Enemy/Tank/E_Tank.h"
+#include "../../Objects/Character/Enemy/Ranged/E_Ranged.h"
 
 // コンストラクタ
 InGame::InGame():
@@ -39,13 +42,16 @@ void InGame::Initialize()
 
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
-	unit_ui[0]= rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32)[0];
-	unit_ui[1]= rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32)[0]; 
+	unit_ui[0]= rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32)[0]	;
+	unit_ui[1]= rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32)[0]	;
 	unit_ui[2]= rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32)[0];
 
-	// カメラの情報を取得
-	Camera* camera = Camera::GetInstance();
+	// ライトマップの初期化
+	LightMapManager* light_map = LightMapManager::GetInstance();
+	light_map->Initialize();
+
 	// カメラ座標の初期化
+	Camera* camera = Camera::GetInstance();
 	camera->Initialize();
 
 	// ステージ読み込み
@@ -72,6 +78,25 @@ void InGame::Initialize()
 // 更新処理
 eSceneType InGame::Update(const float& delta_second)
 {
+
+	if (enemy->GetHP() <= 0 || player->GetHP() <= 0)
+	{
+		if(player->GetHP() <= 0)
+		{
+			IsPlayerWin(false);
+		return eSceneType::result;
+		}
+		else	
+		{
+			IsPlayerWin(true);
+			return eSceneType::result;
+		}
+	}
+	if (enemy->GetDead())
+	{
+
+	}
+
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
 
@@ -110,8 +135,15 @@ eSceneType InGame::Update(const float& delta_second)
 // 描画処理
 void InGame::Draw() const
 {
+	// 光を加算合成
+	LightMapManager* light_map = LightMapManager::GetInstance();
+	light_map->DrawLights();
+	
 	// 親クラスの描画処理を呼び出す
 	__super::Draw();
+
+	// ライトマップを描画
+	light_map->DrawLightMap();
 
 	// ボタンサイズ
 	const int button_width = 200;
@@ -193,6 +225,9 @@ void InGame::Finalize()
 {
 	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();
+
+	SceneBase::win_flg = this->win_flg;
+
 }
 
 // 現在のシーンタイプ情報を取得する
@@ -211,11 +246,13 @@ void InGame::CreateEnemy(E_enemy e_enem)
 	switch (e_enem)
 	{
 	case Tank:
+		object->CreateObject<E_Tank>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
 		break;
 	case Melee:
 		object->CreateObject<E_Melee>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
 		break;
 	case Range:
+		object->CreateObject<E_Ranged>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
 		break;
 	case Boss:
 		break;
@@ -327,33 +364,42 @@ void InGame::UnitSelection()
 	{
 		// オブジェクトマネージャーのポインタ
 		GameObjectManager* object = GameObjectManager::GetInstance();
+		// ライトマップマネージャーのポインタ
+		LightMapManager* light = LightMapManager::GetInstance();
 
 		switch (cursor)
 		{
+			// タンク召喚
 		case 0:
 			if (summon_flag[cursor] == false)
 			{
 				if (cost - 10 >= 0)
 				{
+					// 光を追加 & タンクを生成
+					light->AddLight(object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f)));
 					object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
 					cost -= 10;
+					
 					//summon_flag[cursor] = true;
 					summon_time[cursor] = std::chrono::steady_clock::now();
 				}
 			}
 			break;
+			// 近接召喚
 		case 1:
 			if (summon_flag[cursor] == false)
 			{
 				if (cost - 20 >= 0)
 				{
-					object->CreateObject<P_Melee>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+					// 光を追加 & 近接を生成
+					light->AddLight(object->CreateObject<P_Melee>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f)));
 					cost -= 20;
 					//summon_flag[cursor] = true;
 					summon_time[cursor] = std::chrono::steady_clock::now();
 				}
 			}
 			break;
+			// 遠距離召喚
 		case 2:
 			if (summon_flag[cursor] == false)
 			{

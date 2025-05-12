@@ -78,8 +78,17 @@ void SceneManager::Update(float delta_second)
 					continue;
 				}
 
+				//攻撃前の対象のHP
+				int old_HP = objects_list[j]->GetHP();
+
 				// 攻撃判定確認処理
 				CheckHitBox(objects_list[i], objects_list[j]);
+
+				// 攻撃していたらループを抜ける
+				if (old_HP > objects_list[j]->GetHP())
+				{
+					break;
+				}
 			}
 		}
 	}
@@ -145,6 +154,11 @@ void SceneManager::ChangeScene(eSceneType next_type)
 	if (next_scene == nullptr)
 	{
 		throw ("シーンが生成できませんでした\n");
+	}
+
+	if (next_scene != nullptr && current_scene != nullptr)
+	{
+	next_scene->win_flg = current_scene->win_flg;
 	}
 
 	// シーン情報が格納されていたら、削除する

@@ -1,16 +1,22 @@
 #pragma once
 
 #include "../../Character.h"
+#include <chrono>
 
 // ゲームオブジェクト基底クラス
 class E_Ranged :public Character
 {
 private:
 	static size_t count;
+	std::chrono::steady_clock::time_point anime_time;		// アニメーション開始時間
+	std::chrono::steady_clock::time_point recovery_time;	// 硬直開始時間
 
 public:
+	/// <summary>
+	/// 敵近接のカウント取得処理
+	/// </summary>
+	/// <returns>敵近接の数</returns>
 	static size_t GetCount();
-private:
 
 public:
 	//コンストラクタ

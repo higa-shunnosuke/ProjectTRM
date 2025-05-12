@@ -10,13 +10,13 @@ size_t P_Ranged::GetCount()
 // コンストラクタ
 P_Ranged::P_Ranged()
 {
-
+	count++;
 }
 
 // デストラクタ
 P_Ranged::~P_Ranged()
 {
-
+	count--;
 }
 
 // 初期化処理
