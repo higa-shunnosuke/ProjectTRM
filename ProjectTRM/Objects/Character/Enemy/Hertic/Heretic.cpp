@@ -49,10 +49,8 @@ void Heretic::Initialize()
 
 	EffectImage = rm->GetImages("Resource/Images/Effect/EnemyPawn.png", 13, 13, 1, 64, 64);
 	image = rm->GetImages("Resource/Images/Enemy/Heretic/Heretic_Stand.png")[0];
-	DeadImage[0] = rm->GetImages("Resource/Images/Enemy/Heretic/NotDead.png")[0];
-	DeadImage[1] = rm->GetImages("Resource/Images/Enemy/Heretic/ImDead.png")[0];
 
-	if (image == NULL || DeadImage == NULL)
+	if (image == NULL)
 	{
 		printf("WTF");
 	}
@@ -72,11 +70,14 @@ void Heretic::Initialize()
 // XVˆ—
 void Heretic::Update(float delta_second)
 {
-
+#ifdef DEBUG
 	if (CheckHitKey(KEY_INPUT_4))
 	{
 		HP--;
 	}
+#endif // DEBUG
+
+
 
 	summon_flag = false;
 
@@ -86,6 +87,16 @@ void Heretic::Update(float delta_second)
 		Fstflag = false;
 	}
 
+
+#if 1
+	auto now_time = std::chrono::steady_clock::now();
+
+	if (now_time - prev_time > std::chrono::milliseconds(500))
+	{
+		Cost++;
+		prev_time = std::chrono::steady_clock::now();
+	}
+#else
 	CountFlame += 1.0f;
 	if (CountFlame > COST_CHARGE)
 	{
@@ -97,6 +108,9 @@ void Heretic::Update(float delta_second)
 		Cost+= COST_UPNUM;
 		CountFlame = 0.0f;
 	}
+#endif // 1
+
+
 #ifdef TEST
 #else
 	if (Cost >= ENEMY_BOTTOM_COST)
@@ -124,9 +138,6 @@ void Heretic::Update(float delta_second)
 			summon_effect = false;
 		}
 	}
-
-
-	
 }
 
 // •`‰æˆ—
@@ -136,7 +147,7 @@ void Heretic::Draw(const Vector2D camera_pos) const
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
 #ifdef DEBUG
-	//”wŒi‚ÅŒ©‚¦‚È‚¢c‚¢‚Á‚»‰”’‚­‚·‚é‚©–À‚¢’†
+	//”wŒi‚ÅŒ©‚¦‚È‚¢c‚¢‚Á‚»‰æ‘œ”’‚­‚·‚é‚©–À‚¢’†
 	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffffff, TRUE);
 #endif
