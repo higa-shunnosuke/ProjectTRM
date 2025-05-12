@@ -21,6 +21,7 @@ void Oracle::Initialize()
 {
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
+	image = rm->GetImages("Resource/Images/Unit/Oracle/Oracle01.png",1,1,1,2048,2048)[0];
 
 	is_mobility = false;
 	is_aggressive = true;
@@ -35,7 +36,7 @@ void Oracle::Initialize()
 	summon_flag = false;
 
 	// HP初期化
-	HP = 100;
+	HP = 10;
 }
 
 // 更新処理
@@ -54,8 +55,14 @@ void Oracle::Draw(const Vector2D camera_pos) const
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
 	// 巫女の描画
-	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),//数字を変える
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff0000, TRUE);
+
+	DrawBoxAA(position.x - 50.0f, position.y - 150.0f, position.x + (50.0f - (100 - HP)), position.y - 135.0f, 0xFFFFFF, true);
+
+
+	DrawRotaGraphF(position.x-8.0, position.y-35.0, 0.1, 0.0, image, TRUE, flip_flag);
+
 
 #ifdef DEBUG
 	//残りHPの表示
@@ -114,9 +121,9 @@ void Oracle::HPControl(int Damage)
 	
 	GameObjectManager* object = GameObjectManager::GetInstance();
 
-	if (!summon_flag)
+	/*if (!summon_flag)
 	{
-		if ( HP<= max_Hp / 2)
+		if ( HP <= max_Hp / 2)
 		{
 			summon_flag = true;
 		}
@@ -124,7 +131,7 @@ void Oracle::HPControl(int Damage)
 		{
 			object->CreateObject<P_Tank>(Vector2D(location.x, location.y + 30.0f));
 		}
-	}
+	}*/
 
 }
 

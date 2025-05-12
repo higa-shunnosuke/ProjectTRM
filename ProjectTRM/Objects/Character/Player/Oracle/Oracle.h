@@ -10,6 +10,7 @@ private:
 	Oracle* player;			// 巫女のポインタ
 	int max_Hp = 100;
 
+
 public:
 	//コンストラクタ
 	Oracle();
