@@ -5,13 +5,23 @@
 #include "../Objects/GameObject.h"
 #include "../Utility/ResourceManager.h"
 
+struct LightDetail {
+	GameObject* object;
+	float size;
+
+	bool operator==(const LightDetail detail) const
+	{
+		return object == detail.object;
+	}
+};
+
 /// <summary>
 /// ライトマップ管理クラス
 /// </summary>
 class LightMapManager :public Singleton<LightMapManager>
 {
 private:
-	std::vector<GameObject*> light_list;	// 追従リスト
+	std::vector<LightDetail> light_list;	// 追従リスト
 	int light_graph;						// 光の画像
 	int light_screen;						// ライトマップ
 	int screen_brightness;					// 画面の明るさ（0～255）
@@ -37,10 +47,10 @@ public:
 	/// ライト追加処理
 	/// </summary>
 	/// <param name="obj">追従するオブジェクト</param>
-	void AddLight(GameObject* obj)
+	void AddLight(LightDetail light)
 	{
 		// 追従リストに追加
-		light_list.push_back(obj);
+		light_list.push_back(light);
 	}
 
 	/// <summary>
@@ -51,7 +61,11 @@ public:
 	{
 		// 追従リストのから削除
 		light_list.erase(
-			std::remove(light_list.begin(), light_list.end(), obj),
+			std::remove_if(light_list.begin(), light_list.end(),
+				[obj](const LightDetail& light)
+				{
+					return light.object == obj;
+				}),
 			light_list.end());
 	}
 
@@ -69,16 +83,16 @@ public:
 		
 		// 追跡リスト内の座標に光の画像を加算合成
 		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-		for (GameObject* obj:light_list)
+		for (LightDetail light :light_list)
 		{
-			if (obj != nullptr)
+			if (light.object != nullptr)
 			{
 				// 座標を取得
-				Vector2D light_pos = obj->GetLocation();
+				Vector2D light_pos = light.object->GetLocation();
 
 				// ライトマップ上に光を描画
 				DrawRotaGraphF(light_pos.x, light_pos.y,
-					1.0, 0.0,light_graph, TRUE,0);
+					light.size, 0.0,light_graph, TRUE,0);
 			}
 		}
 		// ブレンドモードを初期化

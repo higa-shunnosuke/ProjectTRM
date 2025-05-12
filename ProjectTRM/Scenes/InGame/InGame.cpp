@@ -375,9 +375,13 @@ void InGame::UnitSelection()
 			{
 				if (cost - 10 >= 0)
 				{
-					// 光を追加 & タンクを生成
-					light->AddLight(object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f)));
-					object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+					// タンクを生成
+					GameObject* obj = object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+					// 光を生成
+					LightDetail detail;
+					detail.object = obj;
+					detail.size = 1.0;
+					light->AddLight(detail);
 					cost -= 10;
 					
 					//summon_flag[cursor] = true;
@@ -391,8 +395,13 @@ void InGame::UnitSelection()
 			{
 				if (cost - 20 >= 0)
 				{
-					// 光を追加 & 近接を生成
-					light->AddLight(object->CreateObject<P_Melee>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f)));
+					// 近接を生成
+					GameObject* obj = object->CreateObject<P_Melee>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+					// 光を生成
+					LightDetail detail;
+					detail.object = obj;
+					detail.size = 0.5;
+					light->AddLight(detail);
 					cost -= 20;
 					//summon_flag[cursor] = true;
 					summon_time[cursor] = std::chrono::steady_clock::now();
