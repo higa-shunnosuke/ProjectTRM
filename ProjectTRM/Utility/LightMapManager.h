@@ -21,7 +21,7 @@ struct LightDetail {
 class LightMapManager :public Singleton<LightMapManager>
 {
 private:
-	std::vector<LightDetail> light_list;	// 追従リスト
+	std::vector<LightDetail> lights_list;	// ライトリスト
 	int light_graph;						// 光の画像
 	int light_screen;						// ライトマップ
 	int screen_brightness;					// 画面の明るさ（0～255）
@@ -49,8 +49,8 @@ public:
 	/// <param name="obj">追従するオブジェクト</param>
 	void AddLight(LightDetail light)
 	{
-		// 追従リストに追加
-		light_list.push_back(light);
+		// ライトリストに追加
+		lights_list.push_back(light);
 	}
 
 	/// <summary>
@@ -59,14 +59,14 @@ public:
 	/// <param name="obj">追従しているオブジェクト</param>
 	void DeleteLight(GameObject* obj)
 	{
-		// 追従リストのから削除
-		light_list.erase(
-			std::remove_if(light_list.begin(), light_list.end(),
+		// ライトリストのから削除
+		lights_list.erase(
+			std::remove_if(lights_list.begin(), lights_list.end(),
 				[obj](const LightDetail& light)
 				{
 					return light.object == obj;
 				}),
-			light_list.end());
+			lights_list.end());
 	}
 
 	/// <summary>
@@ -81,9 +81,9 @@ public:
 			GetColor(screen_brightness, screen_brightness, screen_brightness),
 			TRUE);
 		
-		// 追跡リスト内の座標に光の画像を加算合成
+		// ライトリスト内の座標に光の画像を加算合成
 		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-		for (LightDetail light :light_list)
+		for (LightDetail light :lights_list)
 		{
 			if (light.object != nullptr)
 			{
@@ -102,6 +102,25 @@ public:
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		// 描画先を表画面に戻す
 		SetDrawScreen(DX_SCREEN_BACK);
+
+#ifdef DEBUG
+		for (LightDetail light : lights_list)
+		{
+			if (light.object != nullptr)
+			{
+				// 座標を取得
+				Vector2D light_pos = light.object->GetLocation();
+
+				// カメラ座標をもとに描画位置を計算
+				light_pos.x -= camera_pos.x - D_WIN_MAX_X / 2;
+
+				// ライト範囲を表示
+				DrawCircle(light_pos.x, light_pos.y, light.size * 200, 
+					0x0000ff, 0, TRUE);
+			}
+		}
+		
+#endif
 	}
 
 	/// <summary>
@@ -125,5 +144,14 @@ public:
 	{
 		// 画面の明るさを調整
 		screen_brightness = value;
+	}
+
+	/// <summary>
+	///  ライトリスト取得処理
+	/// </summary>
+	/// <returns>ライトリスト</returns>
+	const std::vector<LightDetail>& GetLightsList() const
+	{
+		return lights_list;
 	}
 };

@@ -78,9 +78,9 @@ public:
 	}
 
 	/// <summary>
-	///  オブジェクトリス取得処理
+	///  オブジェクトリスト取得処理
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>オブジェクトリスト</returns>
 	const std::vector<GameObject*>& GetObjectsList() const
 	{
 		return game_objects_list;

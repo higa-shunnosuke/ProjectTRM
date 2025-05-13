@@ -1,4 +1,5 @@
 #include "E_Tank.h"
+#include "../../../GameObjectManager.h"
 
 // 敵近接のカウンタを初期化
 size_t E_Tank::count = 0;
@@ -114,7 +115,8 @@ void E_Tank::Draw(const Vector2D camera_pos) const
 // 終了時処理
 void E_Tank::Finalize()
 {
-
+	GameObjectManager* object = GameObjectManager::GetInstance();
+	object->DestroyObject(this);
 }
 
 // 当たり判定通知処理
