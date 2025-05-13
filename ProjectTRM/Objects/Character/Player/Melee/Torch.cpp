@@ -20,13 +20,18 @@ void Torch::Initialize()
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
 	animation = rm->GetImages("Resource/Images/Unit/Melee/Torch/Torch_Move.png", 4, 4, 1, 32, 32);
-	life_second = 10.0f;
-	now_state = State::Move;
+	
 	LightMapManager* light = LightMapManager::GetInstance();
 	LightDetail detail;
 	detail.object = this;
 	detail.size = 0.5f;
 	light->AddLight(detail);
+
+	z_layer = 1;	
+	
+	life_second = 10.0f;
+	
+	now_state = State::Move;
 }
 
 // XVˆ—

@@ -62,7 +62,7 @@ void P_Melee::Initialize()
 	Damage = 4;
 
 	// HP‰Šú‰»
-	HP = MAX_HP;
+	HP = 10;
 
 	object = GameObjectManager::GetInstance();
 
@@ -118,9 +118,6 @@ void P_Melee::Update(float delta_second)
 	}
 
 	old_state = now_state;
-
-
-
 }
 
 // •`‰æˆ—
@@ -165,7 +162,6 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 void P_Melee::Finalize()
 {
 	LightMapManager* light = LightMapManager::GetInstance();
-	object->CreateObject<Torch>(this->location);
 	light->DeleteLight(this);
 	object->DestroyObject(this);
 }
@@ -317,6 +313,7 @@ void P_Melee::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		if (Anim_count >= 2)
 		{
+			object->CreateObject<Torch>(this->location);
 			Finalize();
 		}
 		break;

@@ -3,9 +3,6 @@
 #include "../../Character.h"
 #include "../../../GameObjectManager.h"
 
-
-#define MAX_HP (10)
-
 // ゲームオブジェクト基底クラス
 class P_Melee :public Character
 {
