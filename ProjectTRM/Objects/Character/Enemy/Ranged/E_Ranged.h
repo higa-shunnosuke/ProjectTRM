@@ -27,33 +27,36 @@ public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	virtual void Initialize();
+	virtual void Initialize() override;
 	/// <summary>
 	/// 更新処理
 	/// </summary>
 	/// <param name="delta_second">1フレームあたりの時間</param>
-	virtual void Update(float delta_second);
+	virtual void Update(float delta_second) override;
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	virtual void Draw(const Vector2D camera_pos) const;
+	virtual void Draw(const Vector2D camera_pos) const override;
 	/// <summary>
 	/// 終了時処理
 	/// </summary>
-	virtual void Finalize();
+	virtual void Finalize() override;
 
 public:
 	/// <summary>
 	/// 当たり判定通知処理
 	/// </summary>
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
-	virtual void OnHitCollision(GameObject* hit_object);
-
+	virtual void OnHitCollision(GameObject* hit_object) override;
 	/// <summary>
 	/// 攻撃範囲通知処理
 	/// </summary>
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
-	virtual void OnAreaDetection(GameObject* hit_object);
+	virtual void OnAreaDetection(GameObject* hit_object) override;
+	/// <summary>
+	/// 攻撃範囲通知処理
+	/// </summary>
+	virtual void NoHit() override;
 
 private:
 	/// <summary>

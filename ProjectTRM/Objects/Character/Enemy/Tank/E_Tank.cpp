@@ -137,18 +137,19 @@ void E_Tank::OnAreaDetection(GameObject* hit_object)
 		{
 			now_state = State::Attack;
 		}
-		// 待機状態なら攻撃状態にする
+		// 待機状態なら待機する
 		else if (now_state == State::Idle)
 		{
 			// 現在時刻を取得
 			auto now_time = std::chrono::steady_clock::now();
 
-			// 待機時間
+			// 待機時間が終わったら攻撃状態にする
 			if (now_time - recovery_time > std::chrono::milliseconds(1000))
 			{
 				now_state = State::Attack;
 			}
 		}
+		// 攻撃状態なら攻撃する
 		else if (now_state == State::Attack)
 		{
 			if (Anim_count == 3)
@@ -163,6 +164,28 @@ void E_Tank::OnAreaDetection(GameObject* hit_object)
 				now_state = State::Move;
 			}
 		}
+	}
+}
+
+// 攻撃範囲通知処理
+void E_Tank::NoHit()
+{
+	// 待機状態なら待機する
+	if (now_state == State::Idle)
+	{
+		// 現在時刻を取得
+		auto now_time = std::chrono::steady_clock::now();
+
+		// 待機時間が終わったら移動状態にする
+		if (now_time - recovery_time > std::chrono::milliseconds(1000))
+		{
+			now_state = State::Move;
+		}
+	}
+	// 攻撃状態でなければ移動状態にする
+	else if (now_state != State::Attack)
+	{
+		now_state = State::Move;
 	}
 }
 

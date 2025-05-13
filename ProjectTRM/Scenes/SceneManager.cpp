@@ -29,10 +29,8 @@ void SceneManager::Update(float delta_second)
 	eSceneType next_scene_type = current_scene->Update(delta_second);
 
 	// オブジェクトマネージャーの情報取得
-	GameObjectManager* object;
-	// オブジェクトマネージャーを初期化
-	object = GameObjectManager::GetInstance();
-
+	GameObjectManager* object = GameObjectManager::GetInstance();
+	
 	// オブジェクトリストを取得
 	std::vector<GameObject*> objects_list = object->GetObjectsList();
 
@@ -236,10 +234,15 @@ void SceneManager::CheckHitBox(GameObject* target, GameObject* partner)
 		Vector2D box_size = (tc.attack_size + pc.box_size) / 2.0f;
 		
 		// 矩形同士の当たり判定
-		if ((fabsf(diff.x) < box_size.x) && (fabsf(diff.y) < box_size.y))
+		if ((fabsf(diff.x) <= box_size.x) && (fabsf(diff.y) <= box_size.y))
 		{
 			// 当たっていることを通知する
 			target->OnAreaDetection(partner);
+		}
+		else
+		{
+			// 当たっていないことを通知する
+			target->NoHit();
 		}
 	}
 }

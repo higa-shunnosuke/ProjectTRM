@@ -4,7 +4,6 @@
 
 #include "../../Utility/StageData.h"
 #include "../../Utility/Camera/Camera.h"
-#include "../../Utility/LightMapManager.h"
 
 #include "../../Objects/Block/Ground.h"
 #include "../../Objects/Character/Player/Melee/P_Melee.h"
@@ -135,9 +134,12 @@ eSceneType InGame::Update(const float& delta_second)
 // 描画処理
 void InGame::Draw() const
 {
+	// カメラの情報取得
+	Camera* camera = Camera::GetInstance();
+
 	// 光を加算合成
 	LightMapManager* light_map = LightMapManager::GetInstance();
-	light_map->DrawLights();
+	light_map->DrawLights(camera->GetCameraPos());
 	
 	// 親クラスの描画処理を呼び出す
 	__super::Draw();
@@ -208,7 +210,6 @@ void InGame::Draw() const
 	DrawFormatString(1200, 10, 0xffffff, "%d", cost);
 
 #if _DEBUG
-	Camera* camera = Camera::GetInstance();
 	// カメラ座標描画
 	DrawFormatString(500, 300, 0xffffff, "%f", camera->GetCameraPos().x);
 
@@ -364,8 +365,6 @@ void InGame::UnitSelection()
 	{
 		// オブジェクトマネージャーのポインタ
 		GameObjectManager* object = GameObjectManager::GetInstance();
-		// ライトマップマネージャーのポインタ
-		LightMapManager* light = LightMapManager::GetInstance();
 
 		switch (cursor)
 		{
@@ -377,11 +376,6 @@ void InGame::UnitSelection()
 				{
 					// タンクを生成
 					GameObject* obj = object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
-					// 光を生成
-					LightDetail detail;
-					detail.object = obj;
-					detail.size = 1.0;
-					light->AddLight(detail);
 					cost -= 10;
 					
 					//summon_flag[cursor] = true;
@@ -397,11 +391,6 @@ void InGame::UnitSelection()
 				{
 					// 近接を生成
 					GameObject* obj = object->CreateObject<P_Melee>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
-					// 光を生成
-					LightDetail detail;
-					detail.object = obj;
-					detail.size = 0.5;
-					light->AddLight(detail);
 					cost -= 20;
 					//summon_flag[cursor] = true;
 					summon_time[cursor] = std::chrono::steady_clock::now();

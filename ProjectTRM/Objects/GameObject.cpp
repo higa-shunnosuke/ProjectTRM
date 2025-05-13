@@ -58,6 +58,12 @@ void GameObject::OnAreaDetection(GameObject* hit_object)
 
 }
 
+// UŒ‚”ÍˆÍ’Ê’mˆ—
+void GameObject::NoHit()
+{
+
+}
+
 // ˆÊ’uÀ•Wæ“¾ˆ—
 const Vector2D& GameObject::GetLocation() const
 {

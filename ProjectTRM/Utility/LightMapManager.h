@@ -72,7 +72,7 @@ public:
 	/// <summary>
 	/// 光の加算合成処理
 	/// </summary>
-	void DrawLights() const
+	void DrawLights(const Vector2D camera_pos) const
 	{
 		// 描画先をライトマップに反映する
 		SetDrawScreen(light_screen);
@@ -89,6 +89,9 @@ public:
 			{
 				// 座標を取得
 				Vector2D light_pos = light.object->GetLocation();
+
+				// カメラ座標をもとに描画位置を計算
+				light_pos.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
 				// ライトマップ上に光を描画
 				DrawRotaGraphF(light_pos.x, light_pos.y,
