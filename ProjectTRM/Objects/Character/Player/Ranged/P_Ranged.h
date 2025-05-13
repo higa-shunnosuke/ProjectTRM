@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Character.h"
+#include "../../../GameObjectManager.h"
 
 // ゲームオブジェクト基底クラス
 class P_Ranged :public Character
@@ -10,7 +11,9 @@ private:
 public:
 	static size_t GetCount();
 private:
-	int old_HP;
+	int lane;
+	bool flag;
+	GameObjectManager* object;
 public:
 	//コンストラクタ
 	P_Ranged();
@@ -47,6 +50,12 @@ public:
 	/// </summary>
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
 	virtual void OnAreaDetection(GameObject* hit_object);
+
+	/// <summary>
+	/// HP管理処理
+	/// </summary>
+	/// <param name="hit_object">ダメージ</param>
+	virtual void HPControl(int Damage) override;
 
 private:
 	/// <summary>

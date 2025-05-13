@@ -2,11 +2,17 @@
 
 #include "../../Character.h"
 
+#define GRAVITY (9.8f)
+#define INITIAL_SPEED (100.0f)
+
 // ゲームオブジェクト基底クラス
 class P_Projectile :public Character
 {
 private:
 	int Damage;	//ダメージ
+	Vector2D target_location;
+	Vector2D old_location;
+	float angle;
 
 public:
 	//コンストラクタ
@@ -39,6 +45,12 @@ public:
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
 	virtual void OnHitCollision(GameObject* hit_object);
 
+	/// <summary>
+	/// 攻撃範囲通知処理
+	/// </summary>
+	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
+	virtual void OnAreaDetection(GameObject* hit_object);
+
 private:
 	/// <summary>
 	/// 移動処理
@@ -55,5 +67,8 @@ private:
 	/// </summary>
 	/// <param name="hit_object">1フレームあたりの時間</param>
 	virtual void EffectControl(float delta_second);
+
+public:
+	void SetTargetLocation(Vector2D location);
 
 };

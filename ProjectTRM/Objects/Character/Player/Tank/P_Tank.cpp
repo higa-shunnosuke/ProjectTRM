@@ -189,7 +189,7 @@ void P_Tank::OnAreaDetection(GameObject* hit_object)
 		}
 		else
 		{
-			velocity.x = -5.0f;
+			velocity.x = -3.0f;
 		}
 	}
 }
