@@ -39,6 +39,7 @@ void InGame::Initialize()
 	// 親クラスの初期化処理を呼び出す
 	__super::Initialize();
 
+
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 	unit_ui[0]= rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32)[0]	;
@@ -209,6 +210,7 @@ void InGame::Draw() const
 	// コスト表示
 	DrawFormatString(1200, 10, 0xffffff, "%d", cost);
 
+
 #if _DEBUG
 	// カメラ座標描画
 	DrawFormatString(500, 300, 0xffffff, "%f", camera->GetCameraPos().x);
@@ -218,6 +220,8 @@ void InGame::Draw() const
 	DrawFormatString(0, 0, 0xffffff, "InGame");
 	SetFontSize(32);
 	DrawFormatString(100, 300, 0xffffff, "Spaceを押してください");
+	DrawFormatString(1000, 0, 0xffffff, "Stage:%d", StageNumber);
+
 #endif
 }
 
@@ -227,7 +231,7 @@ void InGame::Finalize()
 	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();
 
-	SceneBase::win_flg = this->win_flg;
+	//SceneBase::win_flg = this->win_flg;
 
 }
 

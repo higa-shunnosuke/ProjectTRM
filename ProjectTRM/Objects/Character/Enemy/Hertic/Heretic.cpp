@@ -12,7 +12,7 @@
 #include "../Boss/Boss.h"
 
 #define COST_CHARGE 60.0f
-#define COST_UPNUM 1
+#define COST_UPNUM 10
 
 
 //#define TEST
@@ -29,7 +29,7 @@ Heretic::Heretic() :
 	summon_flag(),
 	CountFlame(0.0f),
 	CountTime(0),
-	Cost(0),
+	Cost(30),
 	summon_effect()
 {
 
@@ -77,8 +77,6 @@ void Heretic::Update(float delta_second)
 	}
 #endif // DEBUG
 
-
-
 	summon_flag = false;
 
 	if (Fstflag)
@@ -93,8 +91,7 @@ void Heretic::Update(float delta_second)
 
 	if (now_time - prev_time > std::chrono::milliseconds(500))
 	{
-		Cost++;
-		prev_time = std::chrono::steady_clock::now();
+		Cost+= COST_UPNUM;
 	}
 #else
 	CountFlame += 1.0f;
@@ -126,17 +123,19 @@ void Heretic::Update(float delta_second)
 
 	if (summon_effect)
 	{
-		Anim_flame += 1.0f;
-		if (Anim_flame >= 10.0f)
+		auto now_time = std::chrono::steady_clock::now();
+
+		if (now_time - prev_time > std::chrono::milliseconds(100))
 		{
 			Anim_count++;
-			Anim_flame = 0.0f;
+			prev_time = std::chrono::steady_clock::now();
+			if (Anim_count >= EffectImage.size())
+			{
+				Anim_count = 0;
+				summon_effect = false;
+			}
 		}
-		if (Anim_count > EffectImage.size()-1)
-		{
-			Anim_count = 0;
-			summon_effect = false;
-		}
+
 	}
 }
 
@@ -220,51 +219,107 @@ void Heretic::ThinkingEnemy()
 	int Erange_count = (int)E_Ranged::GetCount() * RANGE_eva;
 	Ecount_sum += (Etank_count + Emelee_count + Erange_count);
 
-	//・コストが最大になるなら手持ち最大コストを生成する。
-	if (Cost >= 500)
-	{
-		//・生成するでな
-		Cost -= RANGE_cost;
-		Ingame->CreateEnemy(E_enemy::Range);
-		summon_flag = true;
-		//この辺の処理は関数に飛ばそうかな…
-	}
 
-	//・相手の評価が高くなった際に手持ち最大コストを生成する。
-	if (Pcount_sum > Ecount_sum + 100 && Cost >= MELEE_cost)
-	{
-		//【プロト版のみ】
-		//コストをマイナスになっても借金して出しましょう
-		Cost -= BOSS_cost;
-		Ingame->CreateEnemy(E_enemy::Boss);
-		summon_flag = true;
-	}
-	//・相手の評価が低くなった際に手持ち最小コストを生成する。
-	else if (Cost >= ENEMY_BOTTOM_COST)
+	//スタンダード型
 	{
 		//・生成するでな
-		//タンクは一定数をキープ
-		//前衛が少ないと出す
-		//前衛が多いと後衛を出す
-		if ((Etank_count / TANK_eva) < 5)
+		//タンクは5体をキープ
+		//前衛は3体
+		//上記を満たして後衛
+
+		//・コストが最大になるなら手持ち最大コストを生成する。
+		if (Cost >= 500)
 		{
-			Cost -= TANK_cost;
-			Ingame->CreateEnemy(E_enemy::Tank);
-			summon_flag = true;
-		}
-		else if (((Emelee_count / MELEE_eva) <= (Erange_count / RANGE_eva) + 3) && Cost >= MELEE_cost)
-		{
-			Cost -= MELEE_cost;
-			Ingame->CreateEnemy(E_enemy::Melee);
-			summon_flag = true;
-		}
-		else if (Cost >= RANGE_cost)
-		{
+			//・生成するでな
 			Cost -= RANGE_cost;
 			Ingame->CreateEnemy(E_enemy::Range);
 			summon_flag = true;
+			//この辺の処理は関数に飛ばそうかな…
+		}
+		//・相手の評価が高くなった際に手持ち最大コストを生成する。
+		if (Pcount_sum > Ecount_sum + 100 && Cost >= MELEE_cost)
+		{
+			//【プロト版のみ】
+			//コストをマイナスになっても借金して出しましょう
+			Cost -= BOSS_cost;
+			Ingame->CreateEnemy(E_enemy::Boss);
+			summon_flag = true;
+		}
+		//・相手の評価が低くなった際に手持ち最小コストを生成する。
+		else if (Cost >= ENEMY_BOTTOM_COST)
+		{
+			//・生成するでな
+			//タンクは一定数をキープ
+			//前衛が少ないと出す
+			//前衛が多いと後衛を出す
+			if ((Etank_count / TANK_eva) < 5)
+			{
+				Cost -= TANK_cost;
+				Ingame->CreateEnemy(E_enemy::Tank);
+				summon_flag = true;
+			}
+			else if (((Emelee_count / MELEE_eva) <= (Erange_count / RANGE_eva) + 3) && Cost >= MELEE_cost)
+			{
+				Cost -= MELEE_cost;
+				Ingame->CreateEnemy(E_enemy::Melee);
+				summon_flag = true;
+			}
+			else if (Cost >= RANGE_cost)
+			{
+				Cost -= RANGE_cost;
+				Ingame->CreateEnemy(E_enemy::Range);
+				summon_flag = true;
+			}
 		}
 	}
+
+	//攻撃的
+	//{
+	//	//・コストが最大になるなら手持ち最大コストを生成する。
+	//	if (Cost >= 500)
+	//	{
+	//		//・生成するでな
+	//		Cost -= RANGE_cost;
+	//		Ingame->CreateEnemy(E_enemy::Range);
+	//		summon_flag = true;
+	//		//この辺の処理は関数に飛ばそうかな…
+	//	}
+	//	//・相手の評価が高くなった際に手持ち最大コストを生成する。
+	//	if (Pcount_sum > Ecount_sum + 100 && Cost >= MELEE_cost)
+	//	{
+	//		//【プロト版のみ】
+	//		//コストをマイナスになっても借金して出しましょう
+	//		Cost -= BOSS_cost;
+	//		Ingame->CreateEnemy(E_enemy::Boss);
+	//		summon_flag = true;
+	//	}
+	//	//・相手の評価が低くなった際に手持ち最小コストを生成する。
+	//	else if (Cost >= ENEMY_BOTTOM_COST)
+	//	{
+	//		//・生成するでな
+	//		//タンクは少なく
+	//		//前衛を多く
+	//		//前衛5体で後衛を出す
+	//		if ((Etank_count / TANK_eva) < 2)
+	//		{
+	//			Cost -= TANK_cost;
+	//			Ingame->CreateEnemy(E_enemy::Tank);
+	//			summon_flag = true;
+	//		}
+	//		else if (((Emelee_count / MELEE_eva) <= (Erange_count / RANGE_eva) + 5) && Cost >= MELEE_cost)
+	//		{
+	//			Cost -= MELEE_cost;
+	//			Ingame->CreateEnemy(E_enemy::Melee);
+	//			summon_flag = true;
+	//		}
+	//		else if (Cost >= RANGE_cost)
+	//		{
+	//			Cost -= RANGE_cost;
+	//			Ingame->CreateEnemy(E_enemy::Range);
+	//			summon_flag = true;
+	//		}
+	//	}
+	//}
 }
 
 // 当たり判定通知処理

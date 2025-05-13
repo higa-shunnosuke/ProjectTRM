@@ -19,7 +19,7 @@ SceneManager::~SceneManager()
 void SceneManager::Initialize()
 {
 	// 最初のシーンをタイトル画面にする
-	ChangeScene(eSceneType::in_game);
+	ChangeScene(eSceneType::title);
 }
 
 //  更新処理
@@ -91,14 +91,15 @@ void SceneManager::Update(float delta_second)
 		}
 	}
 
-	//オブジェクト削除判定処理
-	for (int i = 0; i < objects_list.size(); i++)
-	{
-		if (objects_list[i]->GetHP() <= 0)
-		{
-			object->DestroyObject(objects_list[i]);
-		}
-	}
+	//削除予定
+	////オブジェクト削除判定処理
+	//for (int i = 0; i < objects_list.size(); i++)
+	//{
+	//	if (objects_list[i]->GetHP() <= 0)
+	//	{
+	//		object->DestroyObject(objects_list[i]);
+	//	}
+	//}
 
 	// フォントサイズ変更
 	SetFontSize(32);
@@ -157,6 +158,7 @@ void SceneManager::ChangeScene(eSceneType next_type)
 	if (next_scene != nullptr && current_scene != nullptr)
 	{
 	next_scene->win_flg = current_scene->win_flg;
+	next_scene->StageNumber = current_scene->StageNumber;
 	}
 
 	// シーン情報が格納されていたら、削除する

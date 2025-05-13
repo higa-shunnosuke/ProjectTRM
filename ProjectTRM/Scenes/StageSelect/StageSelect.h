@@ -6,8 +6,7 @@
 class StageSelect : public SceneBase
 {
 private:
-
-
+	int SerectStage = 1;
 public:
 	// コンストラクタ
 	StageSelect();

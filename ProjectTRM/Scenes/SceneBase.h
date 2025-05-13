@@ -35,13 +35,14 @@ protected:
 public:
 
 	bool win_flg;				//プレイヤーが勝利したかどうか
+	int StageNumber;
 
 
 	// コンストラクタ
-	SceneBase():
+	SceneBase() :
 		cursor()
 	{
-		
+
 	}
 	// デストラクタ
 	virtual ~SceneBase()
@@ -56,7 +57,7 @@ public:
 	/// </summary>
 	virtual void Initialize()
 	{
-		
+
 	}
 
 	/// <summary>
@@ -119,9 +120,14 @@ public:
 	/// <returns>現在のシーンタイプ情報</returns>
 	virtual const eSceneType GetNowSceneType() const = 0;
 
-	  void IsPlayerWin(bool setflg) 
+	void IsPlayerWin(bool setflg)
 	{
 		win_flg = setflg;
 	}
+	void SetStageNumber(int Num)
+	{
+		StageNumber = Num;
+	}
+
 };
 

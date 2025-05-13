@@ -124,7 +124,7 @@ void Result::Draw() const
 	else
 	{
 #ifdef DEBUG
-		SetFontSize(60);
+		SetFontSize(80);
 		DrawFormatString(500, 350, 0xffffff, "%d", count);
 		SetFontSize(32);
 		DrawString(500, 500, "Space : Retry", 0xffffff);
