@@ -39,9 +39,6 @@ void P_Ranged::Initialize()
 	attack_flag = false;
 	flip_flag = true;
 
-	//交戦中描画用の座標をずらすためのフラグ
-	flag = false;
-
 	now_state = State::Move;
 
 	// HP初期化
@@ -69,7 +66,6 @@ void P_Ranged::Update(float delta_second)
 			{
 				now_state = State::Move;
 				attack_flame = 0.0f;
-				flag = false;
 			}
 			else
 			{
@@ -111,10 +107,7 @@ void P_Ranged::Draw(const Vector2D camera_pos) const
 
 	position.y += z_layer * 8;
 
-	if (flag == true)
-	{
-		position.y -= lane * 3;
-	}
+	position.y -= lane * 3;
 
 	// 近接ユニットの描画
 		// オフセット値を基に画像の描画を行う
@@ -158,7 +151,6 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 
 		if (hit_col.object_type == eObjectType::Enemy)
 		{
-			flag = true;
 			velocity.x = 0.0f;
 			if (attack_flag == false)
 			{

@@ -14,7 +14,6 @@ public:
 private:
 	int Damage;	//ƒ_ƒ[ƒW
 	int lane;
-	bool flag;
 	LightMapManager* light;
 
 

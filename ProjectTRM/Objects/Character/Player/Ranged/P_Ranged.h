@@ -12,7 +12,6 @@ public:
 	static size_t GetCount();
 private:
 	int lane;
-	bool flag;
 	GameObjectManager* object;
 public:
 	//コンストラクタ

@@ -27,7 +27,7 @@ void Torch::Initialize()
 	detail.size = 0.5f;
 	light->AddLight(detail);
 
-	z_layer = 7;	
+	z_layer = 4;	
 	
 	life_second = 10.0f;
 	
