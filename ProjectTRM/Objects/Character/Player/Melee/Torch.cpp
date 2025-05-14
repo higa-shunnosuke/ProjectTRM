@@ -27,7 +27,7 @@ void Torch::Initialize()
 	detail.size = 0.5f;
 	light->AddLight(detail);
 
-	z_layer = 1;	
+	z_layer = 7;	
 	
 	life_second = 10.0f;
 	
@@ -55,6 +55,8 @@ void Torch::Draw(const Vector2D camera_pos) const
 {
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
+
+	position.y += z_layer * 8;
 
 	// オフセット値を基に画像の描画を行う
 	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE);

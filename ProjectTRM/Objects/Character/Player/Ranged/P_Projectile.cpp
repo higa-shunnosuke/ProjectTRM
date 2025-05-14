@@ -36,6 +36,8 @@ void P_Projectile::Initialize()
 
     now_state = State::Idle;
 
+    lane = rand() % 3 + 1;
+
     Damage = 6;
 
 }
@@ -61,6 +63,8 @@ void P_Projectile::Update(float delta_second)
         velocity.x = speed * std::cos(angle_init);
         velocity.y = speed * std::sin(angle_init);
 
+        end_loc = location.y;
+
         now_state = State::Move;
     }
 
@@ -72,6 +76,10 @@ void P_Projectile::Update(float delta_second)
     angle = std::atan2((location.y - old_location.y), (location.x - old_location.x));
 
     old_location = location;
+    if (location.y >= end_loc  + (collision.attack_size.y / 2))
+    {
+        Finalize();
+    }
 }
 
 // 描画処理
@@ -79,6 +87,8 @@ void P_Projectile::Draw(const Vector2D camera_pos) const
 {
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
+    position.y -= lane * 3;
+
 
 	// オフセット値を基に画像の描画を行う
 	DrawRotaGraphF(position.x, position.y, 2.0, angle, image, TRUE);

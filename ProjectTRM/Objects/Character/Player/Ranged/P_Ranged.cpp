@@ -109,9 +109,11 @@ void P_Ranged::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
+	position.y += z_layer * 8;
+
 	if (flag == true)
 	{
-		position.x -= lane * 5;
+		position.y -= lane * 3;
 	}
 
 	// ‹ßÚƒ†ƒjƒbƒg‚Ì•`‰æ
