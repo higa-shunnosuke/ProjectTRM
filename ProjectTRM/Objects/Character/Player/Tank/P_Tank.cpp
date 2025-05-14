@@ -59,7 +59,7 @@ void P_Tank::Initialize()
 	Damage = 1;
 
 	// HP‰Šú‰»
-	HP = 21;
+	HP = 45;
 
 	lane = rand() % 3 + 1;
 
