@@ -83,6 +83,12 @@ void E_Tank::Update(float delta_second)
 
 	// ó‘ÔXVˆ—
 	old_state = now_state;
+
+	// HP‚ª‚O‚É‚È‚é‚ÆI—¹ˆ—
+	if (HP <= 0)
+	{
+		Finalize();
+	}
 }
 
 // •`‰æˆ—
@@ -189,6 +195,11 @@ void E_Tank::NoHit()
 	{
 		now_state = State::Move;
 	}
+}
+
+void E_Tank::InLightRange()
+{
+	
 }
 
 // UŒ‚ˆ—

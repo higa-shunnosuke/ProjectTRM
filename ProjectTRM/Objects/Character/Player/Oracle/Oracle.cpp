@@ -36,7 +36,7 @@ void Oracle::Initialize()
 	summon_flag = false;
 
 	// HPèâä˙âª
-	HP = 10;
+	HP = 100;
 }
 
 // çXêVèàóù
@@ -68,7 +68,7 @@ void Oracle::Draw(const Vector2D camera_pos) const
 	DrawBoxAA(position.x - 50.0f, position.y - 150.0f, position.x + (50.0f - (100 - HP)), position.y - 135.0f, 0xFFFFFF, true);
 
 
-	DrawRotaGraphF(position.x-8.0, position.y-35.0, 0.1, 0.0, image, TRUE, flip_flag);
+	DrawRotaGraphF(position.x-5.0, position.y+1.0, 0.06, 0.0, image, TRUE, flip_flag);
 
 
 #ifdef DEBUG

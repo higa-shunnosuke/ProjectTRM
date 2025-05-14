@@ -78,6 +78,12 @@ void E_Ranged::Update(float delta_second)
 
 	// ó‘ÔXVˆ—
 	old_state = now_state;
+
+	// HP‚ª‚O‚É‚È‚é‚ÆI—¹ˆ—
+	if (HP <= 0)
+	{
+		Finalize();
+	}
 }
 
 // •`‰æˆ—

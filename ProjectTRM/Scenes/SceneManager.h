@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Utility/Singleton.h"
+#include "../Utility/LightMapManager.h"
 #include "SceneBase.h"
 
 class SceneManager : public Singleton<SceneManager>
@@ -55,4 +56,11 @@ private:
 	/// <param name="target">1つ目のゲームオブジェクト</param>
 	/// <param name="partner">2つ目のゲームオブジェクト</param>
 	void CheckHitBox(GameObject* target, GameObject* partner);
+
+	/// <summary>
+	/// 明暗検知処理
+	/// </summary>
+	/// <param name="target">1つ目のゲームオブジェクト</param>
+	/// <param name="partner">2つ目のゲームオブジェクト</param>
+	void CheckLightRange(LightDetail target, GameObject* partner);
 };

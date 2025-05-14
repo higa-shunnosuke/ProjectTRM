@@ -18,6 +18,8 @@ void Title::Initialize()
 	// 親クラスの初期化処理を呼び出す
 	__super::Initialize();
 	
+	Anim_flame = 0;
+	Anim_count = 0;
 }
 
 // 更新処理
@@ -40,14 +42,13 @@ eSceneType Title::Update(const float& delta_second)
 		return eSceneType::end;
 	}
 
-
-	Anim_flame += 1.0f;
-	if (Anim_flame == 60.0f)
+	Anim_flame += delta_second;
+	if (Anim_flame >= 1.0f)
 	{
 		Anim_count ++;
 		Anim_flame = 0.0f;
 	}
-	if (Anim_count == 4)
+	if (Anim_count > 1)
 	{
 		Anim_count = 0;
 		Anim_flame = 0.0f;
@@ -65,9 +66,9 @@ void Title::Draw() const
 	DrawFormatString(500, 150, 0xff5500, "Project\n -TRM-");
 	SetFontSize(60);
 
-	if (Anim_count <= 1)
+	if (Anim_count == 1)
 	{
-	DrawFormatString(500, 450, 0xff5500, "Press_AnyButton");
+	DrawFormatString(550, 450, 0xff5500, "Press_Enter");
 	}
 
 #ifdef _DEBUG

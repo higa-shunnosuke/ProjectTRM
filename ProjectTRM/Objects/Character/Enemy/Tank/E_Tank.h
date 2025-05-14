@@ -10,6 +10,7 @@ private:
 	static size_t count;
 	std::chrono::steady_clock::time_point anime_time;		// アニメーション開始時間
 	std::chrono::steady_clock::time_point recovery_time;	// 硬直開始時間
+	bool in_light;											// ライトの範囲内にいるか
 
 public:
 	/// <summary>
@@ -60,7 +61,10 @@ public:
 	/// 攻撃範囲通知処理
 	/// </summary>
 	virtual void NoHit() override;
-
+	/// <summary>
+	/// ライト範囲通知処理
+	/// </summary>
+	virtual void InLightRange() override;
 private:
 	/// <summary>
 	/// 攻撃処理

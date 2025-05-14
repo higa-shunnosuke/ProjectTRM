@@ -64,6 +64,12 @@ void GameObject::NoHit()
 
 }
 
+// ライト範囲通知処理
+void GameObject::InLightRange()
+{
+
+}
+
 // 位置座標取得処理
 const Vector2D& GameObject::GetLocation() const
 {

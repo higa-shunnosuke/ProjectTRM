@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "SceneFactory.h"
+#include "../Utility/LightMapManager.h"
 
 // コンストラクタ
 SceneManager::SceneManager() :
@@ -30,7 +31,6 @@ void SceneManager::Update(float delta_second)
 
 	// オブジェクトマネージャーの情報取得
 	GameObjectManager* object = GameObjectManager::GetInstance();
-	
 	// オブジェクトリストを取得
 	std::vector<GameObject*> objects_list = object->GetObjectsList();
 
@@ -88,6 +88,25 @@ void SceneManager::Update(float delta_second)
 					break;
 				}
 			}
+		}
+	}
+
+	// 明暗判定確認処理
+	LightMapManager* light = LightMapManager::GetInstance();
+	std::vector<LightDetail> light_list = light->GetLightsList();
+
+	for (int i = 0; i < light_list.size(); i++)
+	{
+		for (int j = 0; j < objects_list.size(); j++)
+		{
+			// 自分同士の当たり範囲検知処理はしない
+			if (light_list[i].object == objects_list[j])
+			{
+				continue;
+			}
+
+			// 明暗判定確認処理
+			CheckLightRange(light_list[i], objects_list[j]);
 		}
 	}
 
@@ -245,6 +264,34 @@ void SceneManager::CheckHitBox(GameObject* target, GameObject* partner)
 		{
 			// 当たっていないことを通知する
 			target->NoHit();
+		}
+	}
+}
+
+// 明暗検知処理
+void SceneManager::CheckLightRange(LightDetail target, GameObject* partner)
+{
+	// ヌルポチェック
+	if (target.object == nullptr || partner == nullptr)
+	{
+		return;
+	}
+
+	// 当たり判定情報を取得
+	Collision tc = target.object->GetCollision();
+	Collision pc = partner->GetCollision();
+
+	// 判定が有効か確認する
+	if (tc.IsCheckHitTarget(pc.object_type) || pc.IsCheckHitTarget(tc.object_type))
+	{
+		Vector2D circlePos = target.object->GetLocation();
+		float radius = target.size;
+		Vector2D boxPos = partner->GetLocation();
+		Vector2D boxSize = pc.box_size;
+		
+		if (tc.CheckCircleRectCollision(circlePos,radius,boxPos,boxSize))
+		{
+			partner->InLightRange();
 		}
 	}
 }

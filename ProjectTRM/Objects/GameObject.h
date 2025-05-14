@@ -58,6 +58,11 @@ public:
 	/// </summary>
 	virtual void NoHit();
 
+	/// <summary>
+	/// ライト範囲通知処理
+	/// </summary>
+	virtual void InLightRange();
+
 public:
 	/// <summary>
 	/// 位置座標取得処理

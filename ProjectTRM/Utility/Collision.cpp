@@ -1,11 +1,7 @@
 #include "Collision.h"
 #include <math.h>
 
-/// <summary>
-/// 適用オブジェクトか確認する処理
-/// </summary>
-/// <param name="hit_object">相手のオブジェクトタイプ</param>
-/// <returns>適用するオブジェクトなら、true</returns>
+// 適用オブジェクトか確認する処理
 bool Collision::IsCheckHitTarget(eObjectType hit_object) const
 {
 	// 適用するオブジェクトタイプなら、true
@@ -18,4 +14,20 @@ bool Collision::IsCheckHitTarget(eObjectType hit_object) const
 	}
 
 	return false;
+}
+
+// 円と矩形の当たり判定
+bool Collision::CheckCircleRectCollision(Vector2D circlePos, float radius, Vector2D boxPos, Vector2D box_size)
+{
+	// 円の中心と矩形の最近接点の距離を計算
+	float nearestX = (std::max)(boxPos.x, (std::min)(circlePos.x, boxPos.x + box_size.x));
+	float nearestY = (std::max)(boxPos.y, (std::min)(circlePos.y, boxPos.y + box_size.y));
+
+	float dx = circlePos.x - nearestX;
+	float dy = circlePos.y - nearestY;
+
+	// 光の範囲の半径を計算
+	radius = radius * 200;
+
+	return (dx * dx + dy * dy) < (radius * radius);
 }
