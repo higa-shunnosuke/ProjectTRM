@@ -8,9 +8,9 @@ class E_Ranged :public Character
 {
 private:
 	static size_t count;
-	std::chrono::steady_clock::time_point anime_time;		// アニメーション開始時間
-	std::chrono::steady_clock::time_point recovery_time;	// 硬直開始時間
-	bool in_light;											// ライトの範囲内にいるか
+	float anime_time;		// アニメーション時間
+	float recovery_time;	// 硬直時間
+	bool in_light;			// ライトの範囲内にいるか
 
 public:
 	/// <summary>

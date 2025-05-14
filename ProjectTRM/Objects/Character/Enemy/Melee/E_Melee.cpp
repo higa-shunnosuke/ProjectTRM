@@ -12,7 +12,10 @@ size_t E_Melee::GetCount()
 
 // コンストラクタ
 E_Melee::E_Melee() :
-	Damage()
+	Damage(),
+	anime_time(),
+	recovery_time(),
+	in_light(false)
 {
 	count++;
 }
@@ -26,9 +29,6 @@ E_Melee::~E_Melee()
 // 初期化処理
 void E_Melee::Initialize()
 {
-	// 現在時刻を取得
-	anime_time = std::chrono::steady_clock::now();
-
 	is_mobility = true;
 	is_aggressive = true;
 
@@ -62,19 +62,11 @@ void E_Melee::Update(float delta_second)
 	{
 		Movement(delta_second);
 	}
-
-	//// 硬直処理
-	//if (now_state == State::Damage)
-	//{
-	//	// 現在時刻を取得
-	//	auto now_time = std::chrono::steady_clock::now();
-
-	//	// 硬直時間
-	//	if (now_time - recovery_time > std::chrono::milliseconds(1000))
-	//	{
-	//		now_state = State::Move;
-	//	}
-	//}
+	// 待機処理
+	else if (now_state == State::Idle)
+	{
+		recovery_time += delta_second;
+	}
 
 	// アニメーション管理処理
 	AnimationControl(delta_second);
@@ -143,30 +135,22 @@ void E_Melee::OnAreaDetection(GameObject* hit_object)
 		{
 			now_state = State::Attack;
 		}
-		// 待機状態なら攻撃状態にする
+		// 待機状態なら待機する
 		else if (now_state == State::Idle)
 		{
-			// 現在時刻を取得
-			auto now_time = std::chrono::steady_clock::now();
-
-			// 待機時間
-			if (now_time - recovery_time > std::chrono::milliseconds(1000))
+			// 待機時間が終わったら攻撃状態にする
+			if (recovery_time >= 1.0f)
 			{
 				now_state = State::Attack;
 			}
 		}
+		// 攻撃状態なら攻撃する
 		else if (now_state == State::Attack)
 		{
 			if (Anim_count == 3)
 			{
 				// 攻撃処理
 				Attack(hit_object);
-			}
-
-			// 攻撃対象が死んだら移動状態にする
-			if (hit_object->GetHP() <= 0)
-			{
-				now_state = State::Move;
 			}
 		}
 	}
@@ -178,11 +162,8 @@ void E_Melee::NoHit()
 	// 待機状態なら待機する
 	if (now_state == State::Idle)
 	{
-		// 現在時刻を取得
-		auto now_time = std::chrono::steady_clock::now();
-
 		// 待機時間が終わったら移動状態にする
-		if (now_time - recovery_time > std::chrono::milliseconds(1000))
+		if (recovery_time >= 1.0f)
 		{
 			now_state = State::Move;
 		}
@@ -246,12 +227,6 @@ void E_Melee::AnimationControl(float delta_second)
 		case State::Attack:
 			animation = rm->GetImages("Resource/Images/Enemy/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
 			image = animation[Anim_count];
-			// 硬直開始
-			if (Anim_count == 3)
-			{
-				now_state = State::Idle;
-				recovery_time = std::chrono::steady_clock::now();
-			}
 			break;
 		case State::Damage:
 			break;
@@ -275,22 +250,20 @@ void E_Melee::AnimationControl(float delta_second)
 		if (Anim_count == 3)
 		{
 			now_state = State::Idle;
-			recovery_time = std::chrono::steady_clock::now();
+			recovery_time = 0;
 		}
 		break;
 	case State::Damage:
-		// ダメージ状態開始
-		recovery_time = std::chrono::steady_clock::now();
 		break;
 	case State::Death:
 		break;
 	}
 
-	// 現在時刻を取得
-	auto now_time = std::chrono::steady_clock::now();
+	// アニメーションの更新
+	anime_time += delta_second;
 
 	// アニメーション間隔
-	if (now_time - anime_time > std::chrono::milliseconds(200))
+	if (anime_time >= 0.1f)
 	{
 		// 次のアニメーションに進める
 		if (Anim_count < 3)
@@ -302,8 +275,8 @@ void E_Melee::AnimationControl(float delta_second)
 			Anim_count = 0;
 		}
 
-		// アニメーション開始時間の更新
-		anime_time = std::chrono::steady_clock::now();
+		// アニメーション開始時間の初期化
+		anime_time = 0;
 	}
 }
 // エフェクト制御処理
