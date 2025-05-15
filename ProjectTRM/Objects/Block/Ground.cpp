@@ -13,9 +13,6 @@ Ground::~Ground()
 
 void Ground::Initialize()
 {
-	// âÊëúÇÃì«Ç›çûÇ›
-	ResourceManager* rm = ResourceManager::GetInstance();
-
 	is_mobility = false;
 
 	collision.is_blocking = true;
@@ -39,9 +36,6 @@ void Ground::Draw(const Vector2D camera_pos) const
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 	position.y += camera_pos.y - D_WIN_MAX_Y / 2;
 
-	// ínñ ÇÃï`âÊ
-	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffffff, TRUE);
 
 #ifdef DEBUG
 	// ìñÇΩÇËîªíËï\é¶

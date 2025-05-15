@@ -40,11 +40,16 @@ void InGame::Initialize()
 	__super::Initialize();
 
 
+
+
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 	unit_ui[0]= rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32)[0]	;
 	unit_ui[1]= rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32)[0]	;
-	unit_ui[2]= rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32)[0];
+	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32)[0];
+	BackGroundImage[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
+	BackGroundImage[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
+	BackGroundImage[2]= rm->GetImages("Resource/Images/BackGround/RedMoon.png")[0];
 
 	// ライトマップの初期化
 	LightMapManager* light_map = LightMapManager::GetInstance();
@@ -55,10 +60,48 @@ void InGame::Initialize()
 	camera->Initialize();
 
 	// ステージ読み込み
-	LoadStage();
+	//LoadStage();
 
 	// 画像の読み込み
 	LoadImages();
+
+	// オブジェクトマネージャーのポインタ
+	GameObjectManager* object = GameObjectManager::GetInstance();
+
+
+	int locationy = 750;
+	int locationx = 1350;
+	for (int count = 0; count < 3; count++)
+	{
+		for (int locationx = 1350; locationx > 0; locationx -= 60)
+		{
+			object->CreateObject<Ground>(Vector2D(locationx, locationy));
+		}
+		locationy -= 60;
+	}
+
+	switch (StageNumber)
+	{
+	case 1:
+		player = object->CreateObject<Oracle>(Vector2D(1000, 630));
+
+		enemy = object->CreateObject<Heretic>(Vector2D(100, 630));
+		enemy->SetInGamePoint(this);
+		break;
+
+	case 2:
+		player = object->CreateObject<Oracle>(Vector2D(1170, 630));
+
+		enemy = object->CreateObject<Heretic>(Vector2D(30, 630));
+		enemy->SetInGamePoint(this);
+		break;
+	default:
+		player = object->CreateObject<Oracle>(Vector2D(1170, 630));
+
+		enemy = object->CreateObject<Heretic>(Vector2D(30, 630));
+		enemy->SetInGamePoint(this);
+		break;
+	}
 
 	// カーソルの初期化
 	cursor = 0;
@@ -78,6 +121,7 @@ void InGame::Initialize()
 // 更新処理
 eSceneType InGame::Update(const float& delta_second)
 {
+	move_camera = 0.0f;
 
 	if (enemy->GetHP() <= 0 || player->GetHP() <= 0)
 	{
@@ -92,16 +136,13 @@ eSceneType InGame::Update(const float& delta_second)
 			return eSceneType::result;
 		}
 	}
-	if (enemy->GetDead())
-	{
-
-	}
 
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
 
 	//カメラの情報を取得
 	Camera* camera = Camera::GetInstance();
+
 	//カメラの更新
 	camera->Update();
 
@@ -128,6 +169,14 @@ eSceneType InGame::Update(const float& delta_second)
 	
 #endif // DEBUG
 
+	if (old_camerapos.x != camera->GetCameraPos().x)
+	{
+		move_camera = old_camerapos.x - camera->GetCameraPos().x;
+	old_camerapos = camera->GetCameraPos();
+
+	}
+
+
 	// 親クラスの更新処理を呼び出す
 	return __super::Update(delta_second);
 }
@@ -135,8 +184,27 @@ eSceneType InGame::Update(const float& delta_second)
 // 描画処理
 void InGame::Draw() const
 {
+
 	// カメラの情報取得
 	Camera* camera = Camera::GetInstance();
+	float ShowBackGround_Y = 0;
+	switch (StageNumber)
+	{
+	case 1:
+		ShowBackGround_Y = -120.0f;
+		break;
+	case 2:
+		ShowBackGround_Y = -100.0f;
+		break;
+	case 3:
+		 ShowBackGround_Y = -125.0f;
+		break;
+	default:
+		break;
+	}
+		DrawGraph(camera->GetCameraPos().x - 700.0f, ShowBackGround_Y, BackGroundImage[StageNumber-1], 0);
+
+	
 
 	// 光を加算合成
 	LightMapManager* light_map = LightMapManager::GetInstance();

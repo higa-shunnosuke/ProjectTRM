@@ -13,7 +13,9 @@ private:
 	std::chrono::steady_clock::time_point	summon_time[3];		// 召喚開始時間
 	std::chrono::seconds					cooldown[3];		// 召喚クールダウン
 	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数
-
+	int BackGroundImage[3];
+	float move_camera;
+	Vector2D old_camerapos;
 	int			cost;				// コスト
 	bool		summon_flag[3];		// 召喚フラグ
 	Oracle*		player;				// 巫女のポインタ

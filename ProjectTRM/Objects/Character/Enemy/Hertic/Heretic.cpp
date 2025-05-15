@@ -15,7 +15,7 @@
 #define COST_UPNUM 10
 
 
-#define TEST
+//#define TEST
 
 #ifdef TEST
 #include"../../../../Utility/Input/InputManager.h"
@@ -264,7 +264,7 @@ void Heretic::ThinkingEnemy()
 			Ingame->CreateEnemy(E_enemy::Range);
 			summon_flag = true;
 		}
-
+#ifdef Boss_Done
 		//うわ！負けそうやん！！こうなったら…！！
 		if (Pcount_sum > Ecount_sum + 80)
 		{
@@ -274,6 +274,9 @@ void Heretic::ThinkingEnemy()
 			Ingame->CreateEnemy(E_enemy::Boss);
 			summon_flag = true;
 		}
+#endif // Boss_None
+
+
 		//相手の方が戦力評価高いなぁ…せや！
 		else if (Pcount_sum > Ecount_sum)
 		{
@@ -368,8 +371,7 @@ void Heretic::ThinkingEnemy()
 			}
 		}
 	}
-
-		break;
+	break;
 	default:
 		break;
 	}
