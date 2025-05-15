@@ -14,8 +14,7 @@ size_t E_Melee::GetCount()
 E_Melee::E_Melee() :
 	Damage(),
 	anime_time(),
-	recovery_time(),
-	in_light(false)
+	recovery_time()
 {
 	count++;
 }
@@ -74,6 +73,14 @@ void E_Melee::Update(float delta_second)
 	// 状態更新処理
 	old_state = now_state;
 
+	// 持続ダメージ
+	if (in_light == true && anime_time >= 0.1f)
+	{
+		HP -= 1;
+		// アニメーション開始時間の初期化
+		anime_time = 0;
+	}
+
 	// HPが０になると終了処理
 	if (HP <= 0)
 	{
@@ -93,7 +100,14 @@ void E_Melee::Draw(const Vector2D camera_pos) const
 
 #ifdef DEBUG
 	//残りHPの表示
-	DrawFormatString((int)position.x, (int)(position.y - 40.0f), 0xffffff, "%d", HP);
+	if (in_light == true)
+	{
+		DrawFormatString((int)position.x, (int)(position.y - 40.0f), 0xffffff, "%d", HP);
+	}
+	else
+	{
+		DrawFormatString((int)position.x, (int)(position.y - 40.0f), 0xff0000, "%d", HP);
+	}
 
 	// 中心を表示
 	DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
@@ -175,16 +189,32 @@ void E_Melee::NoHit()
 	}
 }
 
+// ライト範囲通知処理
+void E_Melee::InLightRange()
+{
+	in_light = true;
+}
+
+// ライト範囲通知処理
+void E_Melee::OutLightRange()
+{
+	in_light = false;
+}
+
 // HP管理処理
 void E_Melee::HPControl(int Damage)
 {
-	// 攻撃状態でなければダメージ状態にする
-	if (now_state != State::Attack)
+	// ダメージ軽減
+	if (!in_light)
 	{
-		now_state = State::Damage;
+		Damage *= 0.5;
 	}
 
-	__super::HPControl(Damage);
+	this->HP -= (int)Damage;
+	if (this->HP < 0)
+	{
+		this->HP = 0;
+	}
 }
 
 // 攻撃処理
@@ -275,8 +305,11 @@ void E_Melee::AnimationControl(float delta_second)
 			Anim_count = 0;
 		}
 
-		// アニメーション開始時間の初期化
-		anime_time = 0;
+		if (in_light == false)
+		{
+			// アニメーション開始時間の初期化
+			anime_time = 0;
+		}
 	}
 }
 // エフェクト制御処理
