@@ -84,8 +84,11 @@ public:
 	/// </summary>
 	/// <param name = "point">: InGameSceneのPointer</param>
 	void SetInGamePoint(class InGame* point);
-
+	/// <summary>
+	/// エネミーの思案処理
+	/// </summary>
 	void ThinkingEnemy();
+	void FirstStageEnemy();
 
 
 public:
