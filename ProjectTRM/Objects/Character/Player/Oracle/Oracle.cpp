@@ -21,6 +21,7 @@ void Oracle::Initialize()
 {
 	// ‰æ‘œ‚Ì“Ç‚Ýž‚Ý
 	ResourceManager* rm = ResourceManager::GetInstance();
+	EffectImage = rm->GetImages("Resource/Images/Effect/EnemyPawn", 13, 13, 5, 64, 64);
 	image = rm->GetImages("Resource/Images/Unit/Oracle/Oracle01.png",1,1,1,2048,2048)[0];
 
 	is_mobility = false;
