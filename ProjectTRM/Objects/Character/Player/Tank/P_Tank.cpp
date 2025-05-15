@@ -151,11 +151,7 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
-	if (now_state == State::Attack)
-	{
-		DrawRotaGraphF(position.x - (collision.box_size.x / 2), position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
-	}
-	else if (now_state == State::Death)
+	if (now_state == State::Death)
 	{
 		position.y -= Anim_count * 10 + Anim_flame * 10;
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, effect_alpha);
@@ -347,18 +343,6 @@ void P_Tank::AnimationControl(float delta_second)
 void P_Tank::EffectControl(float delta_second)
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
-
-	if (now_state != old_state)
-	{
-		switch (now_state)
-		{
-		case State::Death:
-			effect_image = rm->GetImages("Resource/Images/Effect/Unit/Tank_Ghost.png", 1, 1, 1, 32, 32)[0];
-			break;
-		default:
-			break;
-		}
-	}
 
 	if (Anim_count > 2)
 	{
