@@ -44,10 +44,10 @@ void E_Melee::Initialize()
 	now_state = State::Move;
 
 	//攻撃力
-	Damage = 3;
+	Damage = 30;
 
 	// HP初期化
-	HP = 100;
+	HP = 500;
 
 	alpha = MAX_ALPHA;
 	add = -ALPHA_ADD;
@@ -72,14 +72,6 @@ void E_Melee::Update(float delta_second)
 
 	// 状態更新処理
 	old_state = now_state;
-
-	// 持続ダメージ
-	if (in_light == true && anime_time >= 0.1f)
-	{
-		HP -= 1;
-		// アニメーション開始時間の初期化
-		anime_time = 0;
-	}
 
 	// HPが０になると終了処理
 	if (HP <= 0)

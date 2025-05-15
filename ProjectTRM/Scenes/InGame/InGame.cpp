@@ -145,13 +145,18 @@ eSceneType InGame::Update(const float& delta_second)
 
 	//カメラの更新
 	camera->Update();
+	//　ポイント加算やぁぁぁぁ
+	if (input->GetKeyState(KEY_INPUT_Y) == eInputState::Pressed)
+	{
+		cost += 1;
+	}
 
 	// リザルトシーンに遷移する
 	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
 	{
 		return eSceneType::result;
 	}
-	if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
+	else if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
 	{
 		return eSceneType::result;
 	}
@@ -332,79 +337,6 @@ void InGame::CreateEnemy(E_enemy e_enem)
 	default:
 		break;
 	}
-}
-
-// ステージ生成処理
-void InGame::LoadStage()
-{
-	// オブジェクトマネージャーのポインタ
-	GameObjectManager* object = GameObjectManager::GetInstance();
-	
-	FILE* fp = NULL;
-	std::string file_name = "Resource/Map/Stage1.csv";
-
-	// 指定されたファイルを開く
-	errno_t result = fopen_s(&fp, file_name.c_str(), "r");
-
-	// エラーチェック
-	if (result != 0)
-	{
-		throw (file_name + "が開けません");
-	}
-
-	// カウント用変数
-	int x = 0;			// 列
-	int y = 0;			// 行
-
-	// ファイル内の文字を確認していく
-	while (true)
-	{
-		//座標計算
-		Vector2D location;
-		location.x = (float)(x * BOX_SIZE + BOX_SIZE / 2);
-		location.y = (float)(y * BOX_SIZE + BOX_SIZE / 2);
-
-		// ファイルから1文字抽出
-		int c = fgetc(fp);
-
-		// EOFならループ終了
-		if (c == EOF)
-		{
-			break;
-		}
-		// 改行文字なら、次の行へ
-		else if (c == '\n')
-		{
-			x = 0;
-			y++;
-		}
-		// 0なら、次の文字へ
-		else if (c == '0')
-		{
-			x++;
-		}
-		// Gなら、地面を生成
-		else if (c == 'G')
-		{
-			object->CreateObject<Ground>(Vector2D(location.x, location.y));
-			x++;
-		}
-		// Oなら、巫女を生成
-		else if (c == 'O')
-		{
-			player = object->CreateObject<Oracle>(Vector2D(location.x, location.y - 30));
-			x++;
-		}
-		// Hなら、異端者
-		else if (c == 'H')
-		{
-			enemy = object->CreateObject<Heretic>(Vector2D(location.x, location.y - 30));
-			enemy->SetInGamePoint(this);
-			x++;
-		}
-	}
-	// 開いたファイルを閉じる
-	fclose(fp);
 }
 
 //	ユニット召喚

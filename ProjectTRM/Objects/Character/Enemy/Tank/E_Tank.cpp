@@ -51,10 +51,10 @@ void E_Tank::Initialize()
 	velocity.x = 5.0f;
 
 	//攻撃力
-	Damage = 1;
+	Damage = 10;
 
 	// HP初期化
-	HP = 200;
+	HP = 800;
 }
 
 // 更新処理
@@ -76,14 +76,6 @@ void E_Tank::Update(float delta_second)
 
 	// 状態更新処理
 	old_state = now_state;
-
-	// 持続ダメージ
-	if (in_light == true && anime_time >= 0.1f)
-	{
-		HP -= 1;
-		// アニメーション開始時間の初期化
-		anime_time = 0;
-	}
 
 	// HPが０になると終了処理
 	if (HP <= 0)
