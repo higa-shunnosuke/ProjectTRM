@@ -14,9 +14,9 @@
 #define RANGE_eva	 20
 #define BOSS_eva	 50
 
-#define TANK_cost	 50
-#define MELEE_cost	 100
-#define RANGE_cost	 300
+#define TANK_cost	 30
+#define MELEE_cost	 60
+#define RANGE_cost	 100
 #define BOSS_cost	 500
 
 

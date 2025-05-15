@@ -34,7 +34,7 @@ Heretic::Heretic() :
 	summon_flag(),
 	CountFlame(0.0f),
 	CountTime(0),
-	Cost(30),
+	Cost(0),
 	summon_effect()
 {
 
@@ -144,7 +144,7 @@ void Heretic::Update(float delta_second)
 			Anim_count++;
 			efect_time = std::chrono::steady_clock::now();
 
-			if (Anim_count >= EffectImage.size())
+			if (Anim_count >= 13)
 			{
 				Anim_count = 0;
 				summon_effect = false;
@@ -311,14 +311,14 @@ void Heretic::ThinkingEnemy()
 		else if ((Pcount_sum < Ecount_sum))
 		{
 			//でもワイは油断しない優秀な漢なんや！！
-			Cost -= MELEE_cost + 50;//←舐めプ
+			Cost -= (MELEE_cost + 10);//←舐めプ
 			Ingame->CreateEnemy(E_enemy::Melee);
 			summon_flag = true;
 		}
 		//このワイと…拮抗やと!!やりおる……(開始時点)
 		else
 		{
-			Cost -= TANK_cost - 10;//←少しだけ軽減して生産して、次につなげる
+			Cost -= TANK_cost;//←少しだけ軽減して生産して、次につなげる
 			Ingame->CreateEnemy(E_enemy::Tank);
 			summon_flag = true;
 		}
@@ -345,7 +345,7 @@ void Heretic::ThinkingEnemy()
 			summon_flag = true;
 		}
 		//・相手の評価が低くなった際に手持ち最小コストを生成する。
-		else if (Cost >= ENEMY_BOTTOM_COST)
+		else
 		{
 			//・生成するでな
 			//タンクは少なく

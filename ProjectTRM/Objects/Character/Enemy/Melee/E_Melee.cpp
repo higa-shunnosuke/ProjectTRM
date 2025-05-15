@@ -44,10 +44,10 @@ void E_Melee::Initialize()
 	now_state = State::Move;
 
 	//UŒ‚—Í
-	Damage = 2;
+	Damage = 3;
 
 	// HP‰Šú‰»
-	HP = 20;
+	HP = 100;
 
 	alpha = MAX_ALPHA;
 	add = -ALPHA_ADD;

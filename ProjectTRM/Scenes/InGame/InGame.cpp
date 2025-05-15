@@ -107,7 +107,7 @@ void InGame::Initialize()
 	cursor = 0;
 
 	// コストの初期化 
-	cost = 300;
+	cost = 0;	
 	prev_time = std::chrono::steady_clock::now();
 
 	//// クールダウン / 召喚フラグの初期化
@@ -444,11 +444,11 @@ void InGame::UnitSelection()
 		case 0:
 			if (summon_flag[cursor] == false)
 			{
-				if (cost - 10 >= 0)
+				if (cost - Tank_Cost >= 0)
 				{
 					// タンクを生成
 					GameObject* obj = object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
-					cost -= 10;
+					cost -= Tank_Cost;
 					
 					//summon_flag[cursor] = true;
 					summon_time[cursor] = std::chrono::steady_clock::now();
@@ -459,11 +459,11 @@ void InGame::UnitSelection()
 		case 1:
 			if (summon_flag[cursor] == false)
 			{
-				if (cost - 20 >= 0)
+				if (cost - Melee_Cost >= 0)
 				{
 					// 近接を生成
 					GameObject* obj = object->CreateObject<P_Melee>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
-					cost -= 20;
+					cost -= Melee_Cost;
 					//summon_flag[cursor] = true;
 					summon_time[cursor] = std::chrono::steady_clock::now();
 				}
@@ -473,10 +473,10 @@ void InGame::UnitSelection()
 		case 2:
 			if (summon_flag[cursor] == false)
 			{
-				if (cost - 30 >= 0)
+				if (cost - Range_Cost >= 0)
 				{
 					object->CreateObject<P_Ranged>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
-					cost -= 30;
+					cost -= Range_Cost;
 					//summon_flag[cursor] = true;
 					summon_time[cursor] = std::chrono::steady_clock::now();
 				}

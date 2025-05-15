@@ -57,13 +57,13 @@ void P_Tank::Initialize()
 	now_state = State::Move;
 
 	// ‰E‚ÖˆÚ“®
-	velocity.x = -3.0f;
+	velocity.x = -5.5f;
 
 	//UŒ‚—Í
 	Damage = 1;
 
 	// HP‰Šú‰»
-	HP = 45;
+	HP = 30;
 
 	lane = rand() % 3 + 1;
 
@@ -170,6 +170,8 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 	// UŒ‚”ÍˆÍ‚ğ•\¦
 	DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
 		(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
+	// HP‚ğ•\¦
+	DrawFormatString(position.x, position.y - 20.0f, 0x00ffff, "%d", HP);
 #endif
 }
 

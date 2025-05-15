@@ -7,6 +7,11 @@
 
 #include <chrono>
 
+#define Tank_Cost 20
+#define Melee_Cost 50
+#define Range_Cost 100
+
+
 class InGame : public SceneBase
 {
 private:

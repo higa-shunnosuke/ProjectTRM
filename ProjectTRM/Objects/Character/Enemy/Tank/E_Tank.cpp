@@ -54,7 +54,7 @@ void E_Tank::Initialize()
 	Damage = 1;
 
 	// HP‰Šú‰»
-	HP = 100;
+	HP = 200;
 }
 
 // XVˆ—
