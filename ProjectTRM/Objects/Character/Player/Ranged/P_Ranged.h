@@ -12,7 +12,9 @@ public:
 	static size_t GetCount();
 private:
 	int lane;
+	int effect_image;
 	GameObjectManager* object;
+	int effect_alpha;
 public:
 	//コンストラクタ
 	P_Ranged();

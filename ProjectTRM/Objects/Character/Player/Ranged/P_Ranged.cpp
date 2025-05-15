@@ -1,6 +1,9 @@
 #include "P_Ranged.h"
 #include "P_Projectile.h"
 #include "../../../GameObjectManager.h"
+#if _DEBUG
+#include "../../../../Utility/Input/InputManager.h"
+#endif
 size_t P_Ranged::count = 0;
 size_t P_Ranged::GetCount()
 {
@@ -25,6 +28,7 @@ void P_Ranged::Initialize()
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 	animation = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32);
+	effect_image = rm->GetImages("Resource/Images/Effect/Unit/Ranged_Ghost.png", 1, 1, 1, 32, 32)[0];
 
 	is_mobility = true;
 	is_aggressive = true;
@@ -49,17 +53,26 @@ void P_Ranged::Initialize()
 	lane = rand() % 3 + 1;
 
 	alpha = MAX_ALPHA;
+	effect_alpha = MAX_ALPHA;
 	add = -ALPHA_ADD;
 }
 
 // 更新処理
 void P_Ranged::Update(float delta_second)
 {
-	// 移動処理
-	Movement(delta_second);
+#if _DEBUG
+	InputManager* input = InputManager::GetInstance();
+	if (input->GetKeyState(KEY_INPUT_K) == eInputState::Pressed)
+	{
+		HP = 0;
+	}
+#endif
 
 	if (now_state != State::Death)
 	{
+		// 移動処理
+		Movement(delta_second);
+
 		if (attack_flag == true)
 		{
 			if (velocity.x < 0.0f)
@@ -76,25 +89,30 @@ void P_Ranged::Update(float delta_second)
 				attack_flag = false;
 			}
 		}
+
+		dmage_flame -= delta_second;
+
+		if (dmage_flame <= 0.0f)
+		{
+			dmage_flame = 0.0f;
+			alpha = MAX_ALPHA;
+			add = -ALPHA_ADD;
+		}
+
+		if (HP <= 0)
+		{
+			now_state = State::Death;
+			add = -1;
+		}
 	}
 
-	if (HP <= 0)
+	if (Anim_count <= 2)
 	{
-		now_state = State::Death;
+		AnimationControl(delta_second);
 	}
-
-	AnimationControl(delta_second);
-
 	EffectControl(delta_second);
 
-	dmage_flame -= delta_second;
 
-	if (dmage_flame <= 0.0f)
-	{
-		dmage_flame = 0.0f;
-		alpha = MAX_ALPHA;
-		add = -ALPHA_ADD;
-	}
 
 	old_state = now_state;
 }
@@ -111,9 +129,20 @@ void P_Ranged::Draw(const Vector2D camera_pos) const
 
 	// 近接ユニットの描画
 		// オフセット値を基に画像の描画を行う
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	if (Anim_count <= 2)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+
+	if (now_state == State::Death)
+	{
+		position.y -= Anim_count * 10 + Anim_flame * 10;
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, effect_alpha);
+		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffa000, TRUE);*/
 
@@ -271,9 +300,13 @@ void P_Ranged::AnimationControl(float delta_second)
 		break;
 	case State::Death:
 		image = animation[Anim_count];
-		if (Anim_count >= 2)
+		if (Anim_count == 2)
 		{
-			Finalize();
+			location.y -= Anim_count * 10 + Anim_flame * 10;
+			Anim_count = 3;
+			//他のオブジェクトの邪魔をしないようにオブジェクトタイプの消去
+			collision.hit_object_type.clear();
+			collision.object_type = eObjectType::None;
 		}
 		break;
 	default:
@@ -284,7 +317,39 @@ void P_Ranged::AnimationControl(float delta_second)
 // エフェクト制御処理
 void P_Ranged::EffectControl(float delta_second)
 {
+	ResourceManager* rm = ResourceManager::GetInstance();
 
+	if (now_state != old_state)
+	{
+		switch (now_state)
+		{
+		case State::Death:
+			effect_image = rm->GetImages("Resource/Images/Effect/Unit/Ranged_Ghost.png", 1, 1, 1, 32, 32)[0];
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (Anim_count > 2)
+	{
+		location.y -= 50.0f * delta_second;
+	}
+
+	switch (now_state)
+	{
+	case State::Death:
+		effect_alpha += add;
+		//完全に透明になったらオブジェクト消去
+		if (effect_alpha <= 0)
+		{
+			effect_alpha = 0;
+ 			Finalize();
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 // 攻撃処理
