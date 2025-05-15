@@ -15,7 +15,7 @@
 #define COST_UPNUM 10
 
 
-//#define TEST
+#define TEST
 
 #define Enemy_Plan_Evaluation // 戦場評価型
 #ifdef Enemy_Plan_Evaluation
@@ -71,7 +71,7 @@ void Heretic::Initialize()
 void Heretic::Update(float delta_second)
 {
 #ifdef DEBUG
-	if (CheckHitKey(KEY_INPUT_4))
+	if (CheckHitKey(KEY_INPUT_5))
 	{
 		HP--;
 	}
@@ -79,20 +79,8 @@ void Heretic::Update(float delta_second)
 
 	summon_flag = false;
 
-	if (Fstflag)
-	{
-		Ingame->CreateEnemy(E_enemy::Melee);
-		Fstflag = false;
-	}
-
-
 #if 1
-	auto now_time = std::chrono::steady_clock::now();
 
-	if (now_time - prev_time > std::chrono::milliseconds(500))
-	{
-		Cost+= COST_UPNUM;
-	}
 #else
 	CountFlame += 1.0f;
 	if (CountFlame > COST_CHARGE)
@@ -109,8 +97,29 @@ void Heretic::Update(float delta_second)
 
 
 #ifdef TEST
+
+	if (CheckHitKey(KEY_INPUT_1))
+	{
+		Ingame->CreateEnemy(E_enemy::Tank);
+		summon_flag = true;
+	}
+	else if (CheckHitKey(KEY_INPUT_2))
+	{
+		Ingame->CreateEnemy(E_enemy::Melee);
+		summon_flag = true;
+	}	
+	else if (CheckHitKey(KEY_INPUT_3))
+	{
+		Ingame->CreateEnemy(E_enemy::Range);
+		summon_flag = true;
+	}
+	else if (CheckHitKey(KEY_INPUT_4))
+	{
+		Ingame->CreateEnemy(E_enemy::Boss);
+		summon_flag = true;
+	}
 #else
-	if (Cost >= ENEMY_BOTTOM_COST)
+	if (Cost >= 0)
 	{
 	ThinkingEnemy();
 	}
@@ -121,14 +130,22 @@ void Heretic::Update(float delta_second)
 		summon_effect = true;
 	}
 
+	auto now_time = std::chrono::steady_clock::now();
+
+	if (now_time - prev_time > std::chrono::milliseconds(500))
+	{
+		Cost += 1;
+		prev_time = std::chrono::steady_clock::now();
+
+	}
+
 	if (summon_effect)
 	{
-		auto now_time = std::chrono::steady_clock::now();
-
-		if (now_time - prev_time > std::chrono::milliseconds(100))
+		if (now_time - efect_time > std::chrono::milliseconds(100))
 		{
 			Anim_count++;
-			prev_time = std::chrono::steady_clock::now();
+			efect_time = std::chrono::steady_clock::now();
+
 			if (Anim_count >= EffectImage.size())
 			{
 				Anim_count = 0;
@@ -149,7 +166,17 @@ void Heretic::Draw(const Vector2D camera_pos) const
 	//背景で見えない…いっそ画像白くするか迷い中
 	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffffff, TRUE);
+	DrawFormatString(0, 70, 0xFFFFFF, "5:Enemy Damage");
 #endif
+
+#ifdef TEST	
+	DrawFormatString(0, 100, 0xFFFFFF,  "1:Tank");
+	DrawFormatString(0, 130, 0xFFFFFF,  "2:Melee");
+	DrawFormatString(0, 160, 0xFFFFFF, "3:Range");
+	DrawFormatString(0, 10, 0xFFFFFF, "4:Boss");
+
+#endif // TEST
+
 
 	if (nowsta == State::Damage)
 	{
@@ -227,49 +254,68 @@ void Heretic::ThinkingEnemy()
 		//前衛は3体
 		//上記を満たして後衛
 
-		//・コストが最大になるなら手持ち最大コストを生成する。
+		//・コストが最大になるなら手持ち最大コストを生成するで！
 		if (Cost >= 500)
 		{
 			//・生成するでな
 			Cost -= RANGE_cost;
 			Ingame->CreateEnemy(E_enemy::Range);
 			summon_flag = true;
-			//この辺の処理は関数に飛ばそうかな…
 		}
-		//・相手の評価が高くなった際に手持ち最大コストを生成する。
-		if (Pcount_sum > Ecount_sum + 100 && Cost >= MELEE_cost)
+
+		//うわ！負けそうやん！！こうなったら…！！
+		if (Pcount_sum > Ecount_sum + 80)
 		{
-			//【プロト版のみ】
-			//コストをマイナスになっても借金して出しましょう
+			//【仮】
+			//これがワイの…切り札や！！！！
 			Cost -= BOSS_cost;
 			Ingame->CreateEnemy(E_enemy::Boss);
 			summon_flag = true;
 		}
-		//・相手の評価が低くなった際に手持ち最小コストを生成する。
-		else if (Cost >= ENEMY_BOTTOM_COST)
+		//相手の方が戦力評価高いなぁ…せや！
+		else if (Pcount_sum > Ecount_sum)
 		{
-			//・生成するでな
-			//タンクは一定数をキープ
-			//前衛が少ないと出す
-			//前衛が多いと後衛を出す
-			if ((Etank_count / TANK_eva) < 5)
+			//生成するで！！
+			////タンクは一定数をキープ
+			////前衛が少ないと出す
+			////前衛が多いと後衛を出す
+			//これを基準や！
+			if ((Etank_count / TANK_eva) < 4)
 			{
 				Cost -= TANK_cost;
 				Ingame->CreateEnemy(E_enemy::Tank);
 				summon_flag = true;
 			}
-			else if (((Emelee_count / MELEE_eva) <= (Erange_count / RANGE_eva) + 3) && Cost >= MELEE_cost)
+			//タンク安定したやろし、近接生産せな
+			else if (((Emelee_count / MELEE_eva) < (Erange_count / RANGE_eva) + 3))
 			{
 				Cost -= MELEE_cost;
 				Ingame->CreateEnemy(E_enemy::Melee);
 				summon_flag = true;
 			}
-			else if (Cost >= RANGE_cost)
+			//遠距離が多いほど幸せやねん…でも、タンクと近接の方が優先やなぁ…悩ましい
+			//※気まぐれで急に生産できるようにしてもいい
+			else
 			{
 				Cost -= RANGE_cost;
 				Ingame->CreateEnemy(E_enemy::Range);
 				summon_flag = true;
 			}
+		}
+		//お、勝てそうやん(鼻ホジホジ)
+		else if ((Pcount_sum < Ecount_sum))
+		{
+			//でもワイは油断しない優秀な漢なんや！！
+			Cost -= MELEE_cost + 50;//←舐めプ
+			Ingame->CreateEnemy(E_enemy::Melee);
+			summon_flag = true;
+		}
+		//このワイと…拮抗やと!!やりおる……(開始時点)
+		else
+		{
+			Cost -= TANK_cost - 10;//←少しだけ軽減して生産して、次につなげる
+			Ingame->CreateEnemy(E_enemy::Tank);
+			summon_flag = true;
 		}
 	}
 

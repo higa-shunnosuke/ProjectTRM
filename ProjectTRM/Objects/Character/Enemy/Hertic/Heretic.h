@@ -39,6 +39,7 @@ private:
 	State nowsta = State::Idle;
 	std::vector<int> EffectImage;
 	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数
+	std::chrono::steady_clock::time_point	efect_time;			// エフェクト加算用変数
 	int Player_evaluation[4];
 	int Enemy_evaluation[3];
 	int Cost;
