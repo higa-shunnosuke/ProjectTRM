@@ -1,25 +1,26 @@
 #pragma once
 
 #include "../../Character.h"
-#include "../../../GameObjectManager.h"
+
+#define GRAVITY (9.8f)
+#define INITIAL_SPEED (100.0f)
 
 // ゲームオブジェクト基底クラス
-class P_Ranged :public Character
+class E_Projectile :public Character
 {
 private:
-	static size_t count;
-public:
-	static size_t GetCount();
-private:
+	int Damage;	//ダメージ
 	int lane;
-	int effect_image;
-	GameObjectManager* object;
-	int effect_alpha;
+	Vector2D target_location;
+	Vector2D old_location;
+	float angle;
+	float end_loc;
+
 public:
 	//コンストラクタ
-	P_Ranged();
+	E_Projectile();
 	//デストラクタ
-	virtual ~P_Ranged();
+	virtual ~E_Projectile();
 
 	/// <summary>
 	/// 初期化処理
@@ -52,12 +53,6 @@ public:
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
 	virtual void OnAreaDetection(GameObject* hit_object);
 
-	/// <summary>
-	/// HP管理処理
-	/// </summary>
-	/// <param name="hit_object">ダメージ</param>
-	virtual void HPControl(int Damage) override;
-
 private:
 	/// <summary>
 	/// 移動処理
@@ -74,8 +69,8 @@ private:
 	/// </summary>
 	/// <param name="hit_object">1フレームあたりの時間</param>
 	virtual void EffectControl(float delta_second);
-	/// <summary>
-	/// 攻撃処理
-	/// </summary>
-	virtual void Attack(GameObject* hit_object);
+
+public:
+	void SetTargetLocation(Vector2D location);
+
 };

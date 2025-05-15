@@ -3,14 +3,13 @@
 #include "../../Character.h"
 #include <chrono>
 
-// ゲームオブジェクト基底クラス
+// 敵近接クラス
 class E_Melee :public Character
 {
 private:
 	static size_t count;	// 敵近接のカウンタ
 	float anime_time;		// アニメーション時間
 	float recovery_time;	// 硬直時間
-	bool in_light;			// ライトの範囲内にいるか
 
 public:
 	/// <summary>
@@ -52,18 +51,23 @@ public:
 	/// </summary>
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
 	virtual void OnHitCollision(GameObject* hit_object) override;
-
 	/// <summary>
 	/// 攻撃範囲通知処理
 	/// </summary>
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
 	virtual void OnAreaDetection(GameObject* hit_object) override;
-
 	/// <summary>
 	/// 攻撃範囲通知処理
 	/// </summary>
 	virtual void NoHit() override;
-
+	/// <summary>
+	/// ライト範囲通知処理
+	/// </summary>
+	virtual void InLightRange() override;
+	/// <summary>
+	/// ライト範囲通知処理
+	/// </summary>
+	virtual void OutLightRange() override;
 	/// <summary>
 	/// HP管理処理
 	/// </summary>

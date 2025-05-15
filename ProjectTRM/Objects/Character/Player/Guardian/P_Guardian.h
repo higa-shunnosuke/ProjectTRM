@@ -1,73 +1,59 @@
 #pragma once
-
 #include "../../Character.h"
-#include <chrono>
+#include "../../../GameObjectManager.h"
 
-// 敵タンククラス
-class E_Tank :public Character
+class P_Guardian : public Character
 {
 private:
 	static size_t count;
-	float anime_time;		// アニメーション時間
-	float recovery_time;	// 硬直時間
 
 public:
-	/// <summary>
-	/// 敵近接のカウント取得処理
-	/// </summary>
-	/// <returns>敵近接の数</returns>
 	static size_t GetCount();
 
 private:
+	std::vector<int> Effect;
+	int effect_image;
 	int Damage;	//ダメージ
+	int lane;
+	GameObjectManager* object;
 
 public:
 	//コンストラクタ
-	E_Tank();
+	P_Guardian();
 	//デストラクタ
-	virtual ~E_Tank();
+	virtual ~P_Guardian();
 
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	virtual void Initialize() override;
+	virtual void Initialize();
 	/// <summary>
 	/// 更新処理
 	/// </summary>
 	/// <param name="delta_second">1フレームあたりの時間</param>
-	virtual void Update(float delta_second) override;
+	virtual void Update(float delta_second);
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	virtual void Draw(const Vector2D camera_pos) const override;
+	virtual void Draw(const Vector2D camera_pos) const;
 	/// <summary>
 	/// 終了時処理
 	/// </summary>
-	virtual void Finalize() override;
+	virtual void Finalize();
 
 public:
 	/// <summary>
 	/// 当たり判定通知処理
 	/// </summary>
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
-	virtual void OnHitCollision(GameObject* hit_object) override;
+	virtual void OnHitCollision(GameObject* hit_object);
+
 	/// <summary>
 	/// 攻撃範囲通知処理
 	/// </summary>
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
-	virtual void OnAreaDetection(GameObject* hit_object) override;
-	/// <summary>
-	/// 攻撃範囲通知処理
-	/// </summary>
-	virtual void NoHit() override;
-	/// <summary>
-	/// ライト範囲通知処理
-	/// </summary>
-	virtual void InLightRange() override;
-	/// <summary>
-	/// ライト範囲通知処理
-	/// </summary>
-	virtual void OutLightRange() override;
+	virtual void OnAreaDetection(GameObject* hit_object);
+
 	/// <summary>
 	/// HP管理処理
 	/// </summary>
@@ -89,9 +75,11 @@ private:
 	/// </summary>
 	/// <param name="hit_object">1フレームあたりの時間</param>
 	virtual void AnimationControl(float delta_second);
+
 	/// <summary>
 	/// エフェクト制御処理
 	/// </summary>
 	/// <param name="hit_object">1フレームあたりの時間</param>
 	virtual void EffectControl(float delta_second);
 };
+

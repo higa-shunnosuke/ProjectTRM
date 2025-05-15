@@ -62,5 +62,5 @@ private:
 	/// </summary>
 	/// <param name="target">1つ目のゲームオブジェクト</param>
 	/// <param name="partner">2つ目のゲームオブジェクト</param>
-	void CheckLightRange(LightDetail target, GameObject* partner);
+	bool CheckLightRange(GameObject* target, LightDetail partner);
 };

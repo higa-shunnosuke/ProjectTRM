@@ -70,6 +70,12 @@ void GameObject::InLightRange()
 
 }
 
+// ライト範囲通知処理
+void GameObject::OutLightRange()
+{
+
+}
+
 // 位置座標取得処理
 const Vector2D& GameObject::GetLocation() const
 {
@@ -106,6 +112,7 @@ const bool GameObject::GetAggressive() const
 	return is_aggressive;
 }
 
+// HP管理処理
 void GameObject::HPControl(int Damage)
 {
 	this->HP -= Damage;
@@ -115,7 +122,14 @@ void GameObject::HPControl(int Damage)
 	}
 }
 
+// HP取得処理
 const int GameObject::GetHP() const
 {
 	return this->HP;
+}
+
+// ライト内フラグ取得処理
+const bool GameObject::GetInLight() const
+{
+	return this->in_light;
 }

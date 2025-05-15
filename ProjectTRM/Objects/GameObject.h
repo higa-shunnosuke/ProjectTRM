@@ -16,7 +16,7 @@ protected:
 	int				HP;				// キャラクターのHP
 	bool			is_mobility;	// 可動性
 	bool			is_aggressive;	// 攻撃性
-
+	bool			in_light;		// ライトの範囲内にいるか
 
 public:
 	GameObject();
@@ -63,6 +63,10 @@ public:
 	/// </summary>
 	virtual void InLightRange();
 
+	/// <summary>
+	/// ライト範囲通知処理
+	/// </summary>
+	virtual void OutLightRange();
 public:
 	/// <summary>
 	/// 位置座標取得処理
@@ -111,4 +115,10 @@ public:
 	/// </summary>
 	/// <returns>HPの情報</returns>
 	const virtual int GetHP() const;
+
+	/// <summary>
+	/// ライト内フラグ取得処理
+	/// </summary>
+	/// <returns></returns>
+	const virtual bool GetInLight() const;
 };

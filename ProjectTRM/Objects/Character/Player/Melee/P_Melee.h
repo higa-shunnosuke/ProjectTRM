@@ -18,6 +18,7 @@ private:
 	int Damage;	//ダメージ
 	int lane;
 	GameObjectManager* object;
+	int effect_alpha;
 
 public:
 	//コンストラクタ
