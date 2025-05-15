@@ -147,6 +147,7 @@
     <ClCompile Include="Objects\Character\Player\Ranged\P_Ranged.cpp" />
     <ClCompile Include="Objects\Character\Player\Ranged\P_Projectile.cpp" />
     <ClCompile Include="Objects\Character\Player\Tank\P_Tank.cpp" />
+    <ClCompile Include="Objects\Character\Player\Guardian\P_Guardian.cpp" />
     <ClCompile Include="Scenes\End\End.cpp" />
     <ClCompile Include="Objects\GameObject.cpp" />
     <ClCompile Include="Scenes\InGame\InGame.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Objects\Character\Player\Ranged\P_Ranged.h" />
     <ClInclude Include="Objects\Character\Player\Ranged\P_Projectile.h" />
     <ClInclude Include="Objects\Character\Player\Tank\P_Tank.h" />
+    <ClInclude Include="Objects\Character\Player\Guardian\P_Guardian.h" />
     <ClInclude Include="Scenes\End\End.h" />
     <ClInclude Include="Objects\GameObject.h" />
     <ClInclude Include="Objects\GameObjectManager.h" />
