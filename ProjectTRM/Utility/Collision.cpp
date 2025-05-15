@@ -27,7 +27,7 @@ bool Collision::CheckCircleRectCollision(Vector2D circlePos, float radius, Vecto
 	float dy = circlePos.y - nearestY;
 
 	// Œõ‚Ì”ÍˆÍ‚Ì”¼Œa‚ðŒvŽZ
-	radius = radius * 200;
+	radius = radius * 100;
 
 	return (dx * dx + dy * dy) < (radius * radius);
 }

@@ -1,6 +1,9 @@
 #include "P_Melee.h"
 #include "Torch.h"
 #include "../../../../Utility/LightMapManager.h"
+#if _DEBUG
+#include "../../../../Utility/Input/InputManager.h"
+#endif
 
 size_t P_Melee:: count = 0;
 size_t P_Melee::GetCount()
@@ -66,17 +69,26 @@ void P_Melee::Initialize()
 	lane = rand() % 3 + 1;
 
 	alpha = MAX_ALPHA;
+	effect_alpha = MAX_ALPHA;
 	add = -ALPHA_ADD;
 }
 
 // 更新処理
 void P_Melee::Update(float delta_second)
-{
-	// 移動処理
-	Movement(delta_second);
+{	
+#if _DEBUG
+	InputManager* input = InputManager::GetInstance();
+	if (input->GetKeyState(KEY_INPUT_K) == eInputState::Pressed)
+	{
+		HP = 0;
+	}
+#endif
 
 	if (now_state != State::Death)
 	{
+		// 移動処理
+		Movement(delta_second);
+
 		if (attack_flag == true)
 		{
 			if (velocity.x < 0.0f)
@@ -93,25 +105,30 @@ void P_Melee::Update(float delta_second)
 				attack_flag = false;
 			}
 		}
+
+		dmage_flame -= delta_second;
+
+		if (dmage_flame <= 0.0f)
+		{
+			dmage_flame = 0.0f;
+			alpha = MAX_ALPHA;
+			add = -ALPHA_ADD;
+		}
+
+		if (HP <= 0)
+		{
+			now_state = State::Death;
+			add = -1;
+		}
 	}
 
-	if (HP <= 0)
+	if (Anim_count <= 2)
 	{
-		now_state = State::Death;
+		AnimationControl(delta_second);
 	}
-
-	AnimationControl(delta_second);
-
 	EffectControl(delta_second);
 
-	dmage_flame -= delta_second;
 
-	if (dmage_flame <= 0.0f)
-	{
-		dmage_flame = 0.0f;
-		alpha = MAX_ALPHA;
-		add = -ALPHA_ADD;
-	}
 
 	old_state = now_state;
 }
@@ -127,15 +144,24 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
+	if (Anim_count <= 2)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+	
 	if (now_state == State::Attack)
 	{
 		DrawRotaGraphF(position.x - (collision.box_size.x / 2), position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
 	}
-
+	else if (now_state == State::Death)
+	{
+		position.y -= Anim_count * 10 + Anim_flame * 10;
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, effect_alpha);
+		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffa000, TRUE);*/
 
@@ -155,8 +181,6 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 // 終了時処理
 void P_Melee::Finalize()
 {
-	LightMapManager* light = LightMapManager::GetInstance();
-	light->DeleteLight(this);
 	object->DestroyObject(this);
 }
 
@@ -200,7 +224,7 @@ void P_Melee::OnAreaDetection(GameObject* hit_object)
 void P_Melee::HPControl(int Damage)
 {
 	// 攻撃状態でなければダメージ状態にする
-	if (now_state != State::Attack)
+	if (now_state != State::Attack && now_state != State::Death)
 	{
 		now_state = State::Damage;
 		dmage_flame = 1.0f;
@@ -268,7 +292,7 @@ void P_Melee::AnimationControl(float delta_second)
 	{
 		Anim_count += con;
 
-		if (Anim_count <= 0 || Anim_count >= 2)
+		if (Anim_count == 0 || Anim_count == 2)
 		{
 			con *= -1;
 		}
@@ -304,10 +328,16 @@ void P_Melee::AnimationControl(float delta_second)
 		break;
 	case State::Death:
 		image = animation[Anim_count];
-		if (Anim_count >= 2)
+		if (Anim_count == 2)
 		{
 			object->CreateObject<Torch>(this->location);
-			Finalize();
+			location.y -= Anim_count * 10 + Anim_flame * 10;
+			Anim_count = 3;
+			//他のオブジェクトの邪魔をしないようにオブジェクトタイプの消去
+			collision.hit_object_type.clear();
+			collision.object_type = eObjectType::None;
+			LightMapManager* light = LightMapManager::GetInstance();
+			light->DeleteLight(this);
 		}
 		break;
 	default:
@@ -318,6 +348,28 @@ void P_Melee::AnimationControl(float delta_second)
 // エフェクト制御処理
 void P_Melee::EffectControl(float delta_second)
 {
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+	if (now_state != old_state)
+	{
+		switch (now_state)
+		{
+		case State::Attack:
+			Effect = rm->GetImages("Resource/Images/Effect/Melee_Attack_Effect.png", 3, 3, 1, 32, 32);
+			break;
+		case State::Death:
+			Effect = rm->GetImages("Resource/Images/Effect/Unit/Melee_Ghost.png", 1, 1, 1, 32, 32);
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (Anim_count > 2)
+	{
+		location.y -= 50.0f * delta_second;
+	}
+
 	switch (now_state)
 	{
 	case State::Idle:
@@ -329,7 +381,15 @@ void P_Melee::EffectControl(float delta_second)
 		break;
 	case State::Damage:
 		break;
-	case State::Death:
+	case State::Death: 
+		effect_image = Effect[0];
+		effect_alpha += add;
+		//完全に透明になったらオブジェクト消去
+		if (effect_alpha <= 0)
+		{
+			effect_alpha = 0;
+			Finalize();
+		}
 		break;
 	default:
 		break;

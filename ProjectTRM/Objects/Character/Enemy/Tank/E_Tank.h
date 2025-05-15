@@ -3,14 +3,13 @@
 #include "../../Character.h"
 #include <chrono>
 
-// ゲームオブジェクト基底クラス
+// 敵タンククラス
 class E_Tank :public Character
 {
 private:
 	static size_t count;
 	float anime_time;		// アニメーション時間
 	float recovery_time;	// 硬直時間
-	bool in_light;			// ライトの範囲内にいるか
 
 public:
 	/// <summary>
@@ -65,6 +64,16 @@ public:
 	/// ライト範囲通知処理
 	/// </summary>
 	virtual void InLightRange() override;
+	/// <summary>
+	/// ライト範囲通知処理
+	/// </summary>
+	virtual void OutLightRange() override;
+	/// <summary>
+	/// HP管理処理
+	/// </summary>
+	/// <param name="hit_object">ダメージ</param>
+	virtual void HPControl(int Damage) override;
+
 private:
 	/// <summary>
 	/// 攻撃処理

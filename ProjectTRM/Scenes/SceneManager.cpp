@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include "SceneFactory.h"
 #include "../Utility/LightMapManager.h"
+#include <math.h>
 
 // コンストラクタ
 SceneManager::SceneManager() :
@@ -95,20 +96,50 @@ void SceneManager::Update(float delta_second)
 	LightMapManager* light = LightMapManager::GetInstance();
 	std::vector<LightDetail> light_list = light->GetLightsList();
 
-	for (int i = 0; i < light_list.size(); i++)
+	for (int i = 0; i < objects_list.size(); i++)
 	{
-		for (int j = 0; j < objects_list.size(); j++)
+		// 動かないオブジェクトの場合当たり判定確認処理をしない
+		if (objects_list[i]->GetMobility() == false)
 		{
-			// 自分同士の当たり範囲検知処理はしない
-			if (light_list[i].object == objects_list[j])
+			continue;
+		}
+		else
+		{
+			// ライトリストの中身がなかったら
+			if (light_list.size() == 0)
 			{
-				continue;
+				// 当たっていないことを通知する
+				objects_list[i]->OutLightRange();
 			}
+			// 最も近いライトとの判定を確認
+			else
+			{
+				// 最短距離
+				float shortest_distance = 0.0f;
+				int count = 0;
 
-			// 明暗判定確認処理
-			CheckLightRange(light_list[i], objects_list[j]);
+				for (int j = 0; j < light_list.size(); j++)
+				{
+					// ２点間の距離
+					float distance;
+
+					float dx = objects_list[i]->GetLocation().x - light_list[j].object->GetLocation().x;
+					float dy = objects_list[i]->GetLocation().y - light_list[j].object->GetLocation().y;
+					distance = sqrtf(dx * dx + dy * dy);
+
+					// 最短距離を更新
+					if (shortest_distance > distance)
+					{
+						shortest_distance = distance;
+						count = j;
+					}
+				}
+				// 明暗判定確認処理
+				CheckLightRange(objects_list[i], light_list[count]);
+			}
 		}
 	}
+	
 
 	//削除予定
 	////オブジェクト削除判定処理
@@ -269,29 +300,35 @@ void SceneManager::CheckHitBox(GameObject* target, GameObject* partner)
 }
 
 // 明暗検知処理
-void SceneManager::CheckLightRange(LightDetail target, GameObject* partner)
+void SceneManager::CheckLightRange(GameObject* target, LightDetail partner)
 {
 	// ヌルポチェック
-	if (target.object == nullptr || partner == nullptr)
+	if (partner.object == nullptr || target == nullptr)
 	{
 		return;
 	}
 
 	// 当たり判定情報を取得
-	Collision tc = target.object->GetCollision();
-	Collision pc = partner->GetCollision();
+	Collision tc = target->GetCollision();
+	Collision pc = partner.object->GetCollision();
 
 	// 判定が有効か確認する
 	if (tc.IsCheckHitTarget(pc.object_type) || pc.IsCheckHitTarget(tc.object_type))
 	{
-		Vector2D circlePos = target.object->GetLocation();
-		float radius = target.size;
-		Vector2D boxPos = partner->GetLocation();
+		Vector2D circlePos = partner.object->GetLocation();
+		float radius = partner.size;
+		Vector2D boxPos = target->GetLocation();
 		Vector2D boxSize = pc.box_size;
 		
 		if (tc.CheckCircleRectCollision(circlePos,radius,boxPos,boxSize))
 		{
-			partner->InLightRange();
+			// 当たっていることを通知する
+			target->InLightRange();
+		}
+		else
+		{
+			// 当たっていないことを通知する
+			target->OutLightRange();
 		}
 	}
 }
