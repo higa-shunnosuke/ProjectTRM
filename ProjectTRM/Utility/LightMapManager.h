@@ -35,7 +35,7 @@ public:
 	{
 		// 画像の読み込み
 		ResourceManager* rm = ResourceManager::GetInstance();
-		light_graph = rm->GetImages("Resource/Images/Light/light.png", 1, 1, 1, 1024, 1024)[0];
+		light_graph = rm->GetImages("Resource/Images/Light/light01.png", 1, 1, 1, 1024, 1024)[0];
 		
 		// ライトマップを生成
 		light_screen = MakeScreen(D_WIN_MAX_X, D_WIN_MAX_Y, TRUE);
@@ -82,7 +82,7 @@ public:
 			TRUE);
 		
 		// ライトリスト内の座標に光の画像を加算合成
-		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 		for (LightDetail light :lights_list)
 		{
 			if (light.object != nullptr)
@@ -115,7 +115,7 @@ public:
 				light_pos.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
 				// ライト範囲を表示
-				DrawCircle(light_pos.x, light_pos.y, light.size * 200, 
+				DrawCircle((int)light_pos.x, (int)light_pos.y, (int)(light.size * 100), 
 					0x0000ff, 0, TRUE);
 			}
 		}

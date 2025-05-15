@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include "SceneFactory.h"
 #include "../Utility/LightMapManager.h"
+#include <math.h>
 
 // コンストラクタ
 SceneManager::SceneManager() :
@@ -110,16 +111,31 @@ void SceneManager::Update(float delta_second)
 				// 当たっていないことを通知する
 				objects_list[i]->OutLightRange();
 			}
+			// 最も近いライトとの判定を確認
 			else
 			{
+				// 最短距離
+				float shortest_distance = 0.0f;
+				int count = 0;
+
 				for (int j = 0; j < light_list.size(); j++)
 				{
-					// 明暗判定確認処理
-					if (CheckLightRange(objects_list[i], light_list[j]) != false)
+					// ２点間の距離
+					float distance;
+
+					float dx = objects_list[i]->GetLocation().x - light_list[j].object->GetLocation().x;
+					float dy = objects_list[i]->GetLocation().y - light_list[j].object->GetLocation().y;
+					distance = sqrtf(dx * dx + dy * dy);
+
+					// 最短距離を更新
+					if (shortest_distance > distance)
 					{
-						break;
+						shortest_distance = distance;
+						count = j;
 					}
 				}
+				// 明暗判定確認処理
+				CheckLightRange(objects_list[i], light_list[count]);
 			}
 		}
 	}
@@ -284,12 +300,12 @@ void SceneManager::CheckHitBox(GameObject* target, GameObject* partner)
 }
 
 // 明暗検知処理
-bool SceneManager::CheckLightRange(GameObject* target, LightDetail partner)
+void SceneManager::CheckLightRange(GameObject* target, LightDetail partner)
 {
 	// ヌルポチェック
 	if (partner.object == nullptr || target == nullptr)
 	{
-		return 1;
+		return;
 	}
 
 	// 当たり判定情報を取得
@@ -308,13 +324,11 @@ bool SceneManager::CheckLightRange(GameObject* target, LightDetail partner)
 		{
 			// 当たっていることを通知する
 			target->InLightRange();
-			return true;
 		}
 		else
 		{
 			// 当たっていないことを通知する
 			target->OutLightRange();
-			return false;
 		}
 	}
 }
