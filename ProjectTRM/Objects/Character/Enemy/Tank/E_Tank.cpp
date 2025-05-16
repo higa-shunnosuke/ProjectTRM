@@ -1,17 +1,17 @@
-#include "E_Tank.h"
+ï»¿#include "E_Tank.h"
 #include "../../../GameObjectManager.h"
 
-// “G‹ßÚ‚ÌƒJƒEƒ“ƒ^‚ğ‰Šú‰»
+// æ•µè¿‘æ¥ã®ã‚«ã‚¦ãƒ³ã‚¿ã‚’åˆæœŸåŒ–
 size_t E_Tank::count = 0;
 
-// “G‹ßÚ‚Ì”æ“¾ˆ—
+// æ•µè¿‘æ¥ã®æ•°å–å¾—å‡¦ç†
 size_t E_Tank::GetCount()
 {
 	return count;
 }
 
 
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 E_Tank::E_Tank() :
 	Damage(),
 	anime_time(),
@@ -20,13 +20,13 @@ E_Tank::E_Tank() :
 	count++;
 }
 
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 E_Tank::~E_Tank()
 {
 	count--;
 }
 
-// ‰Šú‰»ˆ—
+// åˆæœŸåŒ–å‡¦ç†
 void E_Tank::Initialize()
 {
 	is_mobility = true;
@@ -44,58 +44,66 @@ void E_Tank::Initialize()
 	
 	in_light = false;
 
-	// Å‰‚Ìó‘Ô‚ğˆÚ“®‚É‚·‚é
+	// æœ€åˆã®çŠ¶æ…‹ã‚’ç§»å‹•ã«ã™ã‚‹
 	now_state = State::Move;
 
-	// ‰E‚ÖˆÚ“®
+	// å³ã¸ç§»å‹•
 	velocity.x = 5.0f;
 
-	//UŒ‚—Í
+	//æ”»æ’ƒåŠ›
 	Damage = 1;
 
-	// HP‰Šú‰»
+	// HPåˆæœŸåŒ–
 	HP = 500;
 }
 
-// XVˆ—
+// æ›´æ–°å‡¦ç†
 void E_Tank::Update(float delta_second)
 {
-	// ˆÚ“®ˆ—
+
+	// æŒç¶šãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹
+	if (in_light == true && anime_time >= 0.1f)
+	{
+		HP -= 1;
+		anime_time = 0;
+	}
+
+	// ç§»å‹•å‡¦ç†
 	if (now_state == State::Move)
 	{
 		Movement(delta_second);
 	}
-	// ‘Ò‹@ˆ—
+	// å¾…æ©Ÿå‡¦ç†
 	else if (now_state == State::Idle)
 	{
 		recovery_time += delta_second;
 	}
 
-	// ƒAƒjƒ[ƒVƒ‡ƒ“ŠÇ—ˆ—
+	// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ç®¡ç†å‡¦ç†
 	AnimationControl(delta_second);
 
-	// ó‘ÔXVˆ—
+	// çŠ¶æ…‹æ›´æ–°å‡¦ç†
 	old_state = now_state;
 
-	// HP‚ª‚O‚É‚È‚é‚ÆI—¹ˆ—
+	// HPãŒï¼ã«ãªã‚‹ã¨çµ‚äº†å‡¦ç†
 	if (HP <= 0)
 	{
 		Finalize();
 	}
 }
 
-// •`‰æˆ—
+// æç”»å‡¦ç†
 void E_Tank::Draw(const Vector2D camera_pos) const
 {
-	// ƒJƒƒ‰À•W‚ğ‚à‚Æ‚É•`‰æˆÊ’u‚ğŒvZ
+	// ã‚«ãƒ¡ãƒ©åº§æ¨™ã‚’ã‚‚ã¨ã«æç”»ä½ç½®ã‚’è¨ˆç®—
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
-	// “G‹ßÚ‚Ì•`‰æ
+	// æ•µè¿‘æ¥ã®æç”»
 	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
 
 #ifdef DEBUG
-	//c‚èHP‚Ì•\¦
+	//æ®‹ã‚ŠHPã®è¡¨ç¤º
 	if (in_light == true)
 	{
 		DrawFormatString((int)position.x, (int)(position.y - 40.0f), 0xffffff, "%d", HP);
@@ -105,102 +113,102 @@ void E_Tank::Draw(const Vector2D camera_pos) const
 		DrawFormatString((int)position.x, (int)(position.y - 40.0f), 0xff0000, "%d", HP);
 	}
 
-	// ’†S‚ğ•\¦
+	// ä¸­å¿ƒã‚’è¡¨ç¤º
 	DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
-	// “–‚½‚è”»’è•\¦
+	// å½“ãŸã‚Šåˆ¤å®šè¡¨ç¤º
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff00a0, TRUE);*/
 	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
-	// UŒ‚”ÍˆÍ‚ğ•\¦
+	// æ”»æ’ƒç¯„å›²ã‚’è¡¨ç¤º
 	DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
 		(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
 #endif
 }
 
-// I—¹ˆ—
+// çµ‚äº†æ™‚å‡¦ç†
 void E_Tank::Finalize()
 {
 	GameObjectManager* object = GameObjectManager::GetInstance();
 	object->DestroyObject(this);
 }
 
-// “–‚½‚è”»’è’Ê’mˆ—
+// å½“ãŸã‚Šåˆ¤å®šé€šçŸ¥å‡¦ç†
 void E_Tank::OnHitCollision(GameObject* hit_object)
 {
 
 }
 
-// UŒ‚”ÍˆÍ’Ê’mˆ—
+// æ”»æ’ƒç¯„å›²é€šçŸ¥å‡¦ç†
 void E_Tank::OnAreaDetection(GameObject* hit_object)
 {
-	// ŒŸ’m‚µ‚½ƒIƒuƒWƒFƒNƒg‚ÌƒRƒŠƒWƒ‡ƒ“î•ñ
+	// æ¤œçŸ¥ã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚³ãƒªã‚¸ãƒ§ãƒ³æƒ…å ±
 	Collision hit_col = hit_object->GetCollision();
 
-	// ŒŸ’m‚µ‚½ƒIƒuƒWƒFƒNƒg‚ªƒvƒŒƒCƒ„[‚¾‚Á‚½‚ç
+	// æ¤œçŸ¥ã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã ã£ãŸã‚‰
 	if (hit_col.object_type == eObjectType::Player)
 	{
-		// ˆÚ“®ó‘Ô‚È‚çUŒ‚ó‘Ô‚É‚·‚é
+		// ç§»å‹•çŠ¶æ…‹ãªã‚‰æ”»æ’ƒçŠ¶æ…‹ã«ã™ã‚‹
 		if (now_state == State::Move)
 		{
 			now_state = State::Attack;
 		}
-		// ‘Ò‹@ó‘Ô‚È‚ç‘Ò‹@‚·‚é
+		// å¾…æ©ŸçŠ¶æ…‹ãªã‚‰å¾…æ©Ÿã™ã‚‹
 		else if (now_state == State::Idle)
 		{
-			// ‘Ò‹@ŠÔ‚ªI‚í‚Á‚½‚çUŒ‚ó‘Ô‚É‚·‚é
+			// å¾…æ©Ÿæ™‚é–“ãŒçµ‚ã‚ã£ãŸã‚‰æ”»æ’ƒçŠ¶æ…‹ã«ã™ã‚‹
 			if (recovery_time >= 1.0f)
 			{
 				now_state = State::Attack;
 			}
 		}
-		// UŒ‚ó‘Ô‚È‚çUŒ‚‚·‚é
+		// æ”»æ’ƒçŠ¶æ…‹ãªã‚‰æ”»æ’ƒã™ã‚‹
 		else if (now_state == State::Attack)
 		{
 			if (Anim_count == 3)
 			{
-				// UŒ‚ˆ—
+				// æ”»æ’ƒå‡¦ç†
 				Attack(hit_object);
 			}
 		}
 	}
 }
 
-// UŒ‚”ÍˆÍ’Ê’mˆ—
+// æ”»æ’ƒç¯„å›²é€šçŸ¥å‡¦ç†
 void E_Tank::NoHit()
 {
-	// ‘Ò‹@ó‘Ô‚È‚ç‘Ò‹@‚·‚é
+	// å¾…æ©ŸçŠ¶æ…‹ãªã‚‰å¾…æ©Ÿã™ã‚‹
 	if (now_state == State::Idle)
 	{
-		// ‘Ò‹@ŠÔ‚ªI‚í‚Á‚½‚çˆÚ“®ó‘Ô‚É‚·‚é
+		// å¾…æ©Ÿæ™‚é–“ãŒçµ‚ã‚ã£ãŸã‚‰ç§»å‹•çŠ¶æ…‹ã«ã™ã‚‹
 		if (recovery_time >= 1.0f)
 		{
 			now_state = State::Move;
 		}
 	}
-	// UŒ‚ó‘Ô‚Å‚È‚¯‚ê‚ÎˆÚ“®ó‘Ô‚É‚·‚é
+	// æ”»æ’ƒçŠ¶æ…‹ã§ãªã‘ã‚Œã°ç§»å‹•çŠ¶æ…‹ã«ã™ã‚‹
 	else if (now_state != State::Attack)
 	{
 		now_state = State::Move;
 	}
 }
 
-// ƒ‰ƒCƒg”ÍˆÍ’Ê’mˆ—
+// ãƒ©ã‚¤ãƒˆç¯„å›²é€šçŸ¥å‡¦ç†
 void E_Tank::InLightRange()
 {
 	in_light = true;
 }
 
-// ƒ‰ƒCƒg”ÍˆÍ’Ê’mˆ—
+// ãƒ©ã‚¤ãƒˆç¯„å›²é€šçŸ¥å‡¦ç†
 void E_Tank::OutLightRange()
 {
 	in_light = false;
 }
 
-// HPŠÇ—ˆ—
+// HPç®¡ç†å‡¦ç†
 void E_Tank::HPControl(int Damage)
 {
-	// ƒ_ƒ[ƒWŒyŒ¸
+	// ãƒ€ãƒ¡ãƒ¼ã‚¸è»½æ¸›
 	if (!in_light)
 	{
 		Damage *= 0.5;
@@ -213,35 +221,35 @@ void E_Tank::HPControl(int Damage)
 	}
 }
 
-// UŒ‚ˆ—
+// æ”»æ’ƒå‡¦ç†
 void E_Tank::Attack(GameObject* hit_object)
 {
-	// UŒ‚‘ÎÛ‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é
+	// æ”»æ’ƒå¯¾è±¡ã«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹
 	hit_object->HPControl(Damage);
 }
 
-// ˆÚ“®ˆ—
+// ç§»å‹•å‡¦ç†
 void E_Tank::Movement(float delta_second)
 {
-	// ‰EŒü‚«‚ÉˆÚ“®‚³‚¹‚é
+	// å³å‘ãã«ç§»å‹•ã•ã›ã‚‹
 	velocity.x = 5.0f;
 
-	// ˆÚ“®‚ÌÀs
+	// ç§»å‹•ã®å®Ÿè¡Œ
 	location += velocity * 10 * delta_second;
 }
 
-// ƒAƒjƒ[ƒVƒ‡ƒ“§Œäˆ—
+// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³åˆ¶å¾¡å‡¦ç†
 void E_Tank::AnimationControl(float delta_second)
 {
-	// ó‘Ô‚ªØ‚è‘Ö‚í‚Á‚½‚çƒJƒEƒ“ƒg‚ğ‰Šú‰»
+	// çŠ¶æ…‹ãŒåˆ‡ã‚Šæ›¿ã‚ã£ãŸã‚‰ã‚«ã‚¦ãƒ³ãƒˆã‚’åˆæœŸåŒ–
 	if (old_state != now_state)
 	{
 		Anim_count = 0;
 
-		// ‰æ‘œ‚Ì“Ç‚İ‚İ
+		// ç”»åƒã®èª­ã¿è¾¼ã¿
 		ResourceManager* rm = ResourceManager::GetInstance();
 
-		// Šeó‘Ô‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‰æ‘œ‚É·‚µ‘Ö‚¦
+		// å„çŠ¶æ…‹ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ç”»åƒã«å·®ã—æ›¿ãˆ
 		switch (now_state)
 		{
 		case State::Idle:
@@ -261,7 +269,7 @@ void E_Tank::AnimationControl(float delta_second)
 		}
 	}
 
-	// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÀs
+	// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œ
 	switch (now_state)
 	{
 	case State::Idle:
@@ -272,7 +280,7 @@ void E_Tank::AnimationControl(float delta_second)
 		break;
 	case State::Attack:
 		image = animation[Anim_count];
-		// d’¼ŠJn
+		// ç¡¬ç›´é–‹å§‹
 		if (Anim_count == 3)
 		{
 			now_state = State::Idle;
@@ -285,13 +293,13 @@ void E_Tank::AnimationControl(float delta_second)
 		break;
 	}
 
-	// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌXV
+	// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®æ›´æ–°
 	anime_time += delta_second;
 
-	// ƒAƒjƒ[ƒVƒ‡ƒ“ŠÔŠu
+	// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³é–“éš”
 	if (anime_time >= 0.1f)
 	{
-		// Ÿ‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚Éi‚ß‚é
+		// æ¬¡ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã«é€²ã‚ã‚‹
 		if (Anim_count < 3)
 		{
 			Anim_count++;
@@ -303,12 +311,12 @@ void E_Tank::AnimationControl(float delta_second)
 
 		if (in_light == false)
 		{
-			// ƒAƒjƒ[ƒVƒ‡ƒ“ŠJnŠÔ‚Ì‰Šú‰»
+			// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³é–‹å§‹æ™‚é–“ã®åˆæœŸåŒ–
 			anime_time = 0;
 		}
 	}
 }
-// ƒGƒtƒFƒNƒg§Œäˆ—
+// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆåˆ¶å¾¡å‡¦ç†
 void E_Tank::EffectControl(float delta_second)
 {
 
