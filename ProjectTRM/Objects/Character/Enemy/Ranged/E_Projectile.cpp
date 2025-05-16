@@ -29,7 +29,7 @@ void E_Projectile::Initialize()
 
     collision.is_blocking = true;
     collision.object_type = eObjectType::None;
-    collision.hit_object_type.push_back(eObjectType::Enemy);
+    collision.hit_object_type.push_back(eObjectType::Player);
     collision.attack_size = Vector2D(60.0f, 60.0f);
 
     z_layer = 3;
@@ -124,7 +124,7 @@ void E_Projectile::OnAreaDetection(GameObject* hit_object)
 {
     Collision hit_collision = hit_object->GetCollision();
 
-    if (hit_collision.object_type == eObjectType::Enemy)
+    if (hit_collision.object_type == eObjectType::Player)
     {
         hit_object->HPControl(Damage);
         Finalize();

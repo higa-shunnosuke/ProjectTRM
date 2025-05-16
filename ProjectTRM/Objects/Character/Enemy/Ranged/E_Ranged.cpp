@@ -1,5 +1,6 @@
 #include "E_Ranged.h"
 #include "../../../GameObjectManager.h"
+#include "E_Projectile.h"
 
 // 敵遠距離のカウンタを初期化
 size_t E_Ranged::count = 0;
@@ -35,7 +36,7 @@ void E_Ranged::Initialize()
 	collision.object_type = eObjectType::Enemy;
 	collision.hit_object_type.push_back(eObjectType::Player);
 	collision.box_size = Vector2D(60.0f, 60.0f);
-	collision.attack_size = Vector2D(100.0f, 100.0f);
+	collision.attack_size = Vector2D(500.0f, 100.0f);
 	z_layer = 2;
 
 	flip_flag = false;
@@ -217,7 +218,8 @@ void E_Ranged::HPControl(int Damage)
 // 攻撃処理
 void E_Ranged::Attack(GameObject* hit_object)
 {
-
+	GameObjectManager* object = GameObjectManager::GetInstance();
+	object->CreateObject<E_Projectile>(this->location)->SetTargetLocation(hit_object->GetLocation());
 }
 
 // 移動処理
@@ -286,7 +288,7 @@ void E_Ranged::AnimationControl(float delta_second)
 	}
 
 	// アニメーションの更新
-	anime_time = delta_second;
+	anime_time += delta_second;
 
 	// アニメーション間隔
 	if (anime_time >= 0.1f)

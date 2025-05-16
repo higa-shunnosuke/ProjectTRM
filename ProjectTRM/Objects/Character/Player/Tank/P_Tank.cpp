@@ -205,7 +205,7 @@ void P_Tank::OnAreaDetection(GameObject* hit_object)
 				}
 			}
 		}
-		else
+		else if (hit_col.object_type == eObjectType::Ground)
 		{
 			velocity.x = -3.0f;
 		}

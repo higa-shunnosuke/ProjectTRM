@@ -1,5 +1,8 @@
 #include "P_Guardian.h"
 #include "../../../../Utility/LightMapManager.h"
+#ifdef DEBUG
+#include "../../../../Utility/Input/InputManager.h"
+#endif
 
 size_t P_Guardian::count = 0;
 size_t P_Guardian::GetCount()
@@ -66,6 +69,14 @@ void P_Guardian::Initialize()
 // XVˆ—
 void P_Guardian::Update(float delta_second)
 {
+
+#ifdef DEBUG
+	InputManager* input = InputManager::GetInstance();
+	if (input->GetKeyState(KEY_INPUT_K) == eInputState::Pressed)
+	{
+		HP = 0;
+	}
+#endif
 	// ˆÚ“®ˆ—
 	Movement(delta_second);
 
@@ -242,7 +253,7 @@ void P_Guardian::AnimationControl(float delta_second)
 		case State::Damage:
 			break;
 		case State::Death:
-			//animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Down.png", 3, 3, 1, 32, 32);
+			animation = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Down.png", 3, 3, 1, 1024, 1024);
 			break;
 		default:
 			break;
@@ -290,7 +301,11 @@ void P_Guardian::AnimationControl(float delta_second)
 		image = animation[0];
 		break;
 	case State::Death:
-		Finalize();
+		image = animation[Anim_count];
+		if (Anim_count == 2)
+		{
+			Finalize();
+		}
 		break;
 	default:
 		break;

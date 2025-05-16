@@ -206,7 +206,7 @@ void P_Melee::OnAreaDetection(GameObject* hit_object)
 				}
 			}
 		}
-		else
+		else if(hit_col.object_type == eObjectType::Ground)
 		{
 			velocity.x = -5.0f;
 		}
