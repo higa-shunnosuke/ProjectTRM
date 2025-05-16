@@ -24,7 +24,7 @@ void Torch::Initialize()
 	LightMapManager* light = LightMapManager::GetInstance();
 	LightDetail detail;
 	detail.object = this;
-	detail.size = 0.5f;
+	detail.size = 1.0f;
 	light->AddLight(detail);
 
 	z_layer = 4;	

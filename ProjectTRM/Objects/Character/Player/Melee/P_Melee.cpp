@@ -14,8 +14,7 @@ size_t P_Melee::GetCount()
 // コンストラクタ
 P_Melee::P_Melee() :
 	Damage(),
-	effect_image(),
-	lane()
+	effect_image()
 {
 	count++;
 }
@@ -65,8 +64,6 @@ void P_Melee::Initialize()
 	HP = 10;
 
 	object = GameObjectManager::GetInstance();
-
-	lane = rand() % 3 + 1;
 
 	alpha = MAX_ALPHA;
 	effect_alpha = MAX_ALPHA;
@@ -139,8 +136,6 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 	position.y += z_layer * 8;
-
-	position.y -= lane * 3;
 
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う

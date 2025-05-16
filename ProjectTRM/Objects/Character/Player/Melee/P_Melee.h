@@ -16,7 +16,6 @@ private:
 	std::vector<int> Effect;
 	int effect_image;
 	int Damage;	//ƒ_ƒ[ƒW
-	int lane;
 	GameObjectManager* object;
 	int effect_alpha;
 

@@ -36,8 +36,6 @@ void P_Projectile::Initialize()
 
     now_state = State::Idle;
 
-    lane = rand() % 3 + 1;
-
     Damage = 6;
 
 }
@@ -87,7 +85,6 @@ void P_Projectile::Draw(const Vector2D camera_pos) const
 {
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-    position.y -= lane * 3;
 
 
 	// オフセット値を基に画像の描画を行う
