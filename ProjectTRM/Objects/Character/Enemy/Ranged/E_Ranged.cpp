@@ -47,6 +47,9 @@ void E_Ranged::Initialize()
 	// HP‰Šú‰»
 	HP = 20;
 
+	//“Gˆê‘Ì‚É‚Ì‚İUŒ‚‚·‚é‚½‚ß‚Ìƒtƒ‰ƒO
+	attack_flag = false;
+
 	alpha = MAX_ALPHA;
 	add = -ALPHA_ADD;
 }
@@ -161,8 +164,11 @@ void E_Ranged::OnAreaDetection(GameObject* hit_object)
 		{
 			if (Anim_count == 3)
 			{
-				// UŒ‚ˆ—
-				Attack(hit_object);
+				if (!attack_flag)
+				{
+					// UŒ‚ˆ—
+					Attack(hit_object);
+				}
 			}
 		}
 	}
@@ -220,6 +226,7 @@ void E_Ranged::Attack(GameObject* hit_object)
 {
 	GameObjectManager* object = GameObjectManager::GetInstance();
 	object->CreateObject<E_Projectile>(this->location)->SetTargetLocation(hit_object->GetLocation());
+	attack_flag = true;
 }
 
 // ˆÚ“®ˆ—
@@ -278,6 +285,7 @@ void E_Ranged::AnimationControl(float delta_second)
 		if (Anim_count == 3)
 		{
 			now_state = State::Idle;
+			attack_flag = false;
 			recovery_time = 0;
 		}
 		break;

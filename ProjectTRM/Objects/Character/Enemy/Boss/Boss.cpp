@@ -36,7 +36,7 @@ void Boss::Initialize()
 	Damage = 5;
 
 	// HPèâä˙âª
-	HP = 400;
+	HP = 800;
 
 	alpha = MAX_ALPHA;
 	add = -ALPHA_ADD;

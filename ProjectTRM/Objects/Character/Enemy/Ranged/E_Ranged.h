@@ -10,6 +10,7 @@ private:
 	static size_t count;
 	float anime_time;		// アニメーション時間
 	float recovery_time;	// 硬直時間
+	bool attack_flag;
 
 public:
 	/// <summary>
