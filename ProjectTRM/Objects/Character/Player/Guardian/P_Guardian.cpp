@@ -54,7 +54,7 @@ void P_Guardian::Initialize()
 	Damage = 4;
 
 	// HP‰Šú‰»
-	HP = 25;
+	HP = 60;
 
 	object = GameObjectManager::GetInstance();
 
