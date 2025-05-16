@@ -7,7 +7,8 @@ class Boss :public Character
 {
 private:
 	int Damage;	//ダメージ
-
+	float anime_time;		// アニメーション時間
+	float recovery_time;	// 硬直時間
 public:
 	//コンストラクタ
 	Boss();
@@ -38,6 +39,23 @@ public:
 	/// </summary>
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
 	virtual void OnHitCollision(GameObject* hit_object);
+	/// <summary>
+	/// 攻撃範囲通知処理
+	/// </summary>
+	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
+	virtual void OnAreaDetection(GameObject* hit_object) override;
+	/// <summary>
+	/// 攻撃範囲通知処理
+	/// </summary>
+	virtual void NoHit() override;
+	/// <summary>
+	/// ライト範囲通知処理
+	/// </summary>
+	virtual void InLightRange() override;
+	/// <summary>
+	/// ライト範囲通知処理
+	/// </summary>
+	virtual void OutLightRange() override;
 
 public:
 	/// <summary>

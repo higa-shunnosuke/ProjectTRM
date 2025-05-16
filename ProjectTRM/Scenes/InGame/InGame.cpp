@@ -13,6 +13,7 @@
 #include "../../Objects/Character/Enemy/Melee/E_Melee.h"
 #include "../../Objects/Character/Enemy/Tank/E_Tank.h"
 #include "../../Objects/Character/Enemy/Ranged/E_Ranged.h"
+#include "../../Objects/Character/Enemy/Boss/Boss.h"
 
 // コンストラクタ
 InGame::InGame():
@@ -113,7 +114,7 @@ void InGame::Initialize()
 	cursor = 0;
 
 	// コストの初期化 
-	cost = 300;	
+	cost = 0;	
 	prev_time = std::chrono::steady_clock::now();
 
 	//// クールダウン / 召喚フラグの初期化
@@ -152,11 +153,6 @@ eSceneType InGame::Update(const float& delta_second)
 	//カメラの更新
 	camera->Update();
 
-	//　ポイント加算やぁぁぁぁ
-	if ((input->GetKeyState(KEY_INPUT_Y) == eInputState::Pressed) || (input->GetButtonState(XINPUT_BUTTON_Y) == eInputState::Pressed))
-	{
-		cost += 1;
-	}
 
 	// リザルトシーンに遷移する
 	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
@@ -342,6 +338,7 @@ void InGame::CreateEnemy(E_enemy e_enem)
 		object->CreateObject<E_Ranged>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
 		break;
 	case Boss:
+		object->CreateObject<class Boss>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y - 30.0f));
 		break;
 	default:
 		break;

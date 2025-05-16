@@ -8,6 +8,7 @@
 #include "../Utility/ResourceManager.h"
 #include "../Utility/Input/InputManager.h"
 #include "../Utility/Camera/Camera.h"
+#include "../Utility/LightMapManager.h"
 #include "../Objects/GameObjectManager.h"
 
 
@@ -114,6 +115,11 @@ public:
 		GameObjectManager* object = GameObjectManager::GetInstance();
 		// オブジェクトリスト内のオブジェクトを破棄
 		object->DestroyAllObject();
+
+		// ライトマップマネージャーの情報を取得
+		LightMapManager* light = LightMapManager::GetInstance();
+		// ライトリストを破棄
+		light->DeleteLightList();
 	}
 
 	/// <summary>

@@ -33,13 +33,9 @@ eSceneType Title::Update(const float& delta_second)
 	{
 		return eSceneType::stage_select;
 	}
-	if (input->GetButtonState(XINPUT_BUTTON_START)== eInputState::Pressed)
+	if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 	{
 		return eSceneType::stage_select;
-	}
-	if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
-	{
-		return eSceneType::end;
 	}
 
 	Anim_flame += delta_second;
@@ -68,7 +64,7 @@ void Title::Draw() const
 
 	if (Anim_count == 1)
 	{
-	DrawFormatString(550, 450, 0xff5500, "Press_Enter");
+	DrawFormatString(500, 450, 0xff5500, "Press_A_Bottan");
 	}
 
 #ifdef _DEBUG

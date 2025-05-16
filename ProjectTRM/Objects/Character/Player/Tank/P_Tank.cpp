@@ -134,7 +134,7 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
-	position.y += z_layer * 8;
+	position.y += z_layer * 5;
 
 	// 灯守の描画
 	// オフセット値を基に画像の描画を行う
@@ -173,6 +173,8 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 void P_Tank::Finalize()
 {
 	GameObjectManager* object = GameObjectManager::GetInstance();
+	LightMapManager* light = LightMapManager::GetInstance();
+	light->DeleteLight(this);
 	object->DestroyObject(this);
 }
 

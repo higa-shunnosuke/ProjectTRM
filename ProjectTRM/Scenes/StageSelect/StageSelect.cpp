@@ -30,7 +30,8 @@ eSceneType StageSelect::Update(const float& delta_second)
 	InputManager* input = InputManager::GetInstance();
 
 	// ステージ選択シーンに遷移する
-	if (input->GetKeyState(KEY_INPUT_RIGHT) == eInputState::Pressed)
+	if (input->GetKeyState(KEY_INPUT_RIGHT) == eInputState::Pressed ||
+		input->GetButtonState(XINPUT_BUTTON_DPAD_RIGHT) == eInputState::Pressed)
 	{
 		SerectStage += 1;
 		if (SerectStage > 3)
@@ -39,7 +40,8 @@ eSceneType StageSelect::Update(const float& delta_second)
 		}
 	}
 	// ステージ選択シーンに遷移する
-	else if (input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Pressed)
+	else if (input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Pressed ||
+		input->GetButtonState(XINPUT_BUTTON_DPAD_LEFT) == eInputState::Pressed)
 	{
 		SerectStage -= 1;
 		if (SerectStage < 1)
@@ -54,7 +56,7 @@ eSceneType StageSelect::Update(const float& delta_second)
 		SetStageNumber(SerectStage);
 		return eSceneType::in_game;
 	}
-	if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
+	if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 	{
 		SetStageNumber(SerectStage);
 		return eSceneType::in_game;
@@ -74,7 +76,7 @@ void StageSelect::Draw() const
 	SetFontSize(60);
 	DrawFormatString(20, 40, 0xffffff, "StageSelect");
 	SetFontSize(32);
-	DrawFormatString(100, 400, 0xffffff, "Enterを押してください");
+	DrawFormatString(100, 400, 0xffffff, "Aボタンを押してください");
 	DrawFormatString(100, 450, 0x000000, "Stage:%d", SerectStage);
 
 

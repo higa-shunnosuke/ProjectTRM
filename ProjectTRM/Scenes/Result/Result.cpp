@@ -39,7 +39,7 @@ eSceneType Result::Update(const float& delta_second)
 		{
 			return eSceneType::stage_select;
 		}
-		else if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
+		else if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 		{
 			return eSceneType::stage_select;
 		}
@@ -49,7 +49,7 @@ eSceneType Result::Update(const float& delta_second)
 		{
 			return eSceneType::title;
 		}
-		else if (input->GetButtonState(XINPUT_BUTTON_X) == eInputState::Pressed)
+		else if (input->GetButtonState(XINPUT_BUTTON_B) == eInputState::Pressed)
 		{
 			return eSceneType::title;
 		}
@@ -61,7 +61,7 @@ eSceneType Result::Update(const float& delta_second)
 		{
 			return eSceneType::in_game;
 		}
-		else if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
+		else if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 		{
 			return eSceneType::in_game;
 		}
@@ -70,7 +70,7 @@ eSceneType Result::Update(const float& delta_second)
 		{
 			return eSceneType::title;
 		}
-		else if (input->GetButtonState(XINPUT_BUTTON_X) == eInputState::Pressed)
+		else if (input->GetButtonState(XINPUT_BUTTON_B) == eInputState::Pressed)
 		{
 			return eSceneType::title;
 		}
@@ -115,21 +115,17 @@ void Result::Draw() const
 	SetFontSize(32);
 	if (win_flg)
 	{
-#ifdef DEBUG
-		DrawString(500, 500, "Space : Stage Select", 0xffffff);
-		DrawString(570, 550, "X : Title", 0xffffff);
-#endif // DEBUG
+		DrawString(500, 500, "A : Stage Select", 0xffffff);
+		DrawString(500, 550, "B : Title", 0xffffff);
 
 	}
 	else
 	{
-#ifdef DEBUG
 		SetFontSize(80);
 		DrawFormatString(500, 350, 0xffffff, "%d", count);
 		SetFontSize(32);
-		DrawString(500, 500, "Space : Retry", 0xffffff);
-		DrawString(570, 550, "X : Title", 0xffffff);
-#endif // DEBUG
+		DrawString(500, 500, "A : Retry", 0xffffff);
+		DrawString(500, 550, "B : Title", 0xffffff);
 
 	}
 
