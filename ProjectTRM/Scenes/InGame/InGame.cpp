@@ -287,7 +287,7 @@ void InGame::Draw() const
 		SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
 	}
 
-	DrawFormatString(1000, 40, 0x00ffff, "Level:%d", Cost_value);
+	DrawFormatString(1000, 30, 0x00ffff, "Level:%d", Cost_value);
 
 	// コスト表示
 	DrawFormatString(1200, 10, 0xffffff, "%d", cost);
