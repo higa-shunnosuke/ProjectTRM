@@ -1,6 +1,6 @@
 #include "P_Tank.h"
 #include "../../../GameObjectManager.h"
-#if _DEBUG
+#ifdef DEBUG
 #include "../../../../Utility/Input/InputManager.h"
 #endif
 
@@ -71,7 +71,7 @@ void P_Tank::Initialize()
 // XVˆ—
 void P_Tank::Update(float delta_second)
 {
-#if _DEBUG
+#ifdef DEBUG
 	InputManager* input = InputManager::GetInstance();
 	if (input->GetKeyState(KEY_INPUT_K) == eInputState::Pressed)
 	{

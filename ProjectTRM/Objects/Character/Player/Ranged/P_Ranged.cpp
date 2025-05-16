@@ -1,7 +1,7 @@
 #include "P_Ranged.h"
 #include "P_Projectile.h"
 #include "../../../GameObjectManager.h"
-#if _DEBUG
+#ifdef DEBUG
 #include "../../../../Utility/Input/InputManager.h"
 #endif
 size_t P_Ranged::count = 0;
@@ -58,7 +58,7 @@ void P_Ranged::Initialize()
 // XVˆ—
 void P_Ranged::Update(float delta_second)
 {
-#if _DEBUG
+#ifdef DEBUG
 	InputManager* input = InputManager::GetInstance();
 	if (input->GetKeyState(KEY_INPUT_K) == eInputState::Pressed)
 	{

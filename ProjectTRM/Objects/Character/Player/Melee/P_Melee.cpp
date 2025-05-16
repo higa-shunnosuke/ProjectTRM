@@ -1,7 +1,7 @@
 #include "P_Melee.h"
 #include "Torch.h"
 #include "../../../../Utility/LightMapManager.h"
-#if _DEBUG
+#ifdef DEBUG
 #include "../../../../Utility/Input/InputManager.h"
 #endif
 
@@ -71,7 +71,7 @@ void P_Melee::Initialize()
 // XVˆ—
 void P_Melee::Update(float delta_second)
 {	
-#if _DEBUG
+#ifdef DEBUG
 	InputManager* input = InputManager::GetInstance();
 	if (input->GetKeyState(KEY_INPUT_K) == eInputState::Pressed)
 	{
