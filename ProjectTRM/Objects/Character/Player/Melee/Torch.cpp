@@ -22,10 +22,8 @@ void Torch::Initialize()
 	animation = rm->GetImages("Resource/Images/Unit/Melee/Torch/Torch_Move.png", 4, 4, 1, 32, 32);
 	
 	LightMapManager* light = LightMapManager::GetInstance();
-	LightDetail detail;
-	detail.object = this;
-	detail.size = 1.0f;
-	light->AddLight(detail);
+	light->AddLight(this);
+	collision.light_size = 0.5;
 
 	z_layer = 4;	
 	

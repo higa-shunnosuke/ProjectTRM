@@ -107,7 +107,7 @@ void InGame::Initialize()
 	cursor = 0;
 
 	// コストの初期化 
-	cost = 0;	
+	cost = 300;	
 	prev_time = std::chrono::steady_clock::now();
 
 	//// クールダウン / 召喚フラグの初期化

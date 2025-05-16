@@ -34,10 +34,8 @@ void P_Melee::Initialize()
 	Effect = rm->GetImages("Resource/Images/Effect/Melee_Attack_Effect.png", 3, 3, 1, 32, 32);
 
 	LightMapManager* light = LightMapManager::GetInstance();
-	LightDetail detail;
-	detail.object = this;
-	detail.size = 0.5f;
-	light->AddLight(detail);
+	light->AddLight(this);
+	collision.light_size = 1.0;
 
 	is_mobility = true;
 	is_aggressive = true;

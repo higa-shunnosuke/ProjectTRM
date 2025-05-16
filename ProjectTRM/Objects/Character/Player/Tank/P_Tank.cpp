@@ -32,10 +32,8 @@ void P_Tank::Initialize()
 	effect_image = rm->GetImages("Resource/Images/Effect/Unit/Tank_Ghost.png", 1, 1, 1, 32, 32)[0];
 
 	light = LightMapManager::GetInstance();
-	LightDetail detail;
-	detail.object = this;
-	detail.size = 1.0f;
-	light->AddLight(detail);
+	light->AddLight(this);
+	collision.light_size = 2.0;
 
 	is_mobility = true;
 	is_aggressive = true;

@@ -15,7 +15,7 @@
 #define COST_UPNUM 10
 
 
-//#define TEST
+#define TEST
 
 #ifdef TEST
 #include"../../../../Utility/Input/InputManager.h"
