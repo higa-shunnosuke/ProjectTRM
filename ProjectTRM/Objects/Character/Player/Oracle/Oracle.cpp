@@ -5,7 +5,8 @@
 
 // コンストラクタ
 Oracle::Oracle() :
-	summon_flag()
+	summon_flag(),
+	player()
 {
 
 }
@@ -62,18 +63,21 @@ void Oracle::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
-	DrawRotaGraphF(position.x-5.0, position.y+1.0, 0.06, 0.0, image, TRUE, flip_flag);
+	// 巫女の描画
+	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),//数字を変える
+		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff0000, TRUE);
 
-	DrawBoxAA(position.x - 50.0f, position.y - 90.0f, position.x + (50.0f - (100 - HP)), position.y - 75.0f, 0xFFFFFF, true);
+	DrawBoxAA(position.x - 50.0f, position.y - 150.0f, position.x + (50.0f - (100 - HP)), position.y - 135.0f, 0xFFFFFF, true);
+
+
+	DrawRotaGraphF(position.x-5.0f, position.y+1.0f, 0.06, 0.0, image, TRUE, flip_flag);
+
 
 #ifdef DEBUG
 	//残りHPの表示
 	DrawFormatString(position.x, position.y - 40.0f, 0xffffff, "%d", HP);
 	// 中心を表示
 	DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
-	// 巫女の描画
-	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),//数字を変える
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff0000, TRUE);
 	// 当たり判定表示
 	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
