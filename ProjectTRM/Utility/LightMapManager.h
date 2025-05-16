@@ -4,16 +4,7 @@
 #include "../Utility/ProjectConfig.h"
 #include "../Objects/GameObject.h"
 #include "../Utility/ResourceManager.h"
-
-struct LightDetail {
-	GameObject* object;
-	float size;
-
-	bool operator==(const LightDetail detail) const
-	{
-		return object == detail.object;
-	}
-};
+#include "../Utility/Collision.h"
 
 /// <summary>
 /// ライトマップ管理クラス
@@ -21,10 +12,10 @@ struct LightDetail {
 class LightMapManager :public Singleton<LightMapManager>
 {
 private:
-	std::vector<LightDetail> lights_list;	// ライトリスト
-	int light_graph;						// 光の画像
-	int light_screen;						// ライトマップ
-	int screen_brightness;					// 画面の明るさ（0～255）
+	std::vector<GameObject*> lights_list;	// ライトリスト
+	int light_graph = 0;					// 光の画像
+	int light_screen = 0;					// ライトマップ
+	int screen_brightness = 0;				// 画面の明るさ（0～255）
 
 public:
 
@@ -47,10 +38,10 @@ public:
 	/// ライト追加処理
 	/// </summary>
 	/// <param name="obj">追従するオブジェクト</param>
-	void AddLight(LightDetail light)
+	void AddLight(GameObject* obj)
 	{
 		// ライトリストに追加
-		lights_list.push_back(light);
+		lights_list.push_back(obj);
 	}
 
 	/// <summary>
@@ -61,12 +52,9 @@ public:
 	{
 		// ライトリストのから削除
 		lights_list.erase(
-			std::remove_if(lights_list.begin(), lights_list.end(),
-				[obj](const LightDetail& light)
-				{
-					return light.object == obj;
-				}),
-			lights_list.end());
+			std::remove(lights_list.begin(), lights_list.end(), obj),
+			lights_list.end()
+		);
 	}
 
 	/// <summary>
@@ -81,21 +69,23 @@ public:
 			GetColor(screen_brightness, screen_brightness, screen_brightness),
 			TRUE);
 		
-		// ライトリスト内の座標に光の画像を加算合成
+		// ライトリスト内の座標に光の画像を ALPHA 合成
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
-		for (LightDetail light :lights_list)
+		for (GameObject* light :lights_list)
 		{
-			if (light.object != nullptr)
+			if (light != nullptr)
 			{
 				// 座標を取得
-				Vector2D light_pos = light.object->GetLocation();
+				Vector2D light_pos = light->GetLocation();
 
 				// カメラ座標をもとに描画位置を計算
 				light_pos.x -= camera_pos.x - D_WIN_MAX_X / 2;
-
+				// ライトの半径を取得
+				Collision lc = light->GetCollision();
+				float radius = lc.light_size;
 				// ライトマップ上に光を描画
 				DrawRotaGraphF(light_pos.x, light_pos.y,
-					light.size, 0.0,light_graph, TRUE,0);
+					radius, 0.0,light_graph, TRUE,0);
 			}
 		}
 		// ブレンドモードを初期化
@@ -104,18 +94,20 @@ public:
 		SetDrawScreen(DX_SCREEN_BACK);
 
 #ifdef DEBUG
-		for (LightDetail light : lights_list)
+		for (GameObject* light : lights_list)
 		{
-			if (light.object != nullptr)
+			if (light != nullptr)
 			{
 				// 座標を取得
-				Vector2D light_pos = light.object->GetLocation();
+				Vector2D light_pos = light->GetLocation();
 
 				// カメラ座標をもとに描画位置を計算
 				light_pos.x -= camera_pos.x - D_WIN_MAX_X / 2;
-
+				// ライトの半径を取得
+				Collision lc = light->GetCollision();
+				float radius = lc.light_size;
 				// ライト範囲を表示
-				DrawCircle((int)light_pos.x, (int)light_pos.y, (int)(light.size * 100), 
+				DrawCircle((int)light_pos.x, (int)light_pos.y, (int)(radius * 100),
 					0x0000ff, 0, TRUE);
 			}
 		}
@@ -150,7 +142,7 @@ public:
 	///  ライトリスト取得処理
 	/// </summary>
 	/// <returns>ライトリスト</returns>
-	const std::vector<LightDetail>& GetLightsList() const
+	const std::vector<GameObject*>& GetLightsList() const
 	{
 		return lights_list;
 	}

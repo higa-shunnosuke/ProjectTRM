@@ -50,8 +50,6 @@ void P_Ranged::Initialize()
 
 	object = GameObjectManager::GetInstance();
 
-	lane = rand() % 3 + 1;
-
 	alpha = MAX_ALPHA;
 	effect_alpha = MAX_ALPHA;
 	add = -ALPHA_ADD;
@@ -124,8 +122,6 @@ void P_Ranged::Draw(const Vector2D camera_pos) const
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
 	position.y += z_layer * 8;
-
-	position.y -= lane * 3;
 
 	// 近接ユニットの描画
 		// オフセット値を基に画像の描画を行う

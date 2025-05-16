@@ -10,8 +10,7 @@ size_t P_Guardian::GetCount()
 // コンストラクタ
 P_Guardian::P_Guardian() :
 	Damage(),
-	effect_image(),
-	lane()
+	effect_image()
 {
 	count++;
 }
@@ -27,14 +26,11 @@ void P_Guardian::Initialize()
 {
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
-	animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
-	Effect = rm->GetImages("Resource/Images/Effect/Melee_Attack_Effect.png", 3, 3, 1, 32, 32);
+	animation = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Walk.png", 3, 3, 1, 1024, 1024);
 
 	LightMapManager* light = LightMapManager::GetInstance();
-	LightDetail detail;
-	detail.object = this;
-	detail.size = 0.5f;
-	light->AddLight(detail);
+	light->AddLight(this);
+	collision.light_size = 1.0;
 
 	is_mobility = true;
 	is_aggressive = true;
@@ -47,7 +43,7 @@ void P_Guardian::Initialize()
 	z_layer = 1;
 
 	attack_flag = false;
-	flip_flag = true;
+	flip_flag = false;
 
 	now_state = State::Move;
 
@@ -58,11 +54,10 @@ void P_Guardian::Initialize()
 	Damage = 4;
 
 	// HP初期化
-	HP = 10;
+	HP = 25;
 
 	object = GameObjectManager::GetInstance();
 
-	lane = rand() % 3 + 1;
 
 	alpha = MAX_ALPHA;
 	add = -ALPHA_ADD;
@@ -122,18 +117,11 @@ void P_Guardian::Draw(const Vector2D camera_pos) const
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 	position.y += z_layer * 8;
 
-	position.y -= lane * 3;
-
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
+	DrawRotaGraphF(position.x, position.y, 0.1, 0.0, image, TRUE, flip_flag);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-	if (now_state == State::Attack)
-	{
-		DrawRotaGraphF(position.x - (collision.box_size.x / 2), position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
-	}
 
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffa000, TRUE);*/
@@ -238,13 +226,13 @@ void P_Guardian::AnimationControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Idle:
-			animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 3, 3, 1, 32, 32);
+			animation = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Idle.png", 1, 1, 1, 1000, 1000);
 			break;
 		case State::Move:
-			animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 3, 3, 1, 32, 32);
+			animation = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Walk.png", 3, 3, 1, 1024, 1024);
 			break;
 		case State::Attack:
-			animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
+			animation = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Attack.png", 3, 3, 1, 1024, 1024);
 			if (Anim_count >= 2)
 			{
 				attack_flag = true;
@@ -254,7 +242,7 @@ void P_Guardian::AnimationControl(float delta_second)
 		case State::Damage:
 			break;
 		case State::Death:
-			animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Down.png", 3, 3, 1, 32, 32);
+			//animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Down.png", 3, 3, 1, 32, 32);
 			break;
 		default:
 			break;
@@ -282,10 +270,10 @@ void P_Guardian::AnimationControl(float delta_second)
 		break;
 	case State::Move:
 
-		image = animation[1 + Anim_count];
+		image = animation[Anim_count];
 		break;
 	case State::Attack:
-		image = animation[1 + Anim_count];
+		image = animation[Anim_count];
 		if (Anim_count >= 2)
 		{
 			attack_flag = true;
@@ -302,11 +290,7 @@ void P_Guardian::AnimationControl(float delta_second)
 		image = animation[0];
 		break;
 	case State::Death:
-		image = animation[Anim_count];
-		if (Anim_count >= 2)
-		{
-			Finalize();
-		}
+		Finalize();
 		break;
 	default:
 		break;

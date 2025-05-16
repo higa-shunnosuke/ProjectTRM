@@ -32,10 +32,8 @@ void P_Tank::Initialize()
 	effect_image = rm->GetImages("Resource/Images/Effect/Unit/Tank_Ghost.png", 1, 1, 1, 32, 32)[0];
 
 	light = LightMapManager::GetInstance();
-	LightDetail detail;
-	detail.object = this;
-	detail.size = 1.0f;
-	light->AddLight(detail);
+	light->AddLight(this);
+	collision.light_size = 2.0;
 
 	is_mobility = true;
 	is_aggressive = true;
@@ -64,8 +62,6 @@ void P_Tank::Initialize()
 
 	// HP初期化
 	HP = 30;
-
-	lane = rand() % 3 + 1;
 
 	alpha = MAX_ALPHA;
 	effect_alpha = MAX_ALPHA;
@@ -139,8 +135,6 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
 	position.y += z_layer * 8;
-
-	position.y -= lane * 3;
 
 	// 灯守の描画
 	// オフセット値を基に画像の描画を行う

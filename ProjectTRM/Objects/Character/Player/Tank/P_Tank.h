@@ -13,7 +13,6 @@ public:
 	static size_t GetCount();
 private:
 	int Damage;	//ƒ_ƒ[ƒW
-	int lane;
 	int effect_image;
 	int effect_alpha;
 	LightMapManager* light;

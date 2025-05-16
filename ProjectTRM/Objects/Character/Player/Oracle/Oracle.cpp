@@ -1,5 +1,5 @@
 #include "Oracle.h"
-#include "../Tank/P_Tank.h"
+#include "../Guardian/P_Guardian.h"
 #include "../../../../Scenes/InGame/InGame.h"
 
 
@@ -129,17 +129,13 @@ void Oracle::HPControl(int Damage)
 	
 	GameObjectManager* object = GameObjectManager::GetInstance();
 
-	/*if (!summon_flag)
+	if (!summon_flag)
 	{
-		if ( HP <= max_Hp / 2)
-		{
+
 			summon_flag = true;
-		}
-		else 
-		{
-			object->CreateObject<P_Tank>(Vector2D(location.x, location.y + 30.0f));
-		}
-	}*/
+	
+			object->CreateObject<P_Guardian>(Vector2D(location.x, location.y + 15.0f));
+	}
 
 }
 

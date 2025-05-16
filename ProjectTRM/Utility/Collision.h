@@ -22,7 +22,8 @@ public:
 	Vector2D					pivot;				// 始点と終点（相対座標）
 	eObjectType					object_type;		// 自身のオブジェクトタイプ
 	std::vector<eObjectType>	hit_object_type;	// 適用するオブジェクトタイプ
-	float						radius;				// 円の半径
+	float						light_size;			// ライトの半径
+
 public:
 	// コンストラクタ
 	Collision() :
@@ -32,7 +33,7 @@ public:
 		pivot(0.0f),
 		object_type(eObjectType::None),
 		hit_object_type(),
-		radius()
+		light_size()
 	{
 		
 	}

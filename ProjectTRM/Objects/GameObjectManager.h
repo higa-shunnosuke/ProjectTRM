@@ -6,6 +6,10 @@
 
 #include "string"
 #include "vector"
+#include <typeinfo>
+
+#define LANE (2.0f)
+#define MAX_LANE (6.0f)
 
 // ゲームオブジェクトクラス
 class GameObjectManager : public Singleton<GameObjectManager>
@@ -28,6 +32,7 @@ public:
 			{
 				// レイヤー情報を基に順番を入れ替える
 				int z_layer = obj->GetZLayer();
+				float position_y = obj->GetLocation().y;
 				std::vector<GameObject*>::iterator itr = game_objects_list.begin();	// オブジェクトリストの先頭
 				// リストの末尾になるまで走査する
 				for (; itr != game_objects_list.end(); itr++)
@@ -35,11 +40,23 @@ public:
 					// Zレイヤーが大きい場所に要素を追加する
 					// 例 itr->ZLayer{1, 1, 2, 3}、z_layer = 2 の時
 					//    itr->ZLayer{1, 1, 2, z_layer, 3}とする
+					if (typeid(*obj) == typeid(**itr) && obj->GetCollision().object_type != eObjectType::Ground)
+					{
+						if (position_y + MAX_LANA >= (*itr)->GetLocation().y)
+						{
+							obj->SetLocation(Vector2D(obj->GetLocation().x, obj->GetLocation().y + LANE));
+						}
+						else
+						{
+							obj->SetLocation(Vector2D(obj->GetLocation().x, position_y));
+						}
+					}
 					if (z_layer < (*itr)->GetZLayer())
 					{
 						break;
 					}
 				}
+
 				// リストの途中に挿入する
 				game_objects_list.insert(itr, obj);
 			}
