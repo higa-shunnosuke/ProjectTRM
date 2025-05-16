@@ -37,11 +37,11 @@ void Ground::Draw(const Vector2D camera_pos) const
 	position.y += camera_pos.y - D_WIN_MAX_Y / 2;
 
 
-#ifdef DEBUG
-	// “–‚½‚è”»’è•\Ž¦
-	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x00ff00, FALSE);
-#endif
+	if (ProjectConfig::DEBUG)
+	{	// “–‚½‚è”»’è•\Ž¦
+		DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x00ff00, FALSE);
+	}
 }
 
 void Ground::Finalize()

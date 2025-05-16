@@ -104,26 +104,27 @@ public:
 		// 描画先を表画面に戻す
 		SetDrawScreen(DX_SCREEN_BACK);
 
-#ifdef DEBUG
-		for (GameObject* light : lights_list)
+		if (ProjectConfig::DEBUG)
 		{
-			if (light != nullptr)
+			for (GameObject* light : lights_list)
 			{
-				// 座標を取得
-				Vector2D light_pos = light->GetLocation();
+				if (light != nullptr)
+				{
+					// 座標を取得
+					Vector2D light_pos = light->GetLocation();
 
-				// カメラ座標をもとに描画位置を計算
-				light_pos.x -= camera_pos.x - D_WIN_MAX_X / 2;
-				// ライトの半径を取得
-				Collision lc = light->GetCollision();
-				float radius = lc.light_size;
-				// ライト範囲を表示
-				DrawCircle((int)light_pos.x, (int)light_pos.y, (int)(radius * 100),
-					0x0000ff, 0, TRUE);
+					// カメラ座標をもとに描画位置を計算
+					light_pos.x -= camera_pos.x - D_WIN_MAX_X / 2;
+					// ライトの半径を取得
+					Collision lc = light->GetCollision();
+					float radius = lc.light_size;
+					// ライト範囲を表示
+					DrawCircle((int)light_pos.x, (int)light_pos.y, (int)(radius * 100),
+						0x0000ff, 0, TRUE);
+				}
 			}
+
 		}
-		
-#endif
 	}
 
 	/// <summary>

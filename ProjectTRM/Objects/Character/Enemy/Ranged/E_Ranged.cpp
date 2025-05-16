@@ -99,28 +99,28 @@ void E_Ranged::Draw(const Vector2D camera_pos) const
 	// 遠距離の描画
 	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
 
-#ifdef DEBUG
-	//残りHPの表示
-	if (in_light == true)
-	{
-		DrawFormatString((int)position.x, (int)(position.y - 40.0f), 0xffffff, "%d", HP);
-	}
-	else
-	{
-		DrawFormatString((int)position.x, (int)(position.y - 40.0f), 0xff0000, "%d", HP);
-	}
+	if (ProjectConfig::DEBUG)
+	{	//残りHPの表示
+		if (in_light == true)
+		{
+			DrawFormatString((int)position.x, (int)(position.y - 40.0f), 0xffffff, "%d", HP);
+		}
+		else
+		{
+			DrawFormatString((int)position.x, (int)(position.y - 40.0f), 0xff0000, "%d", HP);
+		}
 
-	// 中心を表示
-	DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
-	// 当たり判定表示
-	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff00a0, TRUE);*/
-	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
-	// 攻撃範囲を表示
-	DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
-		(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
-#endif
+		// 中心を表示
+		DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
+		// 当たり判定表示
+		/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff00a0, TRUE);*/
+		DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
+		// 攻撃範囲を表示
+		DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
+			(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
+	}
 }
 
 // 終了時処理

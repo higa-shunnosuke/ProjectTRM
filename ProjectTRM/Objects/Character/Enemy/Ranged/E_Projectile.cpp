@@ -93,17 +93,17 @@ void E_Projectile::Draw(const Vector2D camera_pos) const
     // オフセット値を基に画像の描画を行う
     DrawRotaGraphF(position.x, position.y, 2.0, angle, image, TRUE);
 
-#ifdef DEBUG
-
-    // 中心を表示
-    DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
-    // 当たり判定表示
-    DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-        (int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
-    // 攻撃範囲を表示
-    DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
-        (int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
-#endif
+    if (ProjectConfig::DEBUG)
+    {
+        // 中心を表示
+        DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
+        // 当たり判定表示
+        DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+            (int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
+        // 攻撃範囲を表示
+        DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
+            (int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
+    }
 }
 
 // 終了時処理

@@ -22,11 +22,20 @@ void SceneManager::Initialize()
 {
 	// 最初のシーンをタイトル画面にする
 	ChangeScene(eSceneType::title);
+
 }
 
 //  更新処理
 void SceneManager::Update(float delta_second)
 {
+	// 入力情報を取得
+	InputManager* input = InputManager::GetInstance();
+	// デバックモードの切り替え
+	if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Released)
+	{
+		ProjectConfig::DEBUG = !ProjectConfig::DEBUG;
+	}
+
 	// シーンの更新
 	eSceneType next_scene_type = current_scene->Update(delta_second);
 

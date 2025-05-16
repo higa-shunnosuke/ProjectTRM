@@ -32,7 +32,7 @@ eSceneType End::Update(const float& delta_second)
 
 	// ENTERキー、STARTボタンを押されたら
 	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed ||
-		input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
+		input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 	{
 		//ゲームを終了させる
 		Application* app = Application::GetInstance();
@@ -49,7 +49,7 @@ void End::Draw() const
 	SetFontSize(60);
 	DrawFormatString(120, 140, 0xffffff, "End");
 	SetFontSize(32);
-	DrawFormatString(100, 300, 0xffffff, "Enterを押してください");
+	DrawFormatString(100, 300, 0xffffff, "Aボタンを押してください");
 
 	// 親クラスの描画処理を呼び出す
 	__super::Draw();

@@ -87,20 +87,6 @@ eSceneType Result::Update(const float& delta_second)
 			return eSceneType::title;
 		}
 	}
-
-
-	// インゲームシーンに遷移する
-	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
-	{
-		return eSceneType::end;
-	}
-	if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
-	{
-		return eSceneType::end;
-	}
-
-
-
 	
 	// 親クラスの更新処理を呼び出す
 	return __super::Update(delta_second);

@@ -1,9 +1,8 @@
 #include "P_Ranged.h"
 #include "P_Projectile.h"
 #include "../../../GameObjectManager.h"
-#ifdef DEBUG
 #include "../../../../Utility/Input/InputManager.h"
-#endif
+
 size_t P_Ranged::count = 0;
 size_t P_Ranged::GetCount()
 {
@@ -58,14 +57,15 @@ void P_Ranged::Initialize()
 // 更新処理
 void P_Ranged::Update(float delta_second)
 {
-#ifdef DEBUG
-	InputManager* input = InputManager::GetInstance();
-	if (input->GetKeyState(KEY_INPUT_K) == eInputState::Pressed)
+	if (ProjectConfig::DEBUG)
 	{
-		HP = 0;
+		InputManager* input = InputManager::GetInstance();
+		if (input->GetKeyState(KEY_INPUT_K) == eInputState::Pressed)
+		{
+			HP = 0;
+		}
 	}
-#endif
-
+	
 	if (now_state != State::Death)
 	{
 		// 移動処理
@@ -142,16 +142,17 @@ void P_Ranged::Draw(const Vector2D camera_pos) const
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffa000, TRUE);*/
 
-#ifdef DEBUG
-	// 中心を表示
-	DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
-	// 当たり判定表示
-	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
-	// 攻撃範囲を表示
-	DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
-		(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
-#endif
+	if (ProjectConfig::DEBUG)
+	{
+		// 中心を表示
+		DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
+		// 当たり判定表示
+		DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
+		// 攻撃範囲を表示
+		DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
+			(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
+	}
 }
 
 // 終了時処理

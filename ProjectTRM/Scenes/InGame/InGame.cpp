@@ -159,10 +159,6 @@ eSceneType InGame::Update(const float& delta_second)
 	{
 		return eSceneType::result;
 	}
-	else if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
-	{
-		return eSceneType::result;
-	}
 	
 	// ユニット選択処理
 	UnitSelection();
@@ -173,9 +169,6 @@ eSceneType InGame::Update(const float& delta_second)
 	//// クールダウン管理処理
 	//CooldownManagement(delta_second);
 
-#ifdef DEBUG
-	
-#endif // DEBUG
 
 	if (old_camerapos.x != camera->GetCameraPos().x)
 	{
@@ -289,18 +282,18 @@ void InGame::Draw() const
 	DrawFormatString(1200, 10, 0xffffff, "%d", cost);
 
 
-#if _DEBUG
-	// カメラ座標描画
-	DrawFormatString(500, 300, 0xffffff, "%f", camera->GetCameraPos().x);
+	if (ProjectConfig::DEBUG)
+	{
+		// カメラ座標描画
+		DrawFormatString(500, 300, 0xffffff, "%f", camera->GetCameraPos().x);
 
-	// シーン情報の描画
-	SetFontSize(60);
-	DrawFormatString(0, 0, 0xffffff, "InGame");
-	SetFontSize(32);
-	DrawFormatString(100, 300, 0xffffff, "Spaceを押してください");
-	DrawFormatString(1000, 0, 0xffffff, "Stage:%d", StageNumber);
-
-#endif
+		// シーン情報の描画
+		SetFontSize(60);
+		DrawFormatString(0, 0, 0xffffff, "InGame");
+		SetFontSize(32);
+		DrawFormatString(100, 300, 0xffffff, "Spaceを押してください");
+		DrawFormatString(1000, 0, 0xffffff, "Stage:%d", StageNumber);
+	}
 }
 
 // 終了処理

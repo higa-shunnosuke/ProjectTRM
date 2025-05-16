@@ -15,10 +15,15 @@
 #define STAGE_SIZE_X	(22)	// ステージの横幅（ブロック数）
 #define STAGE_SIZE_Y	(15)	// ステージの縦幅（ブロック数）
 
-//#define DEBUG		// デバックフラグ
 
 /**********************************************************
 * プロトタイプ宣言
 ***********************************************************/
 // エラー内容を出力する
 int ErrorThrow(std::string error_log);
+
+class ProjectConfig
+{
+public:
+	static bool DEBUG;
+};

@@ -37,6 +37,10 @@ eSceneType Title::Update(const float& delta_second)
 	{
 		return eSceneType::stage_select;
 	}
+	if (input->GetButtonState(XINPUT_BUTTON_B) == eInputState::Pressed)
+	{
+		return eSceneType::end;
+	}
 
 	Anim_flame += delta_second;
 	if (Anim_flame >= 1.0f)
@@ -66,13 +70,15 @@ void Title::Draw() const
 	{
 	DrawFormatString(500, 450, 0xff5500, "Press_A_Bottan");
 	}
+	DrawFormatString(1080, 620, 0xff5500, "B:End");
 
-#ifdef _DEBUG
-	SetFontSize(60);
-	DrawFormatString(100, 140, 0xffffff, "Title");
-	SetFontSize(32);
-	DrawFormatString(100, 300, 0xffffff, "Enterを押してね!");
-#endif
+	if (ProjectConfig::DEBUG)
+	{
+		SetFontSize(60);
+		DrawFormatString(100, 140, 0xffffff, "Title");
+		SetFontSize(32);
+		DrawFormatString(100, 300, 0xffffff, "Enterを押してね!");
+	}
 
 	// 親クラスの描画処理を呼び出す
 	__super::Draw();

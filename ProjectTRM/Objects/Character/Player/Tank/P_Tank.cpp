@@ -1,8 +1,6 @@
 #include "P_Tank.h"
 #include "../../../GameObjectManager.h"
-#ifdef DEBUG
 #include "../../../../Utility/Input/InputManager.h"
-#endif
 
 size_t P_Tank::count =0;
 size_t P_Tank::GetCount()
@@ -71,13 +69,14 @@ void P_Tank::Initialize()
 // 更新処理
 void P_Tank::Update(float delta_second)
 {
-#ifdef DEBUG
-	InputManager* input = InputManager::GetInstance();
-	if (input->GetKeyState(KEY_INPUT_K) == eInputState::Pressed)
+	if (ProjectConfig::DEBUG)
 	{
-		HP = 0;
+		InputManager* input = InputManager::GetInstance();
+		if (input->GetKeyState(KEY_INPUT_K) == eInputState::Pressed)
+		{
+			HP = 0;
+		}
 	}
-#endif
 
 	if (now_state != State::Death)
 	{
@@ -155,18 +154,19 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff00ff, TRUE);*/
 
-#ifdef DEBUG
-	// 中心を表示
-	DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
-	// 当たり判定表示
-	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
-	// 攻撃範囲を表示
-	DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
-		(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
-	// HPを表示
-	DrawFormatString(position.x, position.y - 20.0f, 0x00ffff, "%d", HP);
-#endif
+	if (ProjectConfig::DEBUG)
+	{
+		// 中心を表示
+		DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
+		// 当たり判定表示
+		DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
+		// 攻撃範囲を表示
+		DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
+			(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
+		// HPを表示
+		DrawFormatString(position.x, position.y - 20.0f, 0x00ffff, "%d", HP);
+	}	
 }
 
 // 終了時処理

@@ -17,9 +17,7 @@
 
 //#define ENEMY_TEST
 
-#ifdef ENEMY_TEST
 #include"../../../../Utility/Input/InputManager.h"
-#endif // ENEMY_TEST
 
 
 #define Enemy_Plan_Evaluation // 戦場評価型
@@ -78,12 +76,13 @@ void Heretic::Initialize()
 // 更新処理
 void Heretic::Update(float delta_second)
 {
-#ifdef DEBUG
-	if (CheckHitKey(KEY_INPUT_5))
+	if (ProjectConfig::DEBUG)
 	{
-		HP--;
+		if (CheckHitKey(KEY_INPUT_5))
+		{
+			HP--;
+		}
 	}
-#endif // DEBUG
 
 	summon_flag = false;
 
@@ -164,12 +163,12 @@ void Heretic::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
-#ifdef DEBUG
-	//背景で見えない…いっそ画像白くするか迷い中
-	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffffff, TRUE);
-	DrawFormatString(0, 70, 0xFFFFFF, "5:Enemy Damage");
-#endif
+	if (ProjectConfig::DEBUG)
+	{	//背景で見えない…いっそ画像白くするか迷い中
+		DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffffff, TRUE);
+		DrawFormatString(0, 70, 0xFFFFFF, "5:Enemy Damage");
+	}
 
 #ifdef ENEMY_TEST	
 
@@ -210,17 +209,18 @@ void Heretic::Draw(const Vector2D camera_pos) const
 
 
 
-#ifdef DEBUG
-	DrawFormatString(0, 50, 0xFFFFFF, "EC:%d", Cost);
-	// 中心を表示
-	DrawCircle((int)position.x, (int)position.y, 2, 0xff0000, TRUE);
-	// 当たり判定表示
-	DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff0000, FALSE);
-	// 攻撃範囲を表示
-	DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
-		(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0xff0000, FALSE);
-#endif
+	if (ProjectConfig::DEBUG)
+	{
+		DrawFormatString(0, 50, 0xFFFFFF, "EC:%d", Cost);
+		// 中心を表示
+		DrawCircle((int)position.x, (int)position.y, 2, 0xff0000, TRUE);
+		// 当たり判定表示
+		DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff0000, FALSE);
+		// 攻撃範囲を表示
+		DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
+			(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0xff0000, FALSE);
+	}
 }
 
 // 終了時処理
