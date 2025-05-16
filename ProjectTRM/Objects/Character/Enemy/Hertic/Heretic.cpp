@@ -15,11 +15,11 @@
 #define COST_UPNUM 10
 
 
-#define TEST
+//#define ENEMY_TEST
 
-#ifdef TEST
+#ifdef ENEMY_TEST
 #include"../../../../Utility/Input/InputManager.h"
-#endif // TEST
+#endif // ENEMY_TEST
 
 
 #define Enemy_Plan_Evaluation // 戦場評価型
@@ -35,7 +35,10 @@ Heretic::Heretic() :
 	CountFlame(0.0f),
 	CountTime(0),
 	Cost(0),
-	summon_effect()
+	summon_effect(),
+	Player_evaluation(),
+	Ingame(),
+	Enemy_evaluation()
 {
 
 }
@@ -84,7 +87,7 @@ void Heretic::Update(float delta_second)
 
 	summon_flag = false;
 
-#ifdef TEST
+#ifdef ENEMY_TEST
 
 	InputManager* input = InputManager::GetInstance();
 
@@ -113,7 +116,8 @@ void Heretic::Update(float delta_second)
 	{
 		switch (Ingame->StageNumber)
 		{
-		case 1:FirstStageEnemy();
+		case 1:
+			FirstStageEnemy();
 			break;
 		default:
 			ThinkingEnemy();
@@ -167,13 +171,14 @@ void Heretic::Draw(const Vector2D camera_pos) const
 	DrawFormatString(0, 70, 0xFFFFFF, "5:Enemy Damage");
 #endif
 
-#ifdef TEST	
+#ifdef ENEMY_TEST	
+
 	DrawFormatString(0, 100, 0xFFFFFF,  "1:Tank");
 	DrawFormatString(0, 130, 0xFFFFFF,  "2:Melee");
 	DrawFormatString(0, 160, 0xFFFFFF, "3:Range");
 	DrawFormatString(0, 10, 0xFFFFFF, "4:Boss");
 
-#endif // TEST
+#endif // ENEMY_TEST
 
 
 	if (nowsta == State::Damage)
@@ -256,17 +261,8 @@ void Heretic::ThinkingEnemy()
 		//前衛は3体
 		//上記を満たして後衛
 
-		//・コストが最大になるなら手持ち最大コストを生成するで！
-		if (Cost >= 500)
-		{
-			//・生成するでな
-			Cost -= RANGE_cost;
-			Ingame->CreateEnemy(E_enemy::Range);
-			summon_flag = true;
-		}
-#ifdef Boss_Done
 		//うわ！負けそうやん！！こうなったら…！！
-		if (Pcount_sum > Ecount_sum + 80)
+		if (Pcount_sum > Ecount_sum + 100)
 		{
 			//【仮】
 			//これがワイの…切り札や！！！！
@@ -274,9 +270,6 @@ void Heretic::ThinkingEnemy()
 			Ingame->CreateEnemy(E_enemy::Boss);
 			summon_flag = true;
 		}
-#endif // Boss_None
-
-
 		//相手の方が戦力評価高いなぁ…せや！
 		else if (Pcount_sum > Ecount_sum)
 		{
@@ -311,14 +304,14 @@ void Heretic::ThinkingEnemy()
 		else if ((Pcount_sum < Ecount_sum))
 		{
 			//でもワイは油断しない優秀な漢なんや！！
-			Cost -= (MELEE_cost + 10);//←舐めプ
+			Cost -= (MELEE_cost);
 			Ingame->CreateEnemy(E_enemy::Melee);
 			summon_flag = true;
 		}
 		//このワイと…拮抗やと!!やりおる……(開始時点)
 		else
 		{
-			Cost -= TANK_cost;//←少しだけ軽減して生産して、次につなげる
+			Cost -= (TANK_cost-5);//←少しだけ軽減して生産して、次につなげる
 			Ingame->CreateEnemy(E_enemy::Tank);
 			summon_flag = true;
 		}
@@ -351,21 +344,21 @@ void Heretic::ThinkingEnemy()
 			//タンクは少なく
 			//前衛を多く
 			//前衛5体で後衛を出す
-			if ((Etank_count / TANK_eva) < (Ptank_count / TANK_eva))
+			if ((Etank_count / TANK_eva) < 2)
 			{
-				Cost -= TANK_cost;
+				Cost -= (TANK_cost - 10);
 				Ingame->CreateEnemy(E_enemy::Tank);
 				summon_flag = true;
 			}
-			else if ((Emelee_count / MELEE_eva) <= (Pmelee_count / MELEE_eva))
+			else if ((Emelee_count / MELEE_eva) <= (5))
 			{
-				Cost -= MELEE_cost;
+				Cost -= (MELEE_cost - 10);
 				Ingame->CreateEnemy(E_enemy::Melee);
 				summon_flag = true;
 			}
 			else
 			{
-				Cost -= RANGE_cost;
+				Cost -= (RANGE_cost - 30);
 				Ingame->CreateEnemy(E_enemy::Range);
 				summon_flag = true;
 			}

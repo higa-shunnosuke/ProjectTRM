@@ -40,7 +40,9 @@ public:
 
 	// コンストラクタ
 	SceneBase() :
-		cursor()
+		cursor(),
+		win_flg(),
+		StageNumber()
 	{
 
 	}
