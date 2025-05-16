@@ -106,7 +106,7 @@ void SceneManager::Update(float delta_second)
 		else
 		{
 			// ライトリストの中身がなかったら
-			if (light_list.size() == 0)
+			if (light_list.empty())
 			{
 				// 当たっていないことを通知する
 				objects_list[i]->OutLightRange();
@@ -115,7 +115,7 @@ void SceneManager::Update(float delta_second)
 			else
 			{
 				// 最短距離
-				float shortest_distance = 0.0f;
+				float shortest_distance;
 				int count = 0;
 
 				for (int j = 0; j < light_list.size(); j++)
@@ -127,22 +127,25 @@ void SceneManager::Update(float delta_second)
 					float dy = objects_list[i]->GetLocation().y - light_list[j]->GetLocation().y;
 					distance = std::sqrt(dx * dx + dy * dy);
 
+					// 最短距離の初期化
+					if (j == 0)
+					{
+						shortest_distance = distance;
+					}
+
 					// 最短距離を更新
 					if (shortest_distance > distance)
 					{
 						shortest_distance = distance;
 						count = j;
 					}
-
-					// 明暗判定確認処理
-					CheckLightRange(objects_list[i], light_list[count]);
 				}
-				
+				// 明暗判定確認処理
+				CheckLightRange(objects_list[i], light_list[count]);
 			}
 		}
 	}
 	
-
 	//削除予定
 	////オブジェクト削除判定処理
 	//for (int i = 0; i < objects_list.size(); i++)
@@ -315,7 +318,7 @@ void SceneManager::CheckLightRange(GameObject* target, GameObject* partner)
 	Collision pc = partner->GetCollision();
 
 	Vector2D circlePos = partner->GetLocation();
-	float radius = pc.light_size;
+	float radius = pc.light_size * 100;
 	Vector2D boxPos = target->GetLocation();
 	Vector2D boxSize = pc.box_size;
 

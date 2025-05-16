@@ -31,7 +31,7 @@ public:
 		// ライトマップを生成
 		light_screen = MakeScreen(D_WIN_MAX_X, D_WIN_MAX_Y, TRUE);
 
-		screen_brightness = 100;
+		screen_brightness = 125;
 	}
 
 	/// <summary>
@@ -55,6 +55,17 @@ public:
 			std::remove(lights_list.begin(), lights_list.end(), obj),
 			lights_list.end()
 		);
+	}
+
+	void DeleteLightList()
+	{
+		// ライトリストが空なら処理を終了する
+		if (lights_list.empty())
+		{
+			return;
+		}
+		// 動的配列の解放
+		lights_list.clear();
 	}
 
 	/// <summary>
