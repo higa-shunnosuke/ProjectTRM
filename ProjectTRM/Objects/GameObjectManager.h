@@ -9,7 +9,7 @@
 #include <typeinfo>
 
 #define LANE (2.0f)
-#define MAX_LANE (6.0f)
+#define MAX_LANE (4.0f)
 
 // ゲームオブジェクトクラス
 class GameObjectManager : public Singleton<GameObjectManager>
@@ -42,7 +42,7 @@ public:
 					//    itr->ZLayer{1, 1, 2, z_layer, 3}とする
 					if (typeid(*obj) == typeid(**itr) && obj->GetCollision().object_type != eObjectType::Ground)
 					{
-						if (position_y + MAX_LANA >= (*itr)->GetLocation().y)
+						if (position_y + MAX_LANE >= (*itr)->GetLocation().y)
 						{
 							obj->SetLocation(Vector2D(obj->GetLocation().x, obj->GetLocation().y + LANE));
 						}
