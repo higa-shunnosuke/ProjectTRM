@@ -52,7 +52,9 @@ public:
 	{
 		// ライトリストのから削除
 		lights_list.erase(
-			std::remove(lights_list.begin(), lights_list.end(), obj));
+			std::remove(lights_list.begin(), lights_list.end(), obj),
+			lights_list.end()
+		);
 	}
 
 	/// <summary>
