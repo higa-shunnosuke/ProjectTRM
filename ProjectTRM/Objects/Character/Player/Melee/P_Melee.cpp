@@ -176,6 +176,7 @@ void P_Melee::Finalize()
 {
 	LightMapManager* light = LightMapManager::GetInstance();
 	light->DeleteLight(this);
+	object->CreateObject<Torch>(this->location);
 	object->DestroyObject(this);
 }
 
@@ -323,7 +324,7 @@ void P_Melee::AnimationControl(float delta_second)
 		break;
 	case State::Death:
 		image = animation[Anim_count];
-		if (Anim_count == 2)
+		if (Anim_count >= 2)
 		{
 			object->CreateObject<Torch>(this->location);
 			location.y -= Anim_count * 10 + Anim_flame * 10;
