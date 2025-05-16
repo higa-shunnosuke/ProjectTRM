@@ -19,13 +19,18 @@ private:
 	std::chrono::seconds					cooldown[3];		// 召喚クールダウン
 	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数
 	int BackGroundImage[3];
+	int sound;
+	int Click;
+	int ClickUp;
+	int Cost_Click_Count;
+	int Cost_value;
 	float move_camera;
 	Vector2D old_camerapos;
 	int			cost;				// コスト
 	bool		summon_flag[3];		// 召喚フラグ
 	Oracle*		player;				// 巫女のポインタ
 	Heretic*	enemy;				// 異端者のポインタ
-	int			unit_ui[3];			// ユニット選択UIの画像
+	int			unit_ui[4];			// ユニット選択UIの画像
 
 public:
 	// コンストラクタ

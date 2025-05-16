@@ -51,10 +51,10 @@ void E_Tank::Initialize()
 	velocity.x = 5.0f;
 
 	//UŒ‚—Í
-	Damage = 10;
+	Damage = 1;
 
 	// HP‰Šú‰»
-	HP = 800;
+	HP = 500;
 }
 
 // XVˆ—

@@ -21,7 +21,9 @@ InGame::InGame():
 	summon_flag(),
 	player(nullptr),
 	enemy(nullptr),
-	unit_ui()
+	unit_ui(),
+	Cost_Click_Count(),
+	Cost_value(1)
 {
 	
 }
@@ -47,9 +49,13 @@ void InGame::Initialize()
 	unit_ui[0]= rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32)[0]	;
 	unit_ui[1]= rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32)[0]	;
 	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32)[0];
+	unit_ui[3] = rm->GetImages("Resource/Images/BackGround/Sun.png")[0];
 	BackGroundImage[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
 	BackGroundImage[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
 	BackGroundImage[2]= rm->GetImages("Resource/Images/BackGround/RedMoon.png")[0];
+
+	Click = rm->GetSounds("Resource/Sounds/InGame/Click.mp3");
+	ClickUp = rm->GetSounds("Resource/Sounds/InGame/ClickUp.mp3");
 
 	// ライトマップの初期化
 	LightMapManager* light_map = LightMapManager::GetInstance();
@@ -145,8 +151,9 @@ eSceneType InGame::Update(const float& delta_second)
 
 	//カメラの更新
 	camera->Update();
+
 	//　ポイント加算やぁぁぁぁ
-	if (input->GetKeyState(KEY_INPUT_Y) == eInputState::Pressed)
+	if ((input->GetKeyState(KEY_INPUT_Y) == eInputState::Pressed) || (input->GetButtonState(XINPUT_BUTTON_Y) == eInputState::Pressed))
 	{
 		cost += 1;
 	}
@@ -226,7 +233,7 @@ void InGame::Draw() const
 	const int button_height = 200;
 
 	// ボタンの数
-	const int button_count = 3;
+	const int button_count = 4;
 
 	// ボタンの総合幅を計算
 	int total_buttons_width = button_count * button_width;
@@ -279,6 +286,8 @@ void InGame::Draw() const
 		// 描画範囲を元に戻す
 		SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
 	}
+
+	DrawFormatString(1000, 40, 0x00ffff, "Level:%d", Cost_value);
 
 	// コスト表示
 	DrawFormatString(1200, 10, 0xffffff, "%d", cost);
@@ -349,7 +358,7 @@ void InGame::UnitSelection()
 	if (input->GetKeyState(KEY_INPUT_RIGHT) == eInputState::Pressed ||
 		input->GetButtonState(XINPUT_BUTTON_DPAD_RIGHT) == eInputState::Pressed)
 	{
-		if (cursor < 2)
+		if (cursor < 3)
 		{
 			cursor++;
 		}
@@ -413,6 +422,22 @@ void InGame::UnitSelection()
 					summon_time[cursor] = std::chrono::steady_clock::now();
 				}
 			}
+			break;
+		case 3:
+			cost += Cost_value;
+
+			Cost_Click_Count++;
+			if (Cost_Click_Count > 10 * Cost_value)
+			{
+				Cost_Click_Count = 0;
+				Cost_value++;
+				PlaySoundMem(ClickUp, DX_PLAYTYPE_BACK);
+			}
+			else
+			{
+			PlaySoundMem(Click, DX_PLAYTYPE_BACK);
+			}
+
 			break;
 		}
 	}
