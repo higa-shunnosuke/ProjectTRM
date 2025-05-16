@@ -13,6 +13,7 @@
 #include "../../Objects/Character/Enemy/Melee/E_Melee.h"
 #include "../../Objects/Character/Enemy/Tank/E_Tank.h"
 #include "../../Objects/Character/Enemy/Ranged/E_Ranged.h"
+#include "../../Objects/Character/Enemy/Boss/Boss.h"
 
 // コンストラクタ
 InGame::InGame():
@@ -342,6 +343,7 @@ void InGame::CreateEnemy(E_enemy e_enem)
 		object->CreateObject<E_Ranged>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
 		break;
 	case Boss:
+		object->CreateObject<class Boss>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y - 30.0f));
 		break;
 	default:
 		break;
