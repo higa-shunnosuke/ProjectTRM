@@ -113,7 +113,7 @@ void InGame::Initialize()
 	cursor = 0;
 
 	// コストの初期化 
-	cost = 300;	
+	cost = 0;	
 	prev_time = std::chrono::steady_clock::now();
 
 	//// クールダウン / 召喚フラグの初期化
@@ -152,11 +152,6 @@ eSceneType InGame::Update(const float& delta_second)
 	//カメラの更新
 	camera->Update();
 
-	//　ポイント加算やぁぁぁぁ
-	if ((input->GetKeyState(KEY_INPUT_Y) == eInputState::Pressed) || (input->GetButtonState(XINPUT_BUTTON_Y) == eInputState::Pressed))
-	{
-		cost += 1;
-	}
 
 	// リザルトシーンに遷移する
 	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
