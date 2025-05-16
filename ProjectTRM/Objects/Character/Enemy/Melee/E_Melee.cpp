@@ -56,6 +56,13 @@ void E_Melee::Initialize()
 // 更新処理
 void E_Melee::Update(float delta_second)
 {
+	// 持続ダメージを与える
+	if (in_light == true && anime_time >= 0.1f)
+	{
+		HP -= 1;
+		anime_time = 0;
+	}
+
 	// 移動処理
 	if (now_state == State::Move)
 	{
