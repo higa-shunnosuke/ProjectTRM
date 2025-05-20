@@ -19,7 +19,7 @@ void Ground::Initialize()
 	collision.object_type = eObjectType::Ground;
 	collision.hit_object_type.push_back(eObjectType::Player);
 	collision.hit_object_type.push_back(eObjectType::Enemy);
-	collision.box_size = Vector2D(60.0f, 60.0f);
+	collision.collision_size = Vector2D(60.0f, 60.0f);
 
 	HP = 1;
 
@@ -39,8 +39,8 @@ void Ground::Draw(const Vector2D camera_pos) const
 
 	if (ProjectConfig::DEBUG)
 	{	// “–‚½‚è”»’è•\Ž¦
-		DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x00ff00, FALSE);
+		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
+			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0x00ff00, FALSE);
 	}
 }
 

@@ -31,8 +31,8 @@ void Oracle::Initialize()
 	collision.is_blocking = true;
 	collision.object_type = eObjectType::Player;
 	collision.hit_object_type.push_back(eObjectType::Enemy);
-	collision.box_size = Vector2D(60.0f, 120.0f);
-	collision.attack_size = Vector2D(400.0f, 200.0f);
+	collision.collision_size = Vector2D(60.0f, 120.0f);
+	collision.hitbox_size = Vector2D(200.0f, 200.0f);
 	z_layer = 1;
 
 	summon_flag = false;
@@ -66,16 +66,16 @@ void Oracle::Draw(const Vector2D camera_pos) const
 	if (ProjectConfig::DEBUG)
 	{
 		// 巫女の描画
-		DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),//数字を変える
-			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff0000, TRUE);
+		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),//数字を変える
+			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0xff0000, TRUE);
 		// 中心を表示
 		DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
 		// 当たり判定表示
-		DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
+		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
+			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0x0000ff, FALSE);
 		// 攻撃範囲を表示
-		DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
-			(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
+		DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
+			(int)(position.x - collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
 		//残りHPの表示
 		DrawFormatString(position.x, position.y - 40.0f, 0xffffff, "%d", HP);
 	}

@@ -23,8 +23,8 @@ void Boss::Initialize()
 	collision.is_blocking = true;
 	collision.object_type = eObjectType::Enemy;
 	collision.hit_object_type.push_back(eObjectType::Player);
-	collision.box_size = Vector2D(200.0f, 200.0f);
-	collision.attack_size = Vector2D(300.0f, 300.0f);
+	collision.collision_size = Vector2D(200.0f, 200.0f);
+	collision.hitbox_size = Vector2D(300.0f, 300.0f);
 	z_layer = 2;
 
 	flip_flag = false;
@@ -102,11 +102,11 @@ void Boss::Draw(const Vector2D camera_pos) const
 		// ìñÇΩÇËîªíËï\é¶
 		/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff00a0, TRUE);*/
-		DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
+		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
+			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0x0000ff, FALSE);
 		// çUåÇîÕàÕÇï\é¶
-		DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
-			(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
+		DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
+			(int)(position.x + collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
 	}
 }
 

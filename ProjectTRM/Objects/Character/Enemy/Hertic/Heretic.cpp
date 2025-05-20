@@ -15,7 +15,7 @@
 #define COST_UPNUM 10
 
 
-//#define ENEMY_TEST
+#define ENEMY_TEST
 
 #include"../../../../Utility/Input/InputManager.h"
 
@@ -65,8 +65,8 @@ void Heretic::Initialize()
 	collision.is_blocking = true;
 	collision.object_type = eObjectType::Enemy;
 	collision.hit_object_type.push_back(eObjectType::Player);
-	collision.box_size = Vector2D(60.0f, 120.0f);
-	collision.attack_size = Vector2D(400.0f, 200.0f);
+	collision.collision_size = Vector2D(60.0f, 120.0f);
+	collision.hitbox_size = Vector2D(400.0f, 200.0f);
 	z_layer = 1;
 
 	// HPèâä˙âª
@@ -164,8 +164,8 @@ void Heretic::Draw(const Vector2D camera_pos) const
 
 	if (ProjectConfig::DEBUG)
 	{	//îwåiÇ≈å©Ç¶Ç»Ç¢ÅcÇ¢Ç¡ÇªâÊëúîíÇ≠Ç∑ÇÈÇ©ñ¿Ç¢íÜ
-		DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffffff, TRUE);
+		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
+			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0xffffff, TRUE);
 		DrawFormatString(0, 70, 0xFFFFFF, "5:Enemy Damage");
 	}
 
@@ -191,7 +191,7 @@ void Heretic::Draw(const Vector2D camera_pos) const
 		}
 	}
 
-	DrawGraphF(position.x - collision.box_size.x / 2 - 10.0f, position.y - collision.box_size.y / 2, image, true);
+	DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, image, true);
 
 	// àŸí[é“ÇÃï`âÊ
 	//DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
@@ -214,11 +214,11 @@ void Heretic::Draw(const Vector2D camera_pos) const
 		// íÜêSÇï\é¶
 		DrawCircle((int)position.x, (int)position.y, 2, 0xff0000, TRUE);
 		// ìñÇΩÇËîªíËï\é¶
-		DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff0000, FALSE);
+		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
+			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0xff0000, FALSE);
 		// çUåÇîÕàÕÇï\é¶
-		DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
-			(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0xff0000, FALSE);
+		DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
+			(int)(position.x + collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0xff0000, FALSE);
 	}
 }
 
