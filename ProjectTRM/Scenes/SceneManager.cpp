@@ -23,6 +23,9 @@ void SceneManager::Initialize()
 	// 最初のシーンをタイトル画面にする
 	ChangeScene(eSceneType::title);
 
+#ifdef _DEBUG
+	ProjectConfig::DEBUG = true;
+#endif // _DEBUG
 }
 
 //  更新処理
@@ -31,7 +34,8 @@ void SceneManager::Update(float delta_second)
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
 	// デバックモードの切り替え
-	if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Released)
+	if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed ||
+		input->GetKeyState(KEY_INPUT_TAB) == eInputState::Pressed)
 	{
 		ProjectConfig::DEBUG = !ProjectConfig::DEBUG;
 	}
@@ -68,6 +72,8 @@ void SceneManager::Update(float delta_second)
 		}
 	}
 
+	int count = 0;		// カウンタ
+
 	// 攻撃判定確認処理
 	for (int i = 0; i < objects_list.size(); i++)
 	{
@@ -80,22 +86,25 @@ void SceneManager::Update(float delta_second)
 		{
 			for (int j = 0; j < objects_list.size(); j++)
 			{
-				// 自分同士の当たり範囲検知処理はしない
-				if (i == j)
-				{
-					continue;
-				}
+				count++;
 
 				//攻撃前の対象のHP
 				int old_HP = objects_list[j]->GetHP();
 
 				// 攻撃判定確認処理
-				CheckHitBox(objects_list[i], objects_list[j]);
-
+				if (CheckHitBox(objects_list[i], objects_list[j]) == true)
+		
 				// 攻撃していたらループを抜ける
 				if (old_HP > objects_list[j]->GetHP())
 				{
+					count--;
 					break;
+				}
+
+				// 攻撃対象がいないことを通知する
+				if (count >= objects_list.size())
+				{
+					objects_list[i]->NoHit();
 				}
 			}
 		}
@@ -278,12 +287,12 @@ void SceneManager::CheckCollision(GameObject* target, GameObject* partner)
 }
 
 // 攻撃判定確認処理
-void SceneManager::CheckHitBox(GameObject* target, GameObject* partner)
+bool SceneManager::CheckHitBox(GameObject* target, GameObject* partner)
 {
 	// ヌルポチェック
 	if (target == nullptr || partner == nullptr)
 	{
-		return;
+		return false;
 	}
 
 	// 当たり判定情報を取得
@@ -304,12 +313,17 @@ void SceneManager::CheckHitBox(GameObject* target, GameObject* partner)
 		{
 			// 当たっていることを通知する
 			target->OnAreaDetection(partner);
+			return true;
 		}
 		else
 		{
-			// 当たっていないことを通知する
-			target->NoHit();
+			// 当たっていない
+			return false;
 		}
+	}
+	else
+	{
+		return false;
 	}
 }
 

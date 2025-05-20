@@ -13,8 +13,10 @@ size_t E_Melee::GetCount()
 // コンストラクタ
 E_Melee::E_Melee() :
 	Damage(),
-	anime_time(),
-	recovery_time()
+	anim_max_count(),
+	recovery_time(),
+	damage_rate(),
+	anim_rate()
 {
 	count++;
 }
@@ -34,8 +36,8 @@ void E_Melee::Initialize()
 	collision.is_blocking = true;
 	collision.object_type = eObjectType::Enemy;
 	collision.hit_object_type.push_back(eObjectType::Player);
-	collision.box_size = Vector2D(60.0f, 60.0f);
-	collision.attack_size = Vector2D(100.0f, 100.0f);
+	collision.box_size = Vector2D(60.0f, 100.0f);
+	collision.attack_size = Vector2D(100.0f, 90.0f);
 	z_layer = 2;
 
 	flip_flag = false;
@@ -57,10 +59,14 @@ void E_Melee::Initialize()
 void E_Melee::Update(float delta_second)
 {
 	// 持続ダメージを与える
-	if (in_light == true && anime_time >= 0.1f)
+	if (in_light == true && damage_rate >= 0.1f)
 	{
 		HP -= 1;
-		anime_time = 0;
+		damage_rate = 0;
+	}
+	else
+	{
+		damage_rate += delta_second;
 	}
 
 	// 移動処理
@@ -77,25 +83,28 @@ void E_Melee::Update(float delta_second)
 	// アニメーション管理処理
 	AnimationControl(delta_second);
 
-	// 状態更新処理
-	old_state = now_state;
-
 	// HPが０になると終了処理
 	if (HP <= 0)
 	{
-		Finalize();
+		now_state = State::Death;
 	}
 }
 
 // 描画処理
 void E_Melee::Draw(const Vector2D camera_pos) const
 {
+	// 画像のずれ
+	Vector2D offset;
+	offset.x = 30.0f;
+	offset.y = -30.0f;
+
 	// カメラ座標をもとに描画位置を計算
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
 	// 敵近接の描画
-	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
+	DrawRotaGraphF(position.x + offset.x, position.y + offset.y,
+		2.0, 0.0, image, TRUE, flip_flag);
 
 	if (ProjectConfig::DEBUG)
 	{	//残りHPの表示
@@ -160,7 +169,7 @@ void E_Melee::OnAreaDetection(GameObject* hit_object)
 		// 攻撃状態なら攻撃する
 		else if (now_state == State::Attack)
 		{
-			if (Anim_count == 3)
+			if (Anim_count == anim_max_count)
 			{
 				// 攻撃処理
 				Attack(hit_object);
@@ -180,11 +189,6 @@ void E_Melee::NoHit()
 		{
 			now_state = State::Move;
 		}
-	}
-	// 攻撃状態でなければ移動状態にする
-	else if (now_state != State::Attack)
-	{
-		now_state = State::Move;
 	}
 }
 
@@ -206,10 +210,10 @@ void E_Melee::HPControl(int Damage)
 	// ダメージ軽減
 	if (!in_light)
 	{
-		Damage *= 0.5;
+		Damage = (int)(Damage * 0.5);
 	}
 
-	this->HP -= (int)Damage;
+	this->HP -= Damage;
 	if (this->HP < 0)
 	{
 		this->HP = 0;
@@ -248,27 +252,42 @@ void E_Melee::AnimationControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Idle:
-			animation = rm->GetImages("Resource/Images/Enemy/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
+			animation = rm->GetImages("Resource/Images/Enemy/Melee/E_Melee_Idle.png", 4, 4, 1, 100, 75);
+			image = animation[Anim_count];
+			anim_max_count = 3;
+			anim_rate = 0.3f;
 			break;
 		case State::Move:
-			animation = rm->GetImages("Resource/Images/Enemy/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
+			animation = rm->GetImages("Resource/Images/Enemy/Melee/E_Melee_Walk.png", 6, 6, 1, 100, 75);
+			image = animation[Anim_count];
+			anim_max_count = 5;
+			anim_rate = 0.1f;
 			break;
 		case State::Attack:
-			animation = rm->GetImages("Resource/Images/Enemy/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
+			animation = rm->GetImages("Resource/Images/Enemy/Melee/E_Melee_Attack.png", 8, 8, 1, 100, 75);
 			image = animation[Anim_count];
+			anim_max_count = 7;
+			anim_rate = 0.1f;
 			break;
 		case State::Damage:
 			break;
 		case State::Death:
+			animation = rm->GetImages("Resource/Images/Enemy/Melee/E_Melee_Dead.png", 4, 4, 1, 100, 75);
+			image = animation[Anim_count];
+			anim_max_count = 3;
+			anim_rate = 0.2f;
 			break;
 		}
 	}
+
+	// 状態更新処理
+	old_state = now_state;
 
 	// アニメーションの実行
 	switch (now_state)
 	{
 	case State::Idle:
-		image = animation[0];
+		image = animation[Anim_count];
 		break;
 	case State::Move:
 		image = animation[Anim_count];
@@ -276,26 +295,30 @@ void E_Melee::AnimationControl(float delta_second)
 	case State::Attack:
 		image = animation[Anim_count];
 		// 硬直開始
-		if (Anim_count == 3)
+		if (Anim_count == anim_max_count)
 		{
 			now_state = State::Idle;
 			recovery_time = 0;
 		}
 		break;
-	case State::Damage:
-		break;
 	case State::Death:
+		image = animation[Anim_count];
+		// 硬直開始
+		if (Anim_count == anim_max_count)
+		{
+			Finalize();
+		}
 		break;
 	}
 
 	// アニメーションの更新
-	anime_time += delta_second;
+	Anim_flame += delta_second;
 
 	// アニメーション間隔
-	if (anime_time >= 0.1f)
+	if (Anim_flame >= anim_rate)
 	{
 		// 次のアニメーションに進める
-		if (Anim_count < 3)
+		if (Anim_count < anim_max_count)
 		{
 			Anim_count++;
 		}
@@ -304,11 +327,8 @@ void E_Melee::AnimationControl(float delta_second)
 			Anim_count = 0;
 		}
 
-		if (in_light == false)
-		{
-			// アニメーション開始時間の初期化
-			anime_time = 0;
-		}
+		// アニメーション開始時間の初期化
+		Anim_flame = 0;
 	}
 }
 // エフェクト制御処理
