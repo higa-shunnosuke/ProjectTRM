@@ -15,6 +15,7 @@ private:
 	int Damage;	//ƒ_ƒ[ƒW
 	int effect_image;
 	int effect_alpha;
+	std::vector<int> Effect;
 	LightMapManager* light;
 
 

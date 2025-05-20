@@ -132,12 +132,19 @@ void P_Ranged::Draw(const Vector2D camera_pos) const
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
-	if (now_state == State::Death)
+	switch (now_state)
 	{
-		position.y -= Anim_count * 10 + Anim_flame * 10;
+	case State::Damage:
+		DrawRotaGraphF(position.x, position.y, 1.0, 0.0, effect_image, TRUE, flip_flag);
+		break;
+	case State::Death:
+		position.y -= Effect_count * 10 + Effect_flame * 10;
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, effect_alpha);
 		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		break;
+	default:
+		break;
 	}
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffa000, TRUE);*/
@@ -318,30 +325,48 @@ void P_Ranged::EffectControl(float delta_second)
 
 	if (now_state != old_state)
 	{
+		Effect_count = 0;
+		Effect_flame = 0.0f;
 		switch (now_state)
 		{
+		case State::Damage:
+			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 36, 6, 5, 100, 100);
+			break;
 		case State::Death:
-			effect_image = rm->GetImages("Resource/Images/Effect/Unit/Ranged_Ghost.png", 1, 1, 1, 32, 32)[0];
+			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ranged_Ghost.png", 1, 1, 1, 32, 32);
 			break;
 		default:
 			break;
 		}
 	}
 
-	if (Anim_count > 2)
+	Effect_flame += delta_second;
+	if (Effect_flame >= 0.05f)
 	{
-		location.y -= 50.0f * delta_second;
+		if (Effect_count < 36)
+		{
+			Effect_count++;
+		}
+		else
+		{
+			Effect_count = 0;
+		}
+		Effect_flame = 0;
 	}
 
 	switch (now_state)
 	{
+	case State::Damage:
+		effect_image = Effect[Effect_count];
+		break;
 	case State::Death:
+		effect_image = Effect[0];
 		effect_alpha += add;
 		//完全に透明になったらオブジェクト消去
 		if (effect_alpha <= 0)
 		{
 			effect_alpha = 0;
- 			Finalize();
+			Finalize();
 		}
 		break;
 	default:

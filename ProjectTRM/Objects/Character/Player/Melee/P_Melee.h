@@ -18,6 +18,7 @@ private:
 	int Damage;	//ダメージ
 	GameObjectManager* object;
 	int effect_alpha;
+	int sounds;
 
 public:
 	//コンストラクタ

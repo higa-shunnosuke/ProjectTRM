@@ -30,6 +30,7 @@ void P_Melee::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
 	Effect = rm->GetImages("Resource/Images/Effect/Melee_Attack_Effect.png", 3, 3, 1, 32, 32);
+	sounds = rm->GetSounds("Resource/Images/UnitSE/damage02.wav");
 
 	LightMapManager* light = LightMapManager::GetInstance();
 	light->AddLight(this);
@@ -143,17 +144,24 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 	
-	if (now_state == State::Attack)
+	switch (now_state)
 	{
+	case State::Attack:
 		DrawRotaGraphF(position.x - (collision.box_size.x / 2), position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
-	}
-	else if (now_state == State::Death)
-	{
-		position.y -= Anim_count * 10 + Anim_flame * 10;
+		break;
+	case State::Damage:
+		DrawRotaGraphF(position.x, position.y, 1.0, 0.0, effect_image, TRUE, flip_flag);
+		break;
+	case State::Death:
+		position.y -= Effect_count * 10 + Effect_flame * 10;
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, effect_alpha);
 		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		break;
+	default:
+		break;
 	}
+
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffa000, TRUE);*/
 
@@ -175,7 +183,7 @@ void P_Melee::Finalize()
 {
 	LightMapManager* light = LightMapManager::GetInstance();
 	light->DeleteLight(this);
-	object->CreateObject<Torch>(this->location);
+	//object->CreateObject<Torch>(this->location);
 	object->DestroyObject(this);
 }
 
@@ -221,11 +229,13 @@ void P_Melee::HPControl(int Damage)
 	// UŒ‚ó‘Ô‚Å‚È‚¯‚ê‚Îƒ_ƒ[ƒWó‘Ô‚É‚·‚é
 	if (now_state != State::Attack && now_state != State::Death)
 	{
+		PlaySoundMem(sounds, DX_PLAYTYPE_BACK, true);
 		now_state = State::Damage;
+		__super::HPControl(Damage);
 		dmage_flame = 1.0f;
 	}
 
-	__super::HPControl(Damage);
+
 }
 
 
@@ -347,10 +357,15 @@ void P_Melee::EffectControl(float delta_second)
 
 	if (now_state != old_state)
 	{
+		Effect_count = 0;
+		Effect_flame = 0.0f;
 		switch (now_state)
 		{
 		case State::Attack:
 			Effect = rm->GetImages("Resource/Images/Effect/Melee_Attack_Effect.png", 3, 3, 1, 32, 32);
+			break;
+		case State::Damage:
+			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 36, 6, 5, 100, 100);
 			break;
 		case State::Death:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Melee_Ghost.png", 1, 1, 1, 32, 32);
@@ -360,9 +375,18 @@ void P_Melee::EffectControl(float delta_second)
 		}
 	}
 
-	if (Anim_count > 2)
+	Effect_flame += delta_second;
+	if (Effect_flame >= 0.1f)
 	{
-		location.y -= 50.0f * delta_second;
+		if (Effect_count < 36)
+		{
+			Effect_count++;
+		}
+		else
+		{
+			Effect_count = 0;
+		}
+		Effect_flame = 0;
 	}
 
 	switch (now_state)
@@ -372,9 +396,14 @@ void P_Melee::EffectControl(float delta_second)
 	case State::Move:
 		break;
 	case State::Attack:	
-		effect_image = Effect[Anim_count];
+		effect_image = Effect[Effect_count];
+		if (Effect_count >= 2)
+		{
+			now_state = State::Idle;
+		}
 		break;
 	case State::Damage:
+		effect_image = Effect[Effect_count];
 		break;
 	case State::Death: 
 		effect_image = Effect[0];

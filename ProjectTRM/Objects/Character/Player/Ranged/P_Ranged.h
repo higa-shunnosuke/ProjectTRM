@@ -14,6 +14,7 @@ private:
 	int effect_image;
 	GameObjectManager* object;
 	int effect_alpha;
+	std::vector<int> Effect;
 public:
 	//コンストラクタ
 	P_Ranged();

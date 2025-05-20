@@ -144,12 +144,19 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
-	if (now_state == State::Death)
+	switch (now_state)
 	{
-		position.y -= Anim_count * 10 + Anim_flame * 10;
+	case State::Damage:
+		DrawRotaGraphF(position.x, position.y, 1.0, 0.0, effect_image, TRUE, flip_flag);
+		break;
+	case State::Death:
+		position.y -= Effect_count * 10 + Effect_flame * 10;
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, effect_alpha);
 		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		break;
+	default:
+		break;
 	}
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff00ff, TRUE);*/
@@ -342,14 +349,44 @@ void P_Tank::EffectControl(float delta_second)
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
 
-	if (Anim_count > 2)
+	if (now_state != old_state)
 	{
-		location.y -= 50.0f * delta_second;
+		Effect_count = 0;
+		Effect_flame = 0.0f;
+		switch (now_state)
+		{
+		case State::Damage:
+			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 36, 6, 5, 100, 100);
+			break;
+		case State::Death:
+			Effect = rm->GetImages("Resource/Images/Effect/Unit/Tank_Ghost.png", 1, 1, 1, 32, 32);
+			break;
+		default:
+			break;
+		}
+	}
+
+	Effect_flame += delta_second;
+	if (Effect_flame >= 0.1f)
+	{
+		if (Effect_count < 36)
+		{
+			Effect_count++;
+		}
+		else
+		{
+			Effect_count = 0;
+		}
+		Effect_flame = 0;
 	}
 
 	switch (now_state)
 	{
+	case State::Damage:
+		effect_image = Effect[Effect_count];
+		break;
 	case State::Death:
+		effect_image = Effect[0];
 		effect_alpha += add;
 		//完全に透明になったらオブジェクト消去
 		if (effect_alpha <= 0)
