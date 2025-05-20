@@ -26,7 +26,7 @@ void Oracle::Initialize()
 	image = rm->GetImages("Resource/Images/Unit/Oracle/Oracle01.png",1,1,1,2048,2048)[0];
 
 	is_mobility = false;
-	is_aggressive = true;
+	is_aggressive = false;
 
 	collision.is_blocking = true;
 	collision.object_type = eObjectType::Player;

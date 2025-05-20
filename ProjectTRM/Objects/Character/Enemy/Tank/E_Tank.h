@@ -8,8 +8,10 @@ class E_Tank :public Character
 {
 private:
 	static size_t count;
-	float anime_time;		// アニメーション時間
+	int anim_max_count;		// アニメーション画像の枚数
 	float recovery_time;	// 硬直時間
+	float damage_rate;		// 持続ダメージの頻度
+	float anim_rate;		// アニメーションの早さ
 
 public:
 	/// <summary>
