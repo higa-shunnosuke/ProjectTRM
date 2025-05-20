@@ -47,9 +47,9 @@ void InGame::Initialize()
 
 	// ‰æ‘œ‚Ì“Ç‚İ‚İ
 	ResourceManager* rm = ResourceManager::GetInstance();
-	unit_ui[0]= rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32)[0]	;
-	unit_ui[1]= rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32)[0]	;
-	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32)[0];
+	unit_ui[0]= rm->GetImages("Resource/Images/Unit/Tank/Tank_CostT.png")[0]	;
+	unit_ui[1]= rm->GetImages("Resource/Images/Unit/Melee/Melee_CostT.png")[0]	;
+	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_CostT.png")[0];
 	unit_ui[3] = rm->GetImages("Resource/Images/BackGround/Sun.png")[0];
 	BackGroundImage[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
 	BackGroundImage[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
@@ -248,22 +248,22 @@ void InGame::Draw() const
 			int h = (int)(button_height * 1.2);
 
 			// ˜gi”wŒij‚ğ•`‰æ
-			DrawBox(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h, GetColor(255, 255, 255), TRUE);
+			//DrawBox(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h, GetColor(255, 255, 255), TRUE);
 			//ƒLƒƒƒ‰‚Ì•`‰æ”ÍˆÍ‚ğ§ŒÀ
-			SetDrawArea(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h);
+			SetDrawArea(x - (w - button_width) / 1, y - (h - button_height) / 1, x + w, y + h);
 
 			// ƒLƒƒƒ‰‰æ‘œ‚ğ’†S‚É•`‰æ
 			DrawExtendGraph(
-				(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
-				(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
+				(int)(x + (button_width - w /* * 1.5 */) / 2), (int)(y + (button_height - h /* * 1.5 */) / 2),
+				(int)(x + (button_width + w /* * 1.7*/) / 2), (int)(y + (button_height + h /* * 1.7 */) / 2),
 				unit_ui[i], TRUE);
 		}
 		else
 		{
 			// ˜gi”wŒij‚ğ•`‰æ
-			DrawBox(x, y, x + button_width, y + button_height, GetColor(100, 100, 100), TRUE);
+			//DrawBox(x, y, x + button_width, y + button_height, GetColor(100, 100, 100), TRUE);
 			//ƒLƒƒƒ‰‚Ì•`‰æ”ÍˆÍ‚ğ§ŒÀ
-			SetDrawArea(x, y, x + button_width, y + button_height);
+			//SetDrawArea(x, y, x + button_width, y + button_height);
 
 			// ƒLƒƒƒ‰‰æ‘œ‚ğ’†S‚É•`‰æ
 			DrawExtendGraph(
