@@ -70,7 +70,7 @@ void Heretic::Initialize()
 	z_layer = 1;
 
 	// HP初期化
-	HP = 100;
+	HP = 500;
 }
 
 // 更新処理
@@ -137,7 +137,6 @@ void Heretic::Update(float delta_second)
 	{
 		Cost += 1;
 		prev_time = std::chrono::steady_clock::now();
-
 	}
 
 	if (summon_effect)
@@ -199,7 +198,7 @@ void Heretic::Draw(const Vector2D camera_pos) const
 	//	(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, TRUE);
 
 
-	DrawBoxAA(position.x - 50.0f, position.y - 90.0f, position.x + (50.0f - (100 - HP)), position.y - 75.0f, 0xFFFFFF, true);
+	DrawBoxAA(position.x , position.y - 90.0f, position.x + (100.0f - (100 - ((double)HP / 500) * 100)), position.y - 75.0f, 0xFFFFFF, true);
 
 	if (summon_effect)
 	{
@@ -250,6 +249,12 @@ void Heretic::ThinkingEnemy()
 	Ecount_sum += (Etank_count + Emelee_count + Erange_count);
 
 
+	if (old_EnemySum > Ecount_sum)
+	{
+		Cost += 100;
+	}
+	old_EnemySum = Ecount_sum;
+
 
 	switch (Ingame->StageNumber)
 	{
@@ -262,12 +267,12 @@ void Heretic::ThinkingEnemy()
 		//上記を満たして後衛
 
 		//うわ！負けそうやん！！こうなったら…！！
-		if (Pcount_sum > Ecount_sum + 100)
+		if (Pcount_sum > Ecount_sum  && HP != 500)
 		{
 			//【仮】
 			//これがワイの…切り札や！！！！
-			Cost -= BOSS_cost;
-			Ingame->CreateEnemy(E_enemy::Boss);
+   			Cost -= BOSS_cost;
+			SamonEnemy(E_enemy::Boss);
 			summon_flag = true;
 		}
 		//相手の方が戦力評価高いなぁ…せや！
@@ -281,14 +286,14 @@ void Heretic::ThinkingEnemy()
 			if ((Etank_count / TANK_eva) < 4)
 			{
 				Cost -= TANK_cost;
-				Ingame->CreateEnemy(E_enemy::Tank);
+				SamonEnemy(E_enemy::Tank);
 				summon_flag = true;
 			}
 			//タンク安定したやろし、近接生産せな
 			else if (((Emelee_count / MELEE_eva) < (Erange_count / RANGE_eva) + 3))
 			{
 				Cost -= MELEE_cost;
-				Ingame->CreateEnemy(E_enemy::Melee);
+				SamonEnemy(E_enemy::Melee);
 				summon_flag = true;
 			}
 			//遠距離が多いほど幸せやねん…でも、タンクと近接の方が優先やなぁ…悩ましい
@@ -296,7 +301,7 @@ void Heretic::ThinkingEnemy()
 			else
 			{
 				Cost -= RANGE_cost;
-				Ingame->CreateEnemy(E_enemy::Range);
+				SamonEnemy(E_enemy::Range);
 				summon_flag = true;
 			}
 		}
@@ -305,36 +310,27 @@ void Heretic::ThinkingEnemy()
 		{
 			//でもワイは油断しない優秀な漢なんや！！
 			Cost -= (MELEE_cost);
-			Ingame->CreateEnemy(E_enemy::Melee);
+			SamonEnemy(E_enemy::Melee);
 			summon_flag = true;
 		}
 		//このワイと…拮抗やと!!やりおる……(開始時点)
 		else
 		{
 			Cost -= (TANK_cost-5);//←少しだけ軽減して生産して、次につなげる
-			Ingame->CreateEnemy(E_enemy::Tank);
+			SamonEnemy(E_enemy::Tank);
 			summon_flag = true;
 		}
 	}
 	break;
 	case 3:
-		//攻撃的
+		//ラッシュ(波のように襲い来る)
 	{
-		//・コストが最大になるなら手持ち最大コストを生成する。
-		if (Cost >= 500)
-		{
-			//・生成するでな
-			Cost -= RANGE_cost;
-			Ingame->CreateEnemy(E_enemy::Range);
-			summon_flag = true;
-			//この辺の処理は関数に飛ばそうかな…
-		}
 		//・相手の評価が高くなった際に手持ち最大コストを生成する。
-		if (Pcount_sum > Ecount_sum + 100)
+		if (Pcount_sum > Ecount_sum + 500)
 		{
 			//【プロト版のみ】
 			Cost -= BOSS_cost;
-			Ingame->CreateEnemy(E_enemy::Boss);
+			SamonEnemy(E_enemy::Boss);
 			summon_flag = true;
 		}
 		//・相手の評価が低くなった際に手持ち最小コストを生成する。
@@ -344,22 +340,22 @@ void Heretic::ThinkingEnemy()
 			//タンクは少なく
 			//前衛を多く
 			//前衛5体で後衛を出す
-			if ((Etank_count / TANK_eva) < 2)
+			if ((Etank_count / TANK_eva) <= 1)
 			{
-				Cost -= (TANK_cost - 10);
-				Ingame->CreateEnemy(E_enemy::Tank);
+				Cost -= (TANK_cost - 5);
+				SamonEnemy(E_enemy::Tank);
 				summon_flag = true;
 			}
-			else if ((Emelee_count / MELEE_eva) <= (5))
+			else if ((Emelee_count / MELEE_eva) <= 1)
 			{
 				Cost -= (MELEE_cost - 10);
-				Ingame->CreateEnemy(E_enemy::Melee);
+				SamonEnemy(E_enemy::Melee);
 				summon_flag = true;
 			}
 			else
 			{
 				Cost -= (RANGE_cost - 30);
-				Ingame->CreateEnemy(E_enemy::Range);
+				SamonEnemy(E_enemy::Range);
 				summon_flag = true;
 			}
 		}
@@ -376,7 +372,7 @@ void Heretic::FirstStageEnemy()
 {
 	//沢山の近接を出すねん
 	Cost -= MELEE_cost;
-	Ingame->CreateEnemy(E_enemy::Melee);
+	SamonEnemy(E_enemy::Melee);
 	summon_flag = true;
 }
 
@@ -390,20 +386,37 @@ void Heretic::OnHitCollision(GameObject* hit_object)
 void Heretic::HPControl(int Damage)
 {
 	__super::HPControl(Damage);
-	
 
 	nowsta = State::Damage;
-
-	if (CountTime > 0)
-	{
-	CountTime = -2;
-	}
-
 }
 
 bool Heretic::GetDead()
 {
 	return JustDead;
+}
+
+void Heretic::SamonEnemy(int e_enem)
+{
+	// オブジェクトマネージャーの情報を取得
+	GameObjectManager* object = GameObjectManager::GetInstance();
+
+	switch (e_enem)
+	{
+	case Tank:
+		object->CreateObject<E_Tank>(Vector2D(GetLocation().x, GetLocation().y + 30.0f));
+		break;
+	case Melee:
+		object->CreateObject<E_Melee>(Vector2D(GetLocation().x, GetLocation().y + 30.0f));
+		break;
+	case Range:
+		object->CreateObject<E_Ranged>(Vector2D(GetLocation().x, GetLocation().y + 30.0f));
+		break;
+	case Boss:
+		object->CreateObject<class Boss>(Vector2D(GetLocation().x, GetLocation().y - 30.0f));
+		break;
+	default:
+		break;
+	}
 }
 
 // 移動処理

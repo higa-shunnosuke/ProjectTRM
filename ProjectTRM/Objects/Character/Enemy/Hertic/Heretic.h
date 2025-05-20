@@ -14,10 +14,10 @@
 #define RANGE_eva	 20
 #define BOSS_eva	 50
 
-#define TANK_cost	 30
-#define MELEE_cost	 60
-#define RANGE_cost	 100
-#define BOSS_cost	 500
+#define TANK_cost	 10
+#define MELEE_cost	 30
+#define RANGE_cost	 50
+#define BOSS_cost	 150
 
 
 #endif // Enemy_Think_Standard
@@ -49,6 +49,8 @@ private:
 	bool	summon_flag;	//召喚フラグ
 	bool	summon_effect;	//召喚フラグ
 	std::vector<GameObject*> ObjectList;
+
+	short int old_EnemySum;
 
 	class	InGame* Ingame;	//InGameのポインター
 	float	CountFlame;		//flameの管理
@@ -107,6 +109,9 @@ public:
 	virtual void HPControl(int Damage);
 
 	bool GetDead();
+
+
+	void SamonEnemy(int e_enem);
 
 private:
 	/// <summary>
