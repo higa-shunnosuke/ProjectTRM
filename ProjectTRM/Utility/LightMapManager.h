@@ -31,7 +31,7 @@ public:
 		// ライトマップを生成
 		light_screen = MakeScreen(D_WIN_MAX_X, D_WIN_MAX_Y, TRUE);
 
-		screen_brightness = 180;
+		screen_brightness = 150;
 	}
 
 	/// <summary>
