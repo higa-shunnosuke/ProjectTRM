@@ -74,7 +74,7 @@ void StageSelect::Draw() const
 
 
 	SetFontSize(60);
-	DrawFormatString(20, 40, 0xffffff, "StageSelect");
+	DrawFormatString(20, 40, 0xffffff, "Stage Select");
 	SetFontSize(32);
 	DrawFormatString(100, 400, 0xffffff, "Aƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚Ä‚­‚¾‚³‚¢");
 	DrawFormatString(100, 450, 0x000000, "Stage:%d", SerectStage);

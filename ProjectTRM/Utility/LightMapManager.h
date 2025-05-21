@@ -26,12 +26,12 @@ public:
 	{
 		// 画像の読み込み
 		ResourceManager* rm = ResourceManager::GetInstance();
-		light_graph = rm->GetImages("Resource/Images/Light/light01.png", 1, 1, 1, 1024, 1024)[0];
+		light_graph = rm->GetImages("Resource/Images/Light/light02.png", 1, 1, 1, 1024, 1024)[0];
 		
 		// ライトマップを生成
 		light_screen = MakeScreen(D_WIN_MAX_X, D_WIN_MAX_Y, TRUE);
 
-		screen_brightness = 125;
+		screen_brightness = 180;
 	}
 
 	/// <summary>
@@ -81,7 +81,7 @@ public:
 			TRUE);
 		
 		// ライトリスト内の座標に光の画像を ALPHA 合成
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 		for (GameObject* light :lights_list)
 		{
 			if (light != nullptr)
@@ -93,7 +93,7 @@ public:
 				light_pos.x -= camera_pos.x - D_WIN_MAX_X / 2;
 				// ライトの半径を取得
 				Collision lc = light->GetCollision();
-				float radius = lc.light_size;
+				float radius = lc.light_size * 0.2;
 				// ライトマップ上に光を描画
 				DrawRotaGraphF(light_pos.x, light_pos.y,
 					radius, 0.0,light_graph, TRUE,0);

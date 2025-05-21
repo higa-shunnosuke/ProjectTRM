@@ -68,7 +68,7 @@ void Title::Draw() const
 
 	if (Anim_count == 1)
 	{
-	DrawFormatString(500, 450, 0xff5500, "Press_A_Bottan");
+	DrawFormatString(500, 450, 0xff5500, "Press A Buttan");
 	}
 	DrawFormatString(1080, 620, 0xff5500, "B:End");
 
