@@ -39,8 +39,8 @@ void P_Guardian::Initialize()
 	collision.is_blocking = true;
 	collision.object_type = eObjectType::Player;
 	collision.hit_object_type.push_back(eObjectType::Enemy);
-	collision.box_size = Vector2D(60.0f, 60.0f);
-	collision.attack_size = Vector2D(100.0f, 100.0f);
+	collision.collision_size = Vector2D(60.0f, 60.0f);
+	collision.hitbox_size = Vector2D(50.0f, 100.0f);
 	z_layer = 1;
 
 	attack_flag = false;
@@ -142,11 +142,11 @@ void P_Guardian::Draw(const Vector2D camera_pos) const
 		// 中心を表示
 		DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
 		// 当たり判定表示
-		DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
+		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
+			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0x0000ff, FALSE);
 		// 攻撃範囲を表示
-		DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
-			(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
+		DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
+			(int)(position.x - collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
 	}
 }
 

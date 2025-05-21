@@ -36,8 +36,8 @@ void E_Melee::Initialize()
 	collision.is_blocking = true;
 	collision.object_type = eObjectType::Enemy;
 	collision.hit_object_type.push_back(eObjectType::Player);
-	collision.box_size = Vector2D(60.0f, 100.0f);
-	collision.attack_size = Vector2D(100.0f, 90.0f);
+	collision.collision_size = Vector2D(50.0f, 100.0f);
+	collision.hitbox_size = Vector2D(80.0f, 120.0f);
 	z_layer = 2;
 
 	flip_flag = false;
@@ -96,7 +96,7 @@ void E_Melee::Draw(const Vector2D camera_pos) const
 	// 画像のずれ
 	Vector2D offset;
 	offset.x = 30.0f;
-	offset.y = -30.0f;
+	offset.y = -25.0f;
 
 	// カメラ座標をもとに描画位置を計算
 	Vector2D position = this->GetLocation();
@@ -122,11 +122,11 @@ void E_Melee::Draw(const Vector2D camera_pos) const
 		// 当たり判定表示
 		/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff00a0, TRUE);*/
-		DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
+		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
+			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0x0000ff, FALSE);
 		// 攻撃範囲を表示
-		DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
-			(int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
+		DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
+			(int)(position.x + collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
 	}
 }
 

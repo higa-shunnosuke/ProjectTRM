@@ -30,7 +30,7 @@ void E_Projectile::Initialize()
     collision.is_blocking = true;
     collision.object_type = eObjectType::None;
     collision.hit_object_type.push_back(eObjectType::Player);
-    collision.attack_size = Vector2D(60.0f, 60.0f);
+    collision.hitbox_size = Vector2D(30.0f, 60.0f);
 
     z_layer = 3;
 
@@ -76,7 +76,7 @@ void E_Projectile::Update(float delta_second)
     angle = std::atan2((location.y - old_location.y), (location.x - old_location.x));
 
     old_location = location;
-    if (location.y >= end_loc + (collision.attack_size.y / 2))
+    if (location.y >= end_loc + (collision.hitbox_size.y / 2))
     {
         Finalize();
     }
@@ -98,11 +98,11 @@ void E_Projectile::Draw(const Vector2D camera_pos) const
         // 中心を表示
         DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
         // 当たり判定表示
-        DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-            (int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, FALSE);
+        DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
+            (int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0x0000ff, FALSE);
         // 攻撃範囲を表示
-        DrawBox((int)(position.x - collision.attack_size.x / 2), (int)(position.y - collision.attack_size.y / 2),
-            (int)(position.x + collision.attack_size.x / 2), (int)(position.y + collision.attack_size.y / 2), 0x0000ff, FALSE);
+        DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
+            (int)(position.x + collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
     }
 }
 

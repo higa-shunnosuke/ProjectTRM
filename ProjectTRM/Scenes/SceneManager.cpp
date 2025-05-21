@@ -274,7 +274,7 @@ void SceneManager::CheckCollision(GameObject* target, GameObject* partner)
 		Vector2D diff = target->GetLocation() - partner->GetLocation();
 
 		//２つのオブジェクトの当たり判定の大きさを取得
-		Vector2D box_size = (tc.box_size + pc.box_size) / 2.0f;
+		Vector2D box_size = (tc.collision_size + pc.collision_size) / 2.0f;
 		
 		// 矩形同士の当たり判定
 		if ((fabsf(diff.x) < box_size.x) && (fabsf(diff.y) < box_size.y))
@@ -306,7 +306,9 @@ bool SceneManager::CheckHitBox(GameObject* target, GameObject* partner)
 		Vector2D diff = target->GetLocation() - partner->GetLocation();
 
 		//２つのオブジェクトの当たり判定の大きさを取得
-		Vector2D box_size = (tc.attack_size + pc.box_size) / 2.0f;
+		Vector2D box_size;
+		box_size.x = tc.hitbox_size.x;
+		box_size.y = (tc.hitbox_size.y + pc.collision_size.y) / 2.0f;
 		
 		// 矩形同士の当たり判定
 		if ((fabsf(diff.x) <= box_size.x) && (fabsf(diff.y) <= box_size.y))
@@ -343,7 +345,7 @@ void SceneManager::CheckLightRange(GameObject* target, GameObject* partner)
 	Vector2D circlePos = partner->GetLocation();
 	float radius = pc.light_size * 100;
 	Vector2D boxPos = target->GetLocation();
-	Vector2D boxSize = pc.box_size;
+	Vector2D boxSize = pc.collision_size;
 
 	if (tc.CheckCircleRectCollision(circlePos, radius, boxPos, boxSize))
 	{
