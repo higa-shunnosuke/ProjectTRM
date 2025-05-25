@@ -135,6 +135,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
+    <ClCompile Include="Objects\Character\Player\Bonfire\Bonfire.cpp" />
     <ClCompile Include="Objects\Character\Enemy\Ranged\E_Projectile.cpp" />
     <ClCompile Include="Objects\Block\Ground.cpp" />
     <ClCompile Include="Objects\Character\Enemy\Boss\Boss.cpp" />
@@ -168,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Objects\Character\Player\Bonfire\Bonfire.h" />
     <ClInclude Include="Objects\Character\Enemy\Ranged\E_Projectile.h" />
     <ClInclude Include="Objects\Block\Ground.h" />
     <ClInclude Include="Objects\Character\Enemy\Boss\Boss.h" />
