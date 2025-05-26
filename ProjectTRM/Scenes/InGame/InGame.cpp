@@ -23,8 +23,7 @@ InGame::InGame():
 	player(nullptr),
 	enemy(nullptr),
 	unit_ui(),
-	Cost_Click_Count(),
-	Cost_value(1)
+	Sun_Level(1)
 {
 	
 }
@@ -47,9 +46,9 @@ void InGame::Initialize()
 
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
-	unit_ui[0]= rm->GetImages("Resource/Images/Unit/Tank/Tank_CostT.png")[0]	;
-	unit_ui[1]= rm->GetImages("Resource/Images/Unit/Melee/Melee_CostT.png")[0]	;
-	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_CostT.png")[0];
+	unit_ui[0]= rm->GetImages("Resource/Images/Unit/Tank/Tank_Cost.png")[0]	;
+	unit_ui[1]= rm->GetImages("Resource/Images/Unit/Melee/Melee_Cost.png")[0]	;
+	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Cost.png")[0];
 	unit_ui[3] = rm->GetImages("Resource/Images/BackGround/Sun.png")[0];
 	BackGroundImage[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
 	BackGroundImage[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
@@ -128,21 +127,21 @@ void InGame::Initialize()
 // 更新処理
 eSceneType InGame::Update(const float& delta_second)
 {
-	move_camera = 0.0f;
 
 	if (enemy->GetHP() <= 0 || player->GetHP() <= 0)
 	{
-		if(player->GetHP() <= 0)
+		if (player->GetHP() <= 0)
 		{
 			IsPlayerWin(false);
-		return eSceneType::result;
-		}
-		else	
-		{
-			IsPlayerWin(true);
 			return eSceneType::result;
 		}
+		else
+		{
+			IsPlayerWin(true);
+			state = GameState::BOSS_DEAD;
+		}
 	}
+
 
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
@@ -153,33 +152,52 @@ eSceneType InGame::Update(const float& delta_second)
 	//カメラの更新
 	camera->Update();
 
-
-	// リザルトシーンに遷移する
-	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
+	switch (state)
 	{
-		return eSceneType::result;
+	case GameState::PLAYING:
+
+		move_camera = 0.0f;
+
+		// リザルトシーンに遷移する
+		if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
+		{
+			return eSceneType::result;
+		}
+
+		// ユニット選択処理
+		UnitSelection();
+
+		// コスト管理処理
+		RegenerateCost();
+
+		//// クールダウン管理処理
+		//CooldownManagement(delta_second);
+
+
+		if (old_camerapos.x != camera->GetCameraPos().x)
+		{
+			move_camera = old_camerapos.x - camera->GetCameraPos().x;
+			old_camerapos = camera->GetCameraPos();
+
+		}
+
+
+		// 親クラスの更新処理を呼び出す
+		return __super::Update(delta_second);
+		break;
+	case GameState::BOSS_DEAD:
+		if (enemy->GetDead())
+		{
+			return eSceneType::result;
+		}
+
+		__super::Update(delta_second);
+		break;
+	case GameState::CLEAR:
+		break;
+	default:
+		break;
 	}
-	
-	// ユニット選択処理
-	UnitSelection();
-
-	// コスト管理処理
-	RegenerateCost();
-
-	//// クールダウン管理処理
-	//CooldownManagement(delta_second);
-
-
-	if (old_camerapos.x != camera->GetCameraPos().x)
-	{
-		move_camera = old_camerapos.x - camera->GetCameraPos().x;
-	old_camerapos = camera->GetCameraPos();
-
-	}
-
-
-	// 親クラスの更新処理を呼び出す
-	return __super::Update(delta_second);
 }
 
 // 描画処理
@@ -248,38 +266,85 @@ void InGame::Draw() const
 			int h = (int)(button_height * 1.2);
 
 			// 枠（背景）を描画
-			//DrawBox(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h, GetColor(255, 255, 255), TRUE);
+			DrawBox(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h, GetColor(255, 255, 255), TRUE);
 			//キャラの描画範囲を制限
-			SetDrawArea(x - (w - button_width) / 1, y - (h - button_height) / 1, x + w, y + h);
+			SetDrawArea(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h);
 
+			if (i == 3)
+			{
+				if(cost < Sun_Level * 100) 
+					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+
+				// キャラ画像を中心に描画
+				DrawExtendGraph(
+					(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
+					(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
+					unit_ui[i], TRUE);
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+
+			}
+			else
+			{
 			// キャラ画像を中心に描画
 			DrawExtendGraph(
-				(int)(x + (button_width - w /* * 1.5 */) / 2), (int)(y + (button_height - h /* * 1.5 */) / 2),
-				(int)(x + (button_width + w /* * 1.7*/) / 2), (int)(y + (button_height + h /* * 1.7 */) / 2),
+				(int)(x + (button_width - w  * 1.5 ) / 2), (int)(y + (button_height - h  * 1.5 ) / 2),
+				(int)(x + (button_width + w  * 1.7) / 2), (int)(y + (button_height + h  * 1.7 ) / 2),
 				unit_ui[i], TRUE);
+			}
 		}
 		else
 		{
-			// 枠（背景）を描画
-			//DrawBox(x, y, x + button_width, y + button_height, GetColor(100, 100, 100), TRUE);
-			//キャラの描画範囲を制限
-			//SetDrawArea(x, y, x + button_width, y + button_height);
 
-			// キャラ画像を中心に描画
-			DrawExtendGraph(
-				(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
-				(int)(x + (button_width + w * 1.5) / 2), (int)(y + (button_height + h * 1.5) / 2),
-				unit_ui[i], TRUE);
+			if (i == 3)
+			{
+				if (cost < Sun_Level * 100)
+					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+
+				// 枠（背景）を描画
+				DrawBox(x, y, x + button_width, y + button_height, GetColor(100, 100, 100), TRUE);
+				//キャラの描画範囲を制限
+				SetDrawArea(x, y, x + button_width, y + button_height);
+
+
+				// キャラ画像を中心に描画
+				DrawExtendGraph(
+					(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
+					(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
+					unit_ui[i], TRUE);
+
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+
+			}
+			else
+			{
+
+				// 枠（背景）を描画
+				DrawBox(x, y, x + button_width, y + button_height, GetColor(100, 100, 100), TRUE);
+				//キャラの描画範囲を制限
+				SetDrawArea(x, y, x + button_width, y + button_height);
+
+				// キャラ画像を中心に描画
+				DrawExtendGraph(
+					(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
+					(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
+					unit_ui[i], TRUE);
+			}
 		}
 
 		// 描画範囲を元に戻す
 		SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
 	}
 
-	DrawFormatString(1000, 30, 0x00ffff, "Level:%d", Cost_value);
-
+	DrawFormatString(1000, 30, 0x00ffff, "Level:%d", Sun_Level);
 	// コスト表示
-	DrawFormatString(1200, 10, 0xffffff, "%d", cost);
+	if (cost < Sun_Level * 100)
+	{
+		DrawFormatString(1100, 0, 0xffffff, "%d/%d", cost, Sun_Level * 100);
+	}
+	else
+	{
+		DrawFormatString(1100, 0, 0xffff00, "%d/%d", cost, Sun_Level * 100);
+	}
 
 
 	if (ProjectConfig::DEBUG)
@@ -380,7 +445,7 @@ void InGame::UnitSelection()
 					// タンクを生成
 					GameObject* obj = object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
 					cost -= Tank_Cost;
-					
+
 					//summon_flag[cursor] = true;
 					summon_time[cursor] = std::chrono::steady_clock::now();
 				}
@@ -414,20 +479,15 @@ void InGame::UnitSelection()
 			}
 			break;
 		case 3:
-			cost += Cost_value;
-
-			Cost_Click_Count++;
-			if (Cost_Click_Count > 10 * Cost_value)
+			if (Sun_Level != 10)
 			{
-				Cost_Click_Count = 0;
-				Cost_value++;
-				PlaySoundMem(ClickUp, DX_PLAYTYPE_BACK);
+				if (cost >= Sun_Level * 100)
+				{
+					cost = 0;
+					Sun_Level++;
+					PlaySoundMem(ClickUp, DX_PLAYTYPE_BACK);
+				}
 			}
-			else
-			{
-			PlaySoundMem(Click, DX_PLAYTYPE_BACK);
-			}
-
 			break;
 		}
 	}
@@ -438,9 +498,22 @@ void InGame::RegenerateCost()
 {
 	auto now_time = std::chrono::steady_clock::now();
 
-	if (now_time - prev_time > std::chrono::milliseconds(500))
+	if (cost < Sun_Level * 100)
 	{
-		cost++;
+		if (now_time - prev_time > std::chrono::milliseconds(500))
+		{
+			cost += Cost_UpNum + ((Sun_Level - 1) * 5);
+			if (cost >= Sun_Level * 100)
+			{
+				PlaySoundMem(Click, DX_PLAYTYPE_BACK);
+				cost = Sun_Level * 100;
+			}
+			prev_time = std::chrono::steady_clock::now();
+		}
+	}
+	else
+	{
+
 		prev_time = std::chrono::steady_clock::now();
 	}
 }

@@ -55,6 +55,8 @@ void Heretic::Initialize()
 
 	EffectImage = rm->GetImages("Resource/Images/Effect/EnemyPawn.png", 13, 13, 1, 64, 64);
 	image = rm->GetImages("Resource/Images/Enemy/Heretic/Heretic_Stand.png")[0];
+	DeadImage[0] = rm->GetImages("Resource/Images/Enemy/Heretic/NotDead.png")[0];
+	DeadImage[1] = rm->GetImages("Resource/Images/Enemy/Heretic/ImDead.png")[0];
 
 	if (image == NULL)
 	{
@@ -76,149 +78,203 @@ void Heretic::Initialize()
 // XVˆ—
 void Heretic::Update(float delta_second)
 {
-	if (ProjectConfig::DEBUG)
-	{
-		if (CheckHitKey(KEY_INPUT_5))
-		{
-			HP--;
-		}
-	}
-
-	summon_flag = false;
-
-#ifdef ENEMY_TEST
-
-	InputManager* input = InputManager::GetInstance();
-
-	if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
-	{
-		Ingame->CreateEnemy(E_enemy::Tank);
-		summon_flag = true;
-	}
-	else if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
-	{
-		Ingame->CreateEnemy(E_enemy::Melee);
-		summon_flag = true;
-	}	
-	else if (input->GetKeyState(KEY_INPUT_3) == eInputState::Pressed)
-	{
-		Ingame->CreateEnemy(E_enemy::Range);
-		summon_flag = true;
-	}
-	else if (input->GetKeyState(KEY_INPUT_4) == eInputState::Pressed)
-	{
-		Ingame->CreateEnemy(E_enemy::Boss);
-		summon_flag = true;
-	}
-#else
-	if (Cost >= 0)
-	{
-		switch (Ingame->StageNumber)
-		{
-		case 1:
-			FirstStageEnemy();
-			break;
-		default:
-			ThinkingEnemy();
-			break;
-		}
-	}
-
-#endif
-
-	if (summon_flag)
-	{
-		summon_effect = true;
-	}
-
 	auto now_time = std::chrono::steady_clock::now();
 
-	if (now_time - prev_time > std::chrono::milliseconds(500))
+	switch (nowsta)
 	{
-		Cost += 1;
-		prev_time = std::chrono::steady_clock::now();
-	}
+	case Death:
 
-	if (summon_effect)
-	{
-		if (now_time - efect_time > std::chrono::milliseconds(100))
+		if (now_time - prev_time > std::chrono::milliseconds(1000))
 		{
-			Anim_count++;
-			efect_time = std::chrono::steady_clock::now();
-
-			if (Anim_count >= 13)
+			if (Iam_Dead == false)
 			{
-				Anim_count = 0;
-				summon_effect = false;
+				Iam_Dead = true;
+			}
+			else
+			{
+				JustDead = true;
+			}
+			prev_time = std::chrono::steady_clock::now();
+		}
+		break;
+
+	default:
+		if (ProjectConfig::DEBUG)
+		{
+			if (CheckHitKey(KEY_INPUT_5))
+			{
+				HP--;
 			}
 		}
 
+		summon_flag = false;
+
+#ifdef ENEMY_TEST
+
+		InputManager* input = InputManager::GetInstance();
+
+		if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
+		{
+			Ingame->CreateEnemy(E_enemy::Tank);
+			summon_flag = true;
+		}
+		else if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
+		{
+			Ingame->CreateEnemy(E_enemy::Melee);
+			summon_flag = true;
+		}
+		else if (input->GetKeyState(KEY_INPUT_3) == eInputState::Pressed)
+		{
+			Ingame->CreateEnemy(E_enemy::Range);
+			summon_flag = true;
+		}
+		else if (input->GetKeyState(KEY_INPUT_4) == eInputState::Pressed)
+		{
+			Ingame->CreateEnemy(E_enemy::Boss);
+			summon_flag = true;
+		}
+#else
+		if (Cost >= 0)
+		{
+			switch (Ingame->StageNumber)
+			{
+			case 1:
+				FirstStageEnemy();
+				break;
+			default:
+				ThinkingEnemy();
+				break;
+			}
+		}
+
+#endif
+
+		if (summon_flag)
+		{
+			summon_effect = true;
+		}
+
+		 now_time = std::chrono::steady_clock::now();
+
+		if (now_time - prev_time > std::chrono::milliseconds(500))
+		{
+			Cost += 1;
+			prev_time = std::chrono::steady_clock::now();
+		}
+
+		if (summon_effect)
+		{
+			if (now_time - efect_time > std::chrono::milliseconds(100))
+			{
+				Anim_count++;
+				efect_time = std::chrono::steady_clock::now();
+
+				if (Anim_count >= 13)
+				{
+					Anim_count = 0;
+					summon_effect = false;
+				}
+			}
+
+		}
+
+		break;
 	}
 }
 
 // •`‰æˆ—
 void Heretic::Draw(const Vector2D camera_pos) const
 {
+
+
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
-	if (ProjectConfig::DEBUG)
-	{	//”wŒi‚ÅŒ©‚¦‚È‚¢c‚¢‚Á‚»‰æ‘œ”’‚­‚·‚é‚©–À‚¢’†
-		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
-			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0xffffff, TRUE);
-		DrawFormatString(0, 70, 0xFFFFFF, "5:Enemy Damage");
-	}
+	switch (nowsta)
+	{
+	case Death:
+		if (Iam_Dead)
+		{
+			int w = 1;
+			int h = 1;
+			//// ƒLƒƒƒ‰‰æ‘œ‚ð’†S‚É•`‰æ		
+			DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, DeadImage[0], true);
+			// 
+			//DrawExtendGraph(position.x - (collision.collision_size.x / 2) * w, position.y - (collision.collision_size.y / 2) * h,
+			//	position.x + (collision.collision_size.x / 2) * w, position.y + (collision.collision_size.y / 2) * h,
+			//	DeadImage[1], false);
+		}
+		else
+		{
+			// ƒLƒƒƒ‰‰æ‘œ‚ð’†S‚É•`‰æ
+			DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, DeadImage[1], true);
+			/*DrawExtendGraph(position.x - (collision.collision_size.x / 2) * 2, position.y - (collision.collision_size.y / 2) * 2,
+				position.x + (collision.collision_size.x / 2) * 2, position.y + (collision.collision_size.y / 2) * 2,
+				DeadImage[0], false);*/
+		}
+		break;
+
+	default:
+
+		if (ProjectConfig::DEBUG)
+		{	//”wŒi‚ÅŒ©‚¦‚È‚¢c‚¢‚Á‚»‰æ‘œ”’‚­‚·‚é‚©–À‚¢’†
+			DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
+				(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0xffffff, TRUE);
+			DrawFormatString(0, 70, 0xFFFFFF, "5:Enemy Damage");
+		}
 
 #ifdef ENEMY_TEST	
 
-	DrawFormatString(0, 100, 0xFFFFFF,  "1:Tank");
-	DrawFormatString(0, 130, 0xFFFFFF,  "2:Melee");
-	DrawFormatString(0, 160, 0xFFFFFF, "3:Range");
-	DrawFormatString(0, 10, 0xFFFFFF, "4:Boss");
+		DrawFormatString(0, 100, 0xFFFFFF, "1:Tank");
+		DrawFormatString(0, 130, 0xFFFFFF, "2:Melee");
+		DrawFormatString(0, 160, 0xFFFFFF, "3:Range");
+		DrawFormatString(0, 10, 0xFFFFFF, "4:Boss");
 
 #endif // ENEMY_TEST
 
 
-	if (nowsta == State::Damage)
-	{
-		if (CountTime == -2)
+		if (nowsta == State::Damage)
 		{
-			position.x -= 5.0f;
+			if (CountTime == -2)
+			{
+				position.x -= 5.0f;
+			}
+			else if (CountTime == -1)
+			{
+				position.x += 5.0f;
+			}
 		}
-		else if (CountTime == -1)
+
+		DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, image, true);
+
+		// ˆÙ’[ŽÒ‚Ì•`‰æ
+		//DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
+		//	(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, TRUE);
+
+
+		DrawBoxAA(position.x, position.y - 90.0f, position.x + (100.0f - (100 - ((double)HP / 500) * 100)), position.y - 75.0f, 0xFFFFFF, true);
+
+		if (summon_effect)
 		{
-			position.x += 5.0f;
+			DrawGraphF(position.x, position.y, EffectImage[Anim_count], true);
 		}
-	}
-
-	DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, image, true);
-
-	// ˆÙ’[ŽÒ‚Ì•`‰æ
-	//DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-	//	(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, TRUE);
-
-
-	DrawBoxAA(position.x , position.y - 90.0f, position.x + (100.0f - (100 - ((double)HP / 500) * 100)), position.y - 75.0f, 0xFFFFFF, true);
-
-	if (summon_effect)
-	{
-		DrawGraphF(position.x, position.y, EffectImage[Anim_count], true);
-	}
 
 
 
 
-	if (ProjectConfig::DEBUG)
-	{
-		DrawFormatString(0, 50, 0xFFFFFF, "EC:%d", Cost);
-		// ’†S‚ð•\Ž¦
-		DrawCircle((int)position.x, (int)position.y, 2, 0xff0000, TRUE);
-		// “–‚½‚è”»’è•\Ž¦
-		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
-			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0xff0000, FALSE);
-		// UŒ‚”ÍˆÍ‚ð•\Ž¦
-		DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
-			(int)(position.x + collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0xff0000, FALSE);
+		if (ProjectConfig::DEBUG)
+		{
+			DrawFormatString(0, 50, 0xFFFFFF, "EC:%d", Cost);
+			// ’†S‚ð•\Ž¦
+			DrawCircle((int)position.x, (int)position.y, 2, 0xff0000, TRUE);
+			// “–‚½‚è”»’è•\Ž¦
+			DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
+				(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0xff0000, FALSE);
+			// UŒ‚”ÍˆÍ‚ð•\Ž¦
+			DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
+				(int)(position.x + collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0xff0000, FALSE);
+		}
+		break;
 	}
 }
 
@@ -387,7 +443,16 @@ void Heretic::HPControl(int Damage)
 {
 	__super::HPControl(Damage);
 
+
+	if (this->HP <= 0)
+	{
+	nowsta = State::Death;
+	}
+	else
+	{
 	nowsta = State::Damage;
+	}
+
 }
 
 bool Heretic::GetDead()

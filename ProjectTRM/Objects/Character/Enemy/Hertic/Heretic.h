@@ -38,6 +38,7 @@ class Heretic :public Character
 private:
 	State nowsta = State::Idle;
 	std::vector<int> EffectImage;
+	int DeadImage[2];
 	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数
 	std::chrono::steady_clock::time_point	efect_time;			// エフェクト加算用変数
 	int Player_evaluation[4];
@@ -45,7 +46,7 @@ private:
 	int Cost;
 	bool Summon_Boss = false;	//ボス1度でも生成したかどうか
 	bool	JustDead = false;	//死亡時アニメーションも終わって丁度死んだ
-	bool	Fstflag = false;	//初回生成用:Debugで敵の動きを確認したいでしょう？s
+	bool	Iam_Dead = false;
 	bool	summon_flag;	//召喚フラグ
 	bool	summon_effect;	//召喚フラグ
 	std::vector<GameObject*> ObjectList;

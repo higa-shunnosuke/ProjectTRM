@@ -7,14 +7,24 @@
 
 #include <chrono>
 
+#define Cost_UpNum 10
 #define Tank_Cost 20
 #define Melee_Cost 50
 #define Range_Cost 100
 
 
+enum class GameState
+{
+	PLAYING,
+	BOSS_DEAD,
+	CLEAR
+};
+
+
 class InGame : public SceneBase
 {
 private:
+	GameState state = GameState::PLAYING;
 	std::chrono::steady_clock::time_point	summon_time[3];		// 召喚開始時間
 	std::chrono::seconds					cooldown[3];		// 召喚クールダウン
 	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数
@@ -22,8 +32,8 @@ private:
 	int sound;
 	int Click;
 	int ClickUp;
-	int Cost_Click_Count;
-	int Cost_value;
+	int Cost_Max;
+	int Sun_Level;
 	float move_camera;
 	Vector2D old_camerapos;
 	int			cost;				// コスト
