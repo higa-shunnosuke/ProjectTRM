@@ -9,6 +9,7 @@
 #include "../../Objects/Character/Player/Melee/P_Melee.h"
 #include "../../Objects/Character/Player/Ranged/P_Ranged.h"
 #include "../../Objects/Character/Player/Tank/P_Tank.h"
+#include "../../Objects/Character/Player/Bonfire/Bonfire.h"
 
 #include "../../Objects/Character/Enemy/Melee/E_Melee.h"
 #include "../../Objects/Character/Enemy/Tank/E_Tank.h"
@@ -48,7 +49,7 @@ void InGame::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	unit_ui[0]= rm->GetImages("Resource/Images/Unit/Tank/Tank_Cost.png")[0]	;
 	unit_ui[1]= rm->GetImages("Resource/Images/Unit/Melee/Melee_Cost.png")[0]	;
-	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Cost.png")[0];
+	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_CostT.png")[0];
 	unit_ui[3] = rm->GetImages("Resource/Images/BackGround/Sun.png")[0];
 	BackGroundImage[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
 	BackGroundImage[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
@@ -107,6 +108,11 @@ void InGame::Initialize()
 		enemy = object->CreateObject<Heretic>(Vector2D(30, 630));
 		enemy->SetInGamePoint(this);
 		break;
+	}
+
+	for (int i = 1; i < 3; i++)
+	{
+		object->CreateObject<Bonfire>(Vector2D(player->GetLocation().x - (250 * i), 630));
 	}
 
 	// カーソルの初期化
@@ -403,6 +409,11 @@ void InGame::CreateEnemy(E_enemy e_enem)
 	}
 }
 
+const int InGame::GetSunLevel() const
+{
+	return Sun_Level;
+}
+
 //	ユニット召喚
 void InGame::UnitSelection()
 {
@@ -444,6 +455,7 @@ void InGame::UnitSelection()
 				{
 					// タンクを生成
 					GameObject* obj = object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+					obj->SetInGamePoint(this);
 					cost -= Tank_Cost;
 
 					//summon_flag[cursor] = true;
@@ -459,6 +471,7 @@ void InGame::UnitSelection()
 				{
 					// 近接を生成
 					GameObject* obj = object->CreateObject<P_Melee>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+					obj->SetInGamePoint(this);
 					cost -= Melee_Cost;
 					//summon_flag[cursor] = true;
 					summon_time[cursor] = std::chrono::steady_clock::now();

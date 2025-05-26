@@ -3,6 +3,9 @@
 #include "../../Character.h"
 #include "../../../GameObjectManager.h"
 
+#define BASIC_POWER (4)
+#define BASIC_SPEED (-5.0f)
+
 // ゲームオブジェクト基底クラス
 class P_Melee :public Character
 {
@@ -13,11 +16,11 @@ public:
 	static size_t GetCount();
 
 private:
-	std::vector<int> Effect;
-	int effect_image;
+	std::vector<int> Effect;//エフェクト画像格納用
+	int effect_image; //エフェクト画像描画用
 	int Damage;	//ダメージ
 	GameObjectManager* object;
-	int effect_alpha;
+	int effect_alpha;	//エフェクトの透明度調整用
 	int sounds;
 
 public:

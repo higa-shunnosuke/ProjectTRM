@@ -133,3 +133,12 @@ const bool GameObject::GetInLight() const
 {
 	return this->in_light;
 }
+
+/// <summary>
+/// InGame‚Ìî•ñæ“¾
+/// </summary>
+/// <param name="point">InGameScene‚ÌPointer</param>
+void GameObject::SetInGamePoint(class InGame* point)
+{
+	Ingame = point;
+}

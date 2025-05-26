@@ -82,6 +82,12 @@ public:
 	/// <param name="e_enem">敵の種類</param>
 	void CreateEnemy(E_enemy e_enem);
 
+	/// <summary>
+	/// 太陽のレベル取得処理
+	/// </summary>
+	/// <returns></returns>
+	const int GetSunLevel() const;
+
 private:
 	/// <summary>
 	/// ステージの生成処理

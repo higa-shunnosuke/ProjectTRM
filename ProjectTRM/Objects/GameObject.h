@@ -18,6 +18,8 @@ protected:
 	bool			is_aggressive;	// 攻撃性
 	bool			in_light;		// ライトの範囲内にいるか
 
+	class	InGame* Ingame;	//InGameのポインター
+
 public:
 	GameObject();
 	virtual ~GameObject();
@@ -121,4 +123,10 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	const virtual bool GetInLight() const;
+
+	/// <summary>
+	/// InGameの情報取得
+	/// </summary>
+	/// <param name="point">InGameSceneのPointer</param>
+	void SetInGamePoint(class InGame* point);
 };

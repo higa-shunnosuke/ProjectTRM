@@ -1,7 +1,7 @@
 #include "P_Melee.h"
 #include "Torch.h"
 #include "../../../../Utility/LightMapManager.h"
-#include "../../../../Utility/Input/InputManager.h"
+#include "../../../../Scenes/InGame/InGame.h"
 
 size_t P_Melee:: count = 0;
 size_t P_Melee::GetCount()
@@ -52,10 +52,10 @@ void P_Melee::Initialize()
 	now_state = State::Move;
 
 	// ‰E‚ÖˆÚ“®
-	velocity.x = -5.0f;
+	velocity.x = BASIC_SPEED;
 
 	//UŒ‚—Í
-	Damage = 4;
+	Damage = BASIC_POWER;
 
 	// HP‰Šú‰»
 	HP = 10;
@@ -70,6 +70,9 @@ void P_Melee::Initialize()
 // XVˆ—
 void P_Melee::Update(float delta_second)
 {	
+
+	Damage = BASIC_POWER + (Ingame->GetSunLevel() / 2);
+
 	if (ProjectConfig::DEBUG)
 	{
 		InputManager* input = InputManager::GetInstance();
@@ -93,7 +96,7 @@ void P_Melee::Update(float delta_second)
 			}
 			else
 			{
-				attack_flame -= delta_second;
+				attack_flame -= delta_second * Ingame->GetSunLevel();
 			}
 			if (attack_flame <= 0.0f)
 			{
@@ -175,6 +178,8 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 		// UŒ‚”ÍˆÍ‚ğ•\¦
 		DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
 			(int)(position.x - collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
+		// UŒ‚—Í‚ğ•\¦
+		DrawFormatString(position.x, position.y - 20.0f, 0x00ffff, "%f", velocity.x);
 	}
 }
 
@@ -218,7 +223,7 @@ void P_Melee::OnAreaDetection(GameObject* hit_object)
 		}
 		else if(hit_col.object_type == eObjectType::Ground)
 		{
-			velocity.x = -5.0f;
+			velocity.x = BASIC_SPEED + (( BASIC_SPEED / 10) * (Ingame->GetSunLevel() - 1));
 		}
 	}
 }
@@ -234,10 +239,7 @@ void P_Melee::HPControl(int Damage)
 		__super::HPControl(Damage);
 		dmage_flame = 1.0f;
 	}
-
-
 }
-
 
 // UŒ‚ˆ—
 void P_Melee::Attack(GameObject* hit_object)
