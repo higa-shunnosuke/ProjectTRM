@@ -192,7 +192,7 @@ void Heretic::Draw(const Vector2D camera_pos) const
 			int w = 1;
 			int h = 1;
 
-			DrawGraphF(position.x - collision.collision_size.x / 2-50.0f, position.y - collision.collision_size.y / 2-20.0f, SoptLight, true);
+			DrawGraphF(position.x - collision.collision_size.x / 2-50.0f, position.y - collision.collision_size.y / 2 - 50.0f, SoptLight, true);
 
 			//// キャラ画像を中心に描画		
 			DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, DeadImage[1], true);
@@ -202,7 +202,7 @@ void Heretic::Draw(const Vector2D camera_pos) const
 		{
 
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-			DrawGraphF(position.x - collision.collision_size.x / 2 - 50.0f, position.y - collision.collision_size.y / 2 - 20.0f, SoptLight, true);
+			DrawGraphF(position.x - collision.collision_size.x / 2 - 50.0f, position.y - collision.collision_size.y / 2 - 50.0f, SoptLight, true);
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 			// キャラ画像を中心に描画
 			DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, DeadImage[0], true);
