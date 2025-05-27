@@ -8,7 +8,10 @@ class Result : public SceneBase
 private:
 	int DeadImage[2];
 	int count = 10;
+	int cursor = -1;
+	bool show = false;
 	std::chrono::steady_clock::time_point	prev_time;			// 加算用変数
+	std::chrono::steady_clock::time_point	select_time;			// 選択用変数
 
 public:
 	// コンストラクタ

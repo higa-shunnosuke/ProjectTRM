@@ -34,47 +34,137 @@ eSceneType Result::Update(const float& delta_second)
 
 	if (win_flg)
 	{
-		// ステージ選択シーンに遷移する
-		if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+		switch (cursor)
 		{
-			return eSceneType::stage_select;
-		}
-		else if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
+		case 1:
 		{
-			return eSceneType::stage_select;
+			if (input->GetKeyState(KEY_INPUT_UP) == eInputState::Pressed)
+			{
+				cursor++;
+			}
+			if (input->GetButtonState(XINPUT_BUTTON_DPAD_UP) == eInputState::Pressed)
+			{
+				cursor++;
+			}
+			// ステージ選択シーンに遷移する
+ 			 if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+			{
+				return eSceneType::title;
+			}
+			else if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
+			{
+				 return eSceneType::title;
+			}
 		}
+		break;
+		case 2:
+		{
 
-		// タイトルシーンに遷移する
-		if (input->GetKeyState(KEY_INPUT_X) == eInputState::Pressed)
-		{
-			return eSceneType::title;
+			if (input->GetKeyState(KEY_INPUT_DOWN) == eInputState::Pressed)
+			{
+				cursor--;
+			}
+			else if (input->GetButtonState(XINPUT_BUTTON_DPAD_DOWN) == eInputState::Pressed)
+			{
+				cursor--;
+			}
+			// タイトルシーンに遷移する
+			if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+			{
+				return eSceneType::stage_select;
+			}
+			else if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
+			{
+				return eSceneType::stage_select;
+			}
 		}
-		else if (input->GetButtonState(XINPUT_BUTTON_B) == eInputState::Pressed)
-		{
-			return eSceneType::title;
+		break;
+		default:
+			if (input->GetKeyState(KEY_INPUT_UP) == eInputState::Pressed)
+			{
+				cursor = 2;
+			}
+			else if (input->GetButtonState(XINPUT_BUTTON_DPAD_UP) == eInputState::Released)
+			{
+				cursor = 2;
+			}
+			if (input->GetKeyState(KEY_INPUT_DOWN) == eInputState::Pressed)
+			{
+				cursor = 1;
+			}
+			else if (input->GetButtonState(XINPUT_BUTTON_DPAD_DOWN) == eInputState::Pressed)
+			{
+				cursor = 1;
+			}
+			break;
 		}
 	}
 	else
 	{
-		// インゲームシーンに遷移する
-		if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+		switch (cursor)
 		{
-			return eSceneType::in_game;
-		}
-		else if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
+		case 1:
 		{
-			return eSceneType::in_game;
+			if (input->GetKeyState(KEY_INPUT_UP) == eInputState::Pressed)
+			{
+				cursor++;
+			}
+			else if (input->GetButtonState(XINPUT_BUTTON_DPAD_UP) == eInputState::Pressed)
+			{
+				cursor++;
+			}
+			// ステージ選択シーンに遷移する
+			if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+			{
+				return eSceneType::title;
+			}
+			else if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
+			{
+				return eSceneType::title;
+			}
 		}
-		// タイトルシーンに遷移する
-		else if (input->GetKeyState(KEY_INPUT_X) == eInputState::Pressed)
+		break;
+		case 2:
 		{
-			return eSceneType::title;
-		}
-		else if (input->GetButtonState(XINPUT_BUTTON_B) == eInputState::Pressed)
-		{
-			return eSceneType::title;
-		}
 
+			if (input->GetKeyState(KEY_INPUT_DOWN) == eInputState::Pressed)
+			{
+				cursor--;
+			}
+			else if (input->GetButtonState(XINPUT_BUTTON_DPAD_DOWN) == eInputState::Pressed)
+			{
+				cursor--;
+			}
+			// タイトルシーンに遷移する
+			if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+			{
+				return eSceneType::in_game;
+			}
+			else if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
+			{
+				return eSceneType::in_game;
+			}
+		}
+		break;
+		default:
+			if (input->GetKeyState(KEY_INPUT_UP) == eInputState::Pressed)
+			{
+				cursor = 2;
+			}
+			else if (input->GetButtonState(XINPUT_BUTTON_DPAD_UP) == eInputState::Released)
+			{
+				cursor = 2;
+			}
+			else if (input->GetKeyState(KEY_INPUT_DOWN) == eInputState::Pressed)
+			{
+				cursor = 1;
+			}
+			else if (input->GetButtonState(XINPUT_BUTTON_DPAD_DOWN) == eInputState::Released)
+			{
+				cursor = 1;
+			}
+			break;
+		}
 		auto now_time = std::chrono::steady_clock::now();
 
 		if (now_time - prev_time > std::chrono::milliseconds(1000))
@@ -87,10 +177,24 @@ eSceneType Result::Update(const float& delta_second)
 			return eSceneType::title;
 		}
 	}
-	
+	auto  now_time = std::chrono::steady_clock::now();
+
+	if (now_time - select_time > std::chrono::milliseconds(500))
+	{
+		if (show)
+		{
+			show = false;
+		}
+		else
+		{
+			show = true;
+		}
+		select_time = std::chrono::steady_clock::now();
+	}
+
+
 	// 親クラスの更新処理を呼び出す
 	return __super::Update(delta_second);
-
 }
 
 // 描画処理
@@ -101,17 +205,71 @@ void Result::Draw() const
 	SetFontSize(32);
 	if (win_flg)
 	{
-		DrawString(500, 500, "A : Stage Select", 0xffffff);
-		DrawString(500, 550, "B : Title", 0xffffff);
+		switch (cursor)
+		{
+			case 1:
+			{
+				DrawCircle(480, 566, 10, 0xffffff);
+				if (show != true)
+				{
+					DrawString(500, 550, ": Title", 0xffffff);
+				}
+				DrawString(500, 500, ": Stage Select", 0xffffff);
+			}
+			break;
+			case 2:
+			{
+				DrawCircle(480, 516, 10, 0xffffff);
+				if (show != true)
+				{
+					DrawString(500, 500, ": Stage Select", 0xffffff);
+				}
+				DrawString(500, 550, ": Title", 0xffffff);
+			}
+			break;
+		default:
+		{
+			DrawString(500, 500, ": Stage Select", 0xffffff);
+			DrawString(500, 550, ": Title", 0xffffff);
+		}
+			break;
+		}
 
 	}
 	else
 	{
 		SetFontSize(80);
 		DrawFormatString(500, 350, 0xffffff, "%d", count);
-		SetFontSize(32);
-		DrawString(500, 500, "A : Retry", 0xffffff);
-		DrawString(500, 550, "B : Title", 0xffffff);
+		SetFontSize(32);		
+		switch (cursor)
+		{
+		case 1:
+		{
+			DrawCircle(480, 566, 10, 0xffffff);
+			if (show != true)
+			{
+				DrawString(500, 550, ": Title", 0xffffff);
+			}
+			DrawString(500, 500, ": ReStart", 0xffffff);
+		}
+		break;
+		case 2:
+		{
+			DrawCircle(480, 516, 10, 0xffffff);
+			if (show != true)
+			{
+				DrawString(500, 500, ": ReStart", 0xffffff);
+			}
+			DrawString(500, 550, ": Title", 0xffffff);
+		}
+		break;
+		default:
+		{
+			DrawString(500, 500, ": ReStart", 0xffffff);
+			DrawString(500, 550, ": Title", 0xffffff);
+		}
+		break;
+		}
 
 	}
 

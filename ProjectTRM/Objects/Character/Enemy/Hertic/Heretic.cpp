@@ -59,10 +59,6 @@ void Heretic::Initialize()
 	DeadImage[1] = rm->GetImages("Resource/Images/Enemy/Heretic/ImDead.png")[0];
 	SoptLight = rm->GetImages("Resource/Images/Enemy/Heretic/SpotLight.png")[0];
 
-	if (image == NULL)
-	{
-		printf("WTF");
-	}
 	is_mobility = false;
 	
 	collision.is_blocking = true;
@@ -185,8 +181,6 @@ void Heretic::Update(float delta_second)
 // ï`âÊèàóù
 void Heretic::Draw(const Vector2D camera_pos) const
 {
-
-
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
@@ -197,16 +191,12 @@ void Heretic::Draw(const Vector2D camera_pos) const
 		{
 			int w = 1;
 			int h = 1;
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+
 			DrawGraphF(position.x - collision.collision_size.x / 2-50.0f, position.y - collision.collision_size.y / 2-20.0f, SoptLight, true);
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 
 			//// ÉLÉÉÉââÊëúÇíÜêSÇ…ï`âÊ		
 			DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, DeadImage[1], true);
-			// 
-			//DrawExtendGraph(position.x - (collision.collision_size.x / 2) * w, position.y - (collision.collision_size.y / 2) * h,
-			//	position.x + (collision.collision_size.x / 2) * w, position.y + (collision.collision_size.y / 2) * h,
-			//	DeadImage[1], false);
+
 		}
 		else
 		{
@@ -216,9 +206,7 @@ void Heretic::Draw(const Vector2D camera_pos) const
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 			// ÉLÉÉÉââÊëúÇíÜêSÇ…ï`âÊ
 			DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, DeadImage[0], true);
-			/*DrawExtendGraph(position.x - (collision.collision_size.x / 2) * 2, position.y - (collision.collision_size.y / 2) * 2,
-				position.x + (collision.collision_size.x / 2) * 2, position.y + (collision.collision_size.y / 2) * 2,
-				DeadImage[0], false);*/
+
 		}
 		break;
 
@@ -232,12 +220,10 @@ void Heretic::Draw(const Vector2D camera_pos) const
 		}
 
 #ifdef ENEMY_TEST	
-
 		DrawFormatString(0, 100, 0xFFFFFF, "1:Tank");
 		DrawFormatString(0, 130, 0xFFFFFF, "2:Melee");
 		DrawFormatString(0, 160, 0xFFFFFF, "3:Range");
 		DrawFormatString(0, 10, 0xFFFFFF, "4:Boss");
-
 #endif // ENEMY_TEST
 
 		DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, image, true);
