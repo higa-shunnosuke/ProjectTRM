@@ -319,13 +319,13 @@ void E_Melee::AnimationControl(float delta_second)
 
 	// 光に入っていたらアニメーションを遅くする
 	float delay = 1.0f;
-	if (in_light == true && now_state != State::Death)
+	if (in_light == true && (now_state != State::Death && now_state != State::Attack))
 	{
 		delay = 2.0f;
 	}
 
 	// アニメーション間隔
-	if (Anim_flame >= anim_rate)
+	if (Anim_flame >= anim_rate * delay)
 	{
 		// 次のアニメーションに進める
 		if (Anim_count < anim_max_count)
