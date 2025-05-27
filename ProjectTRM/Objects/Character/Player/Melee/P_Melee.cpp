@@ -71,7 +71,7 @@ void P_Melee::Initialize()
 void P_Melee::Update(float delta_second)
 {	
 
-	Damage = BASIC_POWER + (Ingame->GetSunLevel() / 2);
+	Damage = BASIC_POWER + (Ingame->GetSunLevel() / 5);
 
 	if (ProjectConfig::DEBUG)
 	{
@@ -96,7 +96,7 @@ void P_Melee::Update(float delta_second)
 			}
 			else
 			{
-				attack_flame -= delta_second * Ingame->GetSunLevel();
+				attack_flame -= delta_second * (1 + (Ingame->GetSunLevel() / 10));
 			}
 			if (attack_flame <= 0.0f)
 			{
@@ -223,7 +223,7 @@ void P_Melee::OnAreaDetection(GameObject* hit_object)
 		}
 		else if(hit_col.object_type == eObjectType::Ground)
 		{
-			velocity.x = BASIC_SPEED + (( BASIC_SPEED / 10) * (Ingame->GetSunLevel() - 1));
+			velocity.x = BASIC_SPEED + (( BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 		}
 	}
 }
@@ -331,7 +331,14 @@ void P_Melee::AnimationControl(float delta_second)
 		{
 			add = -add;
 		}
-		image = animation[0];
+		if (velocity.x < 0.0f)
+		{
+			image = animation[1 + Anim_count];
+		}
+		else
+		{
+			image = animation[0];
+		}
 		break;
 	case State::Death:
 		image = animation[Anim_count];
@@ -380,7 +387,7 @@ void P_Melee::EffectControl(float delta_second)
 	Effect_flame += delta_second;
 	if (Effect_flame >= 0.1f)
 	{
-		if (Effect_count < 36)
+		if (Effect_count < 29)
 		{
 			Effect_count++;
 		}

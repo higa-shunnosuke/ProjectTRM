@@ -3,6 +3,9 @@
 #include "../../Character.h"
 #include "../../../../Utility/LightMapManager.h"
 
+#define BASIC_POWER (1)
+#define BASIC_SPEED (-3.0f)
+
 // ゲームオブジェクト基底クラス
 class P_Tank :public Character
 {

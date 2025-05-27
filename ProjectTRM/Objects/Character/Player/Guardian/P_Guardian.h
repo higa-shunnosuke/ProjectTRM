@@ -2,6 +2,9 @@
 #include "../../Character.h"
 #include "../../../GameObjectManager.h"
 
+#define BASIC_POWER (4)
+#define BASIC_SPEED (-2.0f)
+
 class P_Guardian : public Character
 {
 private:

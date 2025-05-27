@@ -4,6 +4,7 @@
 
 #define GRAVITY (9.8f)
 #define INITIAL_SPEED (100.0f)
+#define BASIC_POWER (6)
 
 // ゲームオブジェクト基底クラス
 class P_Projectile :public Character

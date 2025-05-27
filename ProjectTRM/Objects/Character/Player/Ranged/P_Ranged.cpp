@@ -1,7 +1,7 @@
 #include "P_Ranged.h"
 #include "P_Projectile.h"
 #include "../../../GameObjectManager.h"
-#include "../../../../Utility/Input/InputManager.h"
+#include "../../../../Scenes/InGame/InGame.h"
 
 size_t P_Ranged::count = 0;
 size_t P_Ranged::GetCount()
@@ -80,7 +80,7 @@ void P_Ranged::Update(float delta_second)
 			}
 			else
 			{
-				attack_flame -= delta_second;
+				attack_flame -= delta_second * ( 1 + (Ingame->GetSunLevel() / 10));
 			}
 			if (attack_flame <= 0.0f)
 			{
@@ -199,7 +199,7 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 		}
 		else if(hit_col.object_type == eObjectType::Ground)
 		{
-			velocity.x = -5.0f;
+			velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 		}
 	}
 }
@@ -330,7 +330,7 @@ void P_Ranged::EffectControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Damage:
-			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 36, 6, 5, 100, 100);
+			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 30, 6, 5, 100, 100);
 			break;
 		case State::Death:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ranged_Ghost.png", 1, 1, 1, 32, 32);
@@ -343,7 +343,7 @@ void P_Ranged::EffectControl(float delta_second)
 	Effect_flame += delta_second;
 	if (Effect_flame >= 0.05f)
 	{
-		if (Effect_count < 36)
+		if (Effect_count < 29)
 		{
 			Effect_count++;
 		}
@@ -358,6 +358,10 @@ void P_Ranged::EffectControl(float delta_second)
 	{
 	case State::Damage:
 		effect_image = Effect[Effect_count];
+		if (dmage_flame <= 0.0f)
+		{
+			now_state = State::Idle;
+		}
 		break;
 	case State::Death:
 		effect_image = Effect[0];
@@ -377,6 +381,8 @@ void P_Ranged::EffectControl(float delta_second)
 // UŒ‚ˆ—
 void P_Ranged::Attack(GameObject* hit_object)
 {
-	object->CreateObject<P_Projectile>(this->location)->SetTargetLocation(hit_object->GetLocation());
+	P_Projectile* obj = object->CreateObject<P_Projectile>(this->location);
+	obj->SetTargetLocation(hit_object->GetLocation());
+	obj->SetInGamePoint(Ingame);
 	attack_flame = 2.0f;
 }

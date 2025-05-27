@@ -4,7 +4,7 @@
 #include "../../../GameObjectManager.h"
 
 #define BASIC_POWER (4)
-#define BASIC_SPEED (-5.0f)
+#define BASIC_SPEED (-2.0f)
 
 // ゲームオブジェクト基底クラス
 class P_Melee :public Character

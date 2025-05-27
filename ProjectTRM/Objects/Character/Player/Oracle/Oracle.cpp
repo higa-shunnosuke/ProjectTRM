@@ -139,7 +139,7 @@ void Oracle::HPControl(int Damage)
 
 			summon_flag = true;
 	
-			object->CreateObject<P_Guardian>(Vector2D(location.x, location.y + 15.0f));
+			object->CreateObject<P_Guardian>(Vector2D(location.x, location.y + 15.0f))->SetInGamePoint(Ingame);
 	}
 
 }

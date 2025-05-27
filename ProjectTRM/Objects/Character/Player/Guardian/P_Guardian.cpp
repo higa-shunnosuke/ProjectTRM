@@ -1,6 +1,6 @@
 #include "P_Guardian.h"
 #include "../../../../Utility/LightMapManager.h"
-#include "../../../../Utility/Input/InputManager.h"
+#include "../../../../Scenes/InGame/InGame.h"
 
 size_t P_Guardian::count = 0;
 size_t P_Guardian::GetCount()
@@ -49,10 +49,10 @@ void P_Guardian::Initialize()
 	now_state = State::Move;
 
 	// ‰E‚ÖˆÚ“®
-	velocity.x = -5.0f;
+	velocity.x = BASIC_SPEED;
 
 	//UŒ‚—Í
-	Damage = 4;
+	Damage = BASIC_POWER;
 
 	// HP‰Šú‰»
 	HP = 60;
@@ -67,6 +67,7 @@ void P_Guardian::Initialize()
 // XVˆ—
 void P_Guardian::Update(float delta_second)
 {
+	Damage = BASIC_POWER + (Ingame->GetSunLevel() / 2);
 
 	if (ProjectConfig::DEBUG)
 	{
@@ -91,7 +92,7 @@ void P_Guardian::Update(float delta_second)
 			}
 			else
 			{
-				attack_flame -= delta_second;
+				attack_flame -= delta_second * (1 + (Ingame->GetSunLevel() / 10));
 			}
 			if (attack_flame <= 0.0f)
 			{
@@ -189,7 +190,7 @@ void P_Guardian::OnAreaDetection(GameObject* hit_object)
 		}
 		else
 		{
-			velocity.x = -5.0f;
+			velocity.x = BASIC_SPEED + ((BASIC_SPEED / 10) * (Ingame->GetSunLevel() - 1));
 		}
 	}
 }

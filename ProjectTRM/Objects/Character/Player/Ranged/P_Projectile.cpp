@@ -1,5 +1,6 @@
 #include "P_Projectile.h"
 #include "../../../GameObjectManager.h"
+#include "../../../../Scenes/InGame/InGame.h"
 #include <cmath>
 
 // コンストラクタ
@@ -36,8 +37,6 @@ void P_Projectile::Initialize()
 
     now_state = State::Idle;
 
-    Damage = 6;
-
 }
 
 // 更新処理
@@ -62,6 +61,8 @@ void P_Projectile::Update(float delta_second)
         velocity.y = speed * std::sin(angle_init);
 
         end_loc = location.y;
+
+        Damage = BASIC_POWER * (Ingame->GetSunLevel() / 5);
 
         now_state = State::Move;
     }

@@ -1,6 +1,6 @@
 #include "P_Tank.h"
 #include "../../../GameObjectManager.h"
-#include "../../../../Utility/Input/InputManager.h"
+#include "../../../../Scenes/InGame/InGame.h"
 
 size_t P_Tank::count =0;
 size_t P_Tank::GetCount()
@@ -52,14 +52,11 @@ void P_Tank::Initialize()
 	//‰Šú‰»
 	now_state = State::Move;
 
-	// ‰E‚ÖˆÚ“®
-	velocity.x = -5.5f;
-
 	//UŒ‚—Í
-	Damage = 1;
+	Damage = BASIC_POWER;
 
 	// HP‰Šú‰»
-	HP = 30;
+	HP = 20;
 
 	alpha = MAX_ALPHA;
 	effect_alpha = MAX_ALPHA;
@@ -69,6 +66,8 @@ void P_Tank::Initialize()
 // XVˆ—
 void P_Tank::Update(float delta_second)
 {
+	Damage = BASIC_POWER + (Ingame->GetSunLevel() / 5);
+
 	if (ProjectConfig::DEBUG)
 	{
 		InputManager* input = InputManager::GetInstance();
@@ -92,7 +91,7 @@ void P_Tank::Update(float delta_second)
 			}
 			else
 			{
-				attack_flame -= delta_second;
+				attack_flame -= delta_second * (1 + (Ingame->GetSunLevel() / 10));
 			}
 			if (attack_flame <= 0.0f)
 			{
@@ -216,7 +215,7 @@ void P_Tank::OnAreaDetection(GameObject* hit_object)
 		}
 		else if (hit_col.object_type == eObjectType::Ground)
 		{
-			velocity.x = -3.0f;
+			velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 		}
 	}
 }
@@ -356,7 +355,7 @@ void P_Tank::EffectControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Damage:
-			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 36, 6, 5, 100, 100);
+			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 30, 6, 5, 100, 100);
 			break;
 		case State::Death:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Tank_Ghost.png", 1, 1, 1, 32, 32);
@@ -369,7 +368,7 @@ void P_Tank::EffectControl(float delta_second)
 	Effect_flame += delta_second;
 	if (Effect_flame >= 0.1f)
 	{
-		if (Effect_count < 36)
+		if (Effect_count < 29)
 		{
 			Effect_count++;
 		}
@@ -384,6 +383,10 @@ void P_Tank::EffectControl(float delta_second)
 	{
 	case State::Damage:
 		effect_image = Effect[Effect_count];
+		if (dmage_flame <= 0.0f)
+		{
+			now_state = State::Idle;
+		}
 		break;
 	case State::Death:
 		effect_image = Effect[0];

@@ -91,6 +91,7 @@ void InGame::Initialize()
 	{
 	case 1:
 		player = object->CreateObject<Oracle>(Vector2D(1000, 630));
+		player->SetInGamePoint(this);
 
 		enemy = object->CreateObject<Heretic>(Vector2D(100, 630));
 		enemy->SetInGamePoint(this);
@@ -98,12 +99,14 @@ void InGame::Initialize()
 
 	case 2:
 		player = object->CreateObject<Oracle>(Vector2D(1170, 630));
+		player->SetInGamePoint(this);
 
 		enemy = object->CreateObject<Heretic>(Vector2D(30, 630));
 		enemy->SetInGamePoint(this);
 		break;
 	default:
 		player = object->CreateObject<Oracle>(Vector2D(1170, 630));
+		player->SetInGamePoint(this);
 
 		enemy = object->CreateObject<Heretic>(Vector2D(30, 630));
 		enemy->SetInGamePoint(this);
@@ -514,7 +517,7 @@ void InGame::UnitSelection()
 			{
 				if (cost - Range_Cost >= 0)
 				{
-					object->CreateObject<P_Ranged>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+					object->CreateObject<P_Ranged>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f))->SetInGamePoint(this);
 					cost -= Range_Cost;
 					//summon_flag[cursor] = true;
 					summon_time[cursor] = std::chrono::steady_clock::now();
