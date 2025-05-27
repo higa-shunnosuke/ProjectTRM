@@ -125,10 +125,10 @@ void E_Tank::Draw(const Vector2D camera_pos) const
 		DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
 		// 当たり判定表示
 		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
-			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0x0000ff, FALSE);
+			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0xff0000, FALSE);
 		// 攻撃範囲を表示
 		DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
-			(int)(position.x + collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
+			(int)(position.x + collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0xff0000, FALSE);
 	}
 }
 

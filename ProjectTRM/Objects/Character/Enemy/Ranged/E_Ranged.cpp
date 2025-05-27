@@ -127,10 +127,10 @@ void E_Ranged::Draw(const Vector2D camera_pos) const
 		DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
 		// ìñÇΩÇËîªíËï\é¶
 		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
-			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0x0000ff, FALSE);
+			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0xff0000, FALSE);
 		// çUåÇîÕàÕÇï\é¶
 		DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
-			(int)(position.x + collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
+			(int)(position.x + collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0xff0000, FALSE);
 	}
 }
 
