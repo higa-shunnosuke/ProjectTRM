@@ -49,7 +49,7 @@ void InGame::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	unit_ui[0]= rm->GetImages("Resource/Images/Unit/Tank/Tank_Cost.png")[0]	;
 	unit_ui[1]= rm->GetImages("Resource/Images/Unit/Melee/Melee_Cost.png")[0]	;
-	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_CostT.png")[0];
+	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Cost.png")[0];
 	unit_ui[3] = rm->GetImages("Resource/Images/BackGround/Sun.png")[0];
 	BackGroundImage[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
 	BackGroundImage[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
@@ -192,6 +192,8 @@ eSceneType InGame::Update(const float& delta_second)
 		return __super::Update(delta_second);
 		break;
 	case GameState::BOSS_DEAD:
+
+		camera->SetCameraPos(Vector2D(0, 0));
 		if (enemy->GetDead())
 		{
 			return eSceneType::result;
@@ -227,7 +229,19 @@ void InGame::Draw() const
 	default:
 		break;
 	}
-		DrawGraph(camera->GetCameraPos().x - 700.0f, ShowBackGround_Y, BackGroundImage[StageNumber-1], 0);
+	switch (state)
+	{
+	case GameState::PLAYING:
+		DrawGraph(camera->GetCameraPos().x - 700.0f, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
+		break;
+	case GameState::BOSS_DEAD:
+		DrawGraph(enemy->GetLocation().x, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
+		break;
+	case GameState::CLEAR:
+		break;
+	default:
+		break;
+	}
 
 	
 

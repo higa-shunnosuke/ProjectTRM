@@ -50,7 +50,7 @@ Heretic::~Heretic()
 // 初期化処理
 void Heretic::Initialize()
 {
-	// 画像の読み込み
+	// 画像の読み込み	
 	ResourceManager* rm = ResourceManager::GetInstance();
 
 	EffectImage = rm->GetImages("Resource/Images/Effect/EnemyPawn.png", 13, 13, 1, 64, 64);
@@ -103,7 +103,7 @@ void Heretic::Update(float delta_second)
 		{
 			if (CheckHitKey(KEY_INPUT_5))
 			{
-				HP--;
+				HPControl(1);
 			}
 		}
 
@@ -198,7 +198,7 @@ void Heretic::Draw(const Vector2D camera_pos) const
 			int w = 1;
 			int h = 1;
 			//// キャラ画像を中心に描画		
-			DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, DeadImage[0], true);
+			DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, DeadImage[1], true);
 			// 
 			//DrawExtendGraph(position.x - (collision.collision_size.x / 2) * w, position.y - (collision.collision_size.y / 2) * h,
 			//	position.x + (collision.collision_size.x / 2) * w, position.y + (collision.collision_size.y / 2) * h,
@@ -207,7 +207,7 @@ void Heretic::Draw(const Vector2D camera_pos) const
 		else
 		{
 			// キャラ画像を中心に描画
-			DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, DeadImage[1], true);
+			DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, DeadImage[0], true);
 			/*DrawExtendGraph(position.x - (collision.collision_size.x / 2) * 2, position.y - (collision.collision_size.y / 2) * 2,
 				position.x + (collision.collision_size.x / 2) * 2, position.y + (collision.collision_size.y / 2) * 2,
 				DeadImage[0], false);*/
@@ -232,27 +232,13 @@ void Heretic::Draw(const Vector2D camera_pos) const
 
 #endif // ENEMY_TEST
 
-
-		if (nowsta == State::Damage)
-		{
-			if (CountTime == -2)
-			{
-				position.x -= 5.0f;
-			}
-			else if (CountTime == -1)
-			{
-				position.x += 5.0f;
-			}
-		}
-
 		DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, image, true);
 
 		// 異端者の描画
 		//DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		//	(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, TRUE);
 
-
-		DrawBoxAA(position.x, position.y - 90.0f, position.x + (100.0f - (100 - ((double)HP / 500) * 100)), position.y - 75.0f, 0xFFFFFF, true);
+		DrawBoxAA(position.x - 50.0f, position.y - 150.0f, position.x + (50.0f - (100 - ((double)HP / 500) * 100)), position.y - 135.0f, 0xFFFFFF, true);
 
 		if (summon_effect)
 		{
