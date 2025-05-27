@@ -229,155 +229,171 @@ void InGame::Draw() const
 	default:
 		break;
 	}
+
+
+
 	switch (state)
 	{
 	case GameState::PLAYING:
-		DrawGraph(camera->GetCameraPos().x - 700.0f, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
-		break;
-	case GameState::BOSS_DEAD:
-		DrawGraph(enemy->GetLocation().x, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
-		break;
-	case GameState::CLEAR:
-		break;
-	default:
-		break;
-	}
-
-	
-
-	// 光を加算合成
-	LightMapManager* light_map = LightMapManager::GetInstance();
-	light_map->DrawLights(camera->GetCameraPos());
-	
-	// 親クラスの描画処理を呼び出す
-	__super::Draw();
-
-	// ライトマップを描画
-	light_map->DrawLightMap();
-
-	// ボタンサイズ
-	const int button_width = 200;
-	const int button_height = 200;
-
-	// ボタンの数
-	const int button_count = 4;
-
-	// ボタンの総合幅を計算
-	int total_buttons_width = button_count * button_width;
-	// 間隔の総合幅を計算
-	int total_spacing = D_WIN_MAX_X - total_buttons_width;
-	// ボタンの間隔の計算
-	int spacing = total_spacing / (button_count + 1);
-
-	for (int i = 0; i < button_count; ++i) 
 	{
-		//	選択肢の位置
-		int x = spacing + i * (button_width + spacing);
-		int y = 60;
+		DrawGraph(camera->GetCameraPos().x - 700.0f, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
 
-		// 拡大用変数
-		int w = button_width;
-		int h = button_height;
+		LightMapManager* light_map = LightMapManager::GetInstance();
 
-		if (i == cursor) 
+		// 光を加算合成
+		light_map->DrawLights(camera->GetCameraPos());
+
+		// 親クラスの描画処理を呼び出す
+		__super::Draw();
+
+		// ライトマップを描画
+		light_map->DrawLightMap();
+
+		// ボタンサイズ
+		const int button_width = 200;
+		const int button_height = 200;
+
+		// ボタンの数
+		const int button_count = 4;
+
+		// ボタンの総合幅を計算
+		int total_buttons_width = button_count * button_width;
+		// 間隔の総合幅を計算
+		int total_spacing = D_WIN_MAX_X - total_buttons_width;
+		// ボタンの間隔の計算
+		int spacing = total_spacing / (button_count + 1);
+
+		for (int i = 0; i < button_count; ++i)
 		{
-			// 選択中のものだけ拡大（1.2倍）
-			int w = (int)(button_width * 1.2);
-			int h = (int)(button_height * 1.2);
+			//	選択肢の位置
+			int x = spacing + i * (button_width + spacing);
+			int y = 60;
 
-			// 枠（背景）を描画
-			DrawBox(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h, GetColor(255, 255, 255), TRUE);
-			//キャラの描画範囲を制限
-			SetDrawArea(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h);
+			// 拡大用変数
+			int w = button_width;
+			int h = button_height;
 
-			if (i == 3)
+			if (i == cursor)
 			{
-				if(cost < Sun_Level * 100) 
-					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+				// 選択中のものだけ拡大（1.2倍）
+				int w = (int)(button_width * 1.2);
+				int h = (int)(button_height * 1.2);
 
-				// キャラ画像を中心に描画
-				DrawExtendGraph(
-					(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
-					(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
-					unit_ui[i], TRUE);
-				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+				// 枠（背景）を描画
+				DrawBox(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h, GetColor(255, 255, 255), TRUE);
+				//キャラの描画範囲を制限
+				SetDrawArea(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h);
 
+				if (i == 3)
+				{
+					if (cost < Sun_Level * 100)
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+
+					// キャラ画像を中心に描画
+					DrawExtendGraph(
+						(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
+						(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
+						unit_ui[i], TRUE);
+					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+
+				}
+				else
+				{
+					// キャラ画像を中心に描画
+					DrawExtendGraph(
+						(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
+						(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
+						unit_ui[i], TRUE);
+				}
 			}
 			else
 			{
-			// キャラ画像を中心に描画
-			DrawExtendGraph(
-				(int)(x + (button_width - w  * 1.5 ) / 2), (int)(y + (button_height - h  * 1.5 ) / 2),
-				(int)(x + (button_width + w  * 1.7) / 2), (int)(y + (button_height + h  * 1.7 ) / 2),
-				unit_ui[i], TRUE);
+
+				if (i == 3)
+				{
+					if (cost < Sun_Level * 100)
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+
+					// 枠（背景）を描画
+					DrawBox(x, y, x + button_width, y + button_height, GetColor(100, 100, 100), TRUE);
+					//キャラの描画範囲を制限
+					SetDrawArea(x, y, x + button_width, y + button_height);
+
+
+					// キャラ画像を中心に描画
+					DrawExtendGraph(
+						(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
+						(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
+						unit_ui[i], TRUE);
+
+					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+
+				}
+				else
+				{
+
+					// 枠（背景）を描画
+					DrawBox(x, y, x + button_width, y + button_height, GetColor(100, 100, 100), TRUE);
+					//キャラの描画範囲を制限
+					SetDrawArea(x, y, x + button_width, y + button_height);
+
+					// キャラ画像を中心に描画
+					DrawExtendGraph(
+						(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
+						(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
+						unit_ui[i], TRUE);
+				}
 			}
+
+			// 描画範囲を元に戻す
+			SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
+		}
+
+		DrawFormatString(1000, 30, 0x00ffff, "Level:%d", Sun_Level);
+		// コスト表示
+		if (cost < Sun_Level * 100)
+		{
+			DrawFormatString(1100, 0, 0xffffff, "%d/%d", cost, Sun_Level * 100);
 		}
 		else
 		{
-
-			if (i == 3)
-			{
-				if (cost < Sun_Level * 100)
-					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-
-				// 枠（背景）を描画
-				DrawBox(x, y, x + button_width, y + button_height, GetColor(100, 100, 100), TRUE);
-				//キャラの描画範囲を制限
-				SetDrawArea(x, y, x + button_width, y + button_height);
-
-
-				// キャラ画像を中心に描画
-				DrawExtendGraph(
-					(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
-					(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
-					unit_ui[i], TRUE);
-
-				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
-
-			}
-			else
-			{
-
-				// 枠（背景）を描画
-				DrawBox(x, y, x + button_width, y + button_height, GetColor(100, 100, 100), TRUE);
-				//キャラの描画範囲を制限
-				SetDrawArea(x, y, x + button_width, y + button_height);
-
-				// キャラ画像を中心に描画
-				DrawExtendGraph(
-					(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
-					(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
-					unit_ui[i], TRUE);
-			}
+			DrawFormatString(1100, 0, 0xffff00, "%d/%d", cost, Sun_Level * 100);
 		}
 
-		// 描画範囲を元に戻す
-		SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
+
+		if (ProjectConfig::DEBUG)
+		{
+			// カメラ座標描画
+			DrawFormatString(500, 300, 0xffffff, "%f", camera->GetCameraPos().x);
+
+			// シーン情報の描画
+			SetFontSize(60);
+			DrawFormatString(0, 0, 0xffffff, "InGame");
+			SetFontSize(32);
+			DrawFormatString(100, 300, 0xffffff, "Spaceを押してください");
+			DrawFormatString(1000, 0, 0xffffff, "Stage:%d", StageNumber);
+		}
+
 	}
-
-	DrawFormatString(1000, 30, 0x00ffff, "Level:%d", Sun_Level);
-	// コスト表示
-	if (cost < Sun_Level * 100)
+	break;
+	case GameState::BOSS_DEAD:
 	{
-		DrawFormatString(1100, 0, 0xffffff, "%d/%d", cost, Sun_Level * 100);
+
+		DrawGraph(enemy->GetLocation().x - 100.0f, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
+
+		LightMapManager* light_map = LightMapManager::GetInstance();
+
+		// 光を加算合成
+		light_map->DrawLights(camera->GetCameraPos());
+
+		// 親クラスの描画処理を呼び出す
+		__super::Draw();
+
+		// ライトマップを描画
+		light_map->DrawLightMap();
+
+		break;
 	}
-	else
-	{
-		DrawFormatString(1100, 0, 0xffff00, "%d/%d", cost, Sun_Level * 100);
-	}
-
-
-	if (ProjectConfig::DEBUG)
-	{
-		// カメラ座標描画
-		DrawFormatString(500, 300, 0xffffff, "%f", camera->GetCameraPos().x);
-
-		// シーン情報の描画
-		SetFontSize(60);
-		DrawFormatString(0, 0, 0xffffff, "InGame");
-		SetFontSize(32);
-		DrawFormatString(100, 300, 0xffffff, "Spaceを押してください");
-		DrawFormatString(1000, 0, 0xffffff, "Stage:%d", StageNumber);
 	}
 }
 

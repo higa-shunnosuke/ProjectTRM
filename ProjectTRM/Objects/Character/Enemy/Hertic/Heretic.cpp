@@ -57,6 +57,7 @@ void Heretic::Initialize()
 	image = rm->GetImages("Resource/Images/Enemy/Heretic/Heretic_Stand.png")[0];
 	DeadImage[0] = rm->GetImages("Resource/Images/Enemy/Heretic/NotDead.png")[0];
 	DeadImage[1] = rm->GetImages("Resource/Images/Enemy/Heretic/ImDead.png")[0];
+	SoptLight = rm->GetImages("Resource/Images/Enemy/Heretic/SpotLight.png")[0];
 
 	if (image == NULL)
 	{
@@ -83,8 +84,7 @@ void Heretic::Update(float delta_second)
 	switch (nowsta)
 	{
 	case Death:
-
-		if (now_time - prev_time > std::chrono::milliseconds(1000))
+		if (now_time - prev_time > std::chrono::milliseconds(2000))
 		{
 			if (Iam_Dead == false)
 			{
@@ -197,6 +197,10 @@ void Heretic::Draw(const Vector2D camera_pos) const
 		{
 			int w = 1;
 			int h = 1;
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+			DrawGraphF(position.x - collision.collision_size.x / 2-50.0f, position.y - collision.collision_size.y / 2-20.0f, SoptLight, true);
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+
 			//// キャラ画像を中心に描画		
 			DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, DeadImage[1], true);
 			// 
@@ -206,6 +210,10 @@ void Heretic::Draw(const Vector2D camera_pos) const
 		}
 		else
 		{
+
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+			DrawGraphF(position.x - collision.collision_size.x / 2 - 50.0f, position.y - collision.collision_size.y / 2 - 20.0f, SoptLight, true);
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 			// キャラ画像を中心に描画
 			DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, DeadImage[0], true);
 			/*DrawExtendGraph(position.x - (collision.collision_size.x / 2) * 2, position.y - (collision.collision_size.y / 2) * 2,
