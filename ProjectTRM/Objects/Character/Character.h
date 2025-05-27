@@ -81,6 +81,10 @@ protected:
 	/// <param name="hit_object">1ƒtƒŒ[ƒ€‚ ‚½‚è‚ÌŠÔ</param>
 	virtual void EffectControl(float delta_second);
 	/// <summary>
+	/// SE§Œäˆ—
+	/// </summary>
+	virtual void SoundControl();
+	/// <summary>
 	/// UŒ‚ˆ—
 	/// </summary>
 	virtual void Attack(GameObject* hit_object);

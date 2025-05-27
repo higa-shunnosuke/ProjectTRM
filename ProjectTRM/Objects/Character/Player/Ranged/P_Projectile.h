@@ -15,6 +15,7 @@ private:
 	Vector2D old_location;
 	float angle;
 	float end_loc;
+	int sounds;	//音
 
 public:
 	//コンストラクタ
@@ -69,6 +70,10 @@ private:
 	/// </summary>
 	/// <param name="hit_object">1フレームあたりの時間</param>
 	virtual void EffectControl(float delta_second);
+	/// <summary>
+	/// SE制御処理
+	/// </summary>
+	virtual void SoundControl();
 
 public:
 	void SetTargetLocation(Vector2D location);

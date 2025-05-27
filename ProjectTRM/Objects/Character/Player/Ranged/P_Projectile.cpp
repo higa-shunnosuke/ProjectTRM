@@ -154,6 +154,25 @@ void P_Projectile::EffectControl(float delta_second)
 
 }
 
+//SE‚Ì§Œäˆ—
+void P_Projectile::SoundControl()
+{
+    if (now_state != old_state)
+    {
+        ResourceManager* rm = ResourceManager::GetInstance();
+        switch (now_state)
+        {
+
+        case State::Attack:
+            sounds = rm->GetSounds("Resource/Images/UnitSE/Ranged/Arrow_Hit.mp3");
+            break;
+        default:
+            break;
+        }
+        ChangeVolumeSoundMem(150, sounds);
+    }
+}
+
 void P_Projectile::SetTargetLocation(Vector2D location) 
 {
 	target_location = location;

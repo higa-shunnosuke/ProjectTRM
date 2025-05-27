@@ -21,7 +21,7 @@ private:
 	int Damage;	//ダメージ
 	GameObjectManager* object;
 	int effect_alpha;	//エフェクトの透明度調整用
-	int sounds;
+	int sounds;	//音
 
 public:
 	//コンストラクタ
@@ -61,6 +61,11 @@ public:
 	virtual void OnAreaDetection(GameObject* hit_object);
 
 	/// <summary>
+	/// 攻撃範囲通知処理
+	/// </summary>
+	virtual void NoHit() override;
+
+	/// <summary>
 	/// HP管理処理
 	/// </summary>
 	/// <param name="hit_object">ダメージ</param>
@@ -87,4 +92,8 @@ private:
 	/// </summary>
 	/// <param name="hit_object">1フレームあたりの時間</param>
 	virtual void EffectControl(float delta_second);
+	/// <summary>
+	/// SE制御処理
+	/// </summary>
+	virtual void SoundControl();
 };

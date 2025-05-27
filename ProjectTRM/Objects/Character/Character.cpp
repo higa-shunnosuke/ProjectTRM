@@ -59,6 +59,12 @@ void Character::EffectControl(float delta_second)
 
 }
 
+// SE§Œäˆ—
+void Character::SoundControl()
+{
+
+}
+
 // UŒ‚ˆ—
 void Character::Attack(GameObject* hit_object)
 {

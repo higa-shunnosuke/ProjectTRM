@@ -24,10 +24,11 @@ P_Tank::~P_Tank()
 // 初期化処理
 void P_Tank::Initialize()
 {
-	// 画像の読み込み
+	// 画像等の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 	animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32);
 	effect_image = rm->GetImages("Resource/Images/Effect/Unit/Tank_Ghost.png", 1, 1, 1, 32, 32)[0];
+	sounds = rm->GetSounds("Resource/Images/UnitSE/Tank/Tank_Attack.mp3");
 
 	light = LightMapManager::GetInstance();
 	light->AddLight(this);
@@ -121,7 +122,7 @@ void P_Tank::Update(float delta_second)
 	}
 	EffectControl(delta_second);
 
-
+	SoundControl();
 
 	old_state = now_state;
 }
@@ -143,6 +144,7 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
+	//ステートによってエフェクトの描画を行う
 	switch (now_state)
 	{
 	case State::Damage:
@@ -213,10 +215,16 @@ void P_Tank::OnAreaDetection(GameObject* hit_object)
 				}
 			}
 		}
-		else if (hit_col.object_type == eObjectType::Ground)
-		{
-			velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
-		}
+	}
+}
+
+// 攻撃範囲通知処理
+void P_Tank::NoHit()
+{
+	// 移動状態にする
+	if (now_state != State::Death)
+	{
+		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 	}
 }
 
@@ -236,6 +244,8 @@ void P_Tank::HPControl(int Damage)
 // 攻撃処理
 void P_Tank::Attack(GameObject* hit_object)
 {
+	
+	PlaySoundMem(sounds, DX_PLAYTYPE_BACK, TRUE);
 	hit_object->HPControl(Damage);
 	attack_flame = 2.0f;
 }
@@ -400,5 +410,24 @@ void P_Tank::EffectControl(float delta_second)
 		break;
 	default:
 		break;
+	}
+}
+
+//SEの制御処理
+void P_Tank::SoundControl()
+{
+	if (now_state != old_state)
+	{
+		ResourceManager* rm = ResourceManager::GetInstance();
+		switch (now_state)
+		{
+
+		case State::Attack:
+			sounds = rm->GetSounds("Resource/Images/UnitSE/Tank/Tank_Attack.mp3");
+			break;
+		default:
+			break;
+		}
+		ChangeVolumeSoundMem(150, sounds);
 	}
 }

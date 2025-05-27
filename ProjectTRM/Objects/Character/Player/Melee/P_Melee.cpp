@@ -221,10 +221,16 @@ void P_Melee::OnAreaDetection(GameObject* hit_object)
 				}
 			}
 		}
-		else if(hit_col.object_type == eObjectType::Ground)
-		{
-			velocity.x = BASIC_SPEED + (( BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
-		}
+	}
+}
+
+// UŒ‚”ÍˆÍ’Ê’mˆ—
+void P_Melee::NoHit()
+{
+	// ˆÚ“®ó‘Ô‚É‚·‚é
+	if (now_state != State::Death)
+	{
+		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 	}
 }
 
@@ -426,5 +432,24 @@ void P_Melee::EffectControl(float delta_second)
 		break;
 	default:
 		break;
+	}
+}
+
+//SE‚Ì§Œäˆ—
+void P_Melee::SoundControl()
+{
+	if (now_state != old_state)
+	{
+		ResourceManager* rm = ResourceManager::GetInstance();
+		switch (now_state)
+		{
+
+		case State::Attack:
+			sounds = rm->GetSounds("Resource/Images/UnitSE/Tank/Tank_Attack.mp3");
+			break;
+		default:
+			break;
+		}
+		ChangeVolumeSoundMem(150, sounds);
 	}
 }
