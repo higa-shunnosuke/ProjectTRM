@@ -110,7 +110,7 @@ void P_Ranged::Update(float delta_second)
 	}
 	EffectControl(delta_second);
 
-
+	SoundControl();
 
 	old_state = now_state;
 }
@@ -399,7 +399,7 @@ void P_Ranged::SoundControl()
 		default:
 			break;
 		}
-		ChangeVolumeSoundMem(150, sounds);
+		ChangeVolumeSoundMem(200, sounds);
 	}
 }
 

@@ -126,7 +126,7 @@ void P_Melee::Update(float delta_second)
 	}
 	EffectControl(delta_second);
 
-
+	SoundControl();
 
 	old_state = now_state;
 }
@@ -240,7 +240,7 @@ void P_Melee::HPControl(int Damage)
 	// UŒ‚ó‘Ô‚Å‚È‚¯‚ê‚Îƒ_ƒ[ƒWó‘Ô‚É‚·‚é
 	if (now_state != State::Attack && now_state != State::Death)
 	{
-		PlaySoundMem(sounds, DX_PLAYTYPE_BACK, true);
+		//PlaySoundMem(sounds, DX_PLAYTYPE_BACK, true);
 		now_state = State::Damage;
 		__super::HPControl(Damage);
 		dmage_flame = 1.0f;
@@ -445,7 +445,7 @@ void P_Melee::SoundControl()
 		{
 
 		case State::Attack:
-			sounds = rm->GetSounds("Resource/Images/UnitSE/Tank/Tank_Attack.mp3");
+			sounds = rm->GetSounds("Resource/Images/UnitSE/Tank/Tank_Hit.mp3");
 			break;
 		default:
 			break;

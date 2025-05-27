@@ -36,7 +36,7 @@ void P_Projectile::Initialize()
     z_layer = 3;
 
     now_state = State::Idle;
-
+    old_state = now_state;
 }
 
 // XVˆ—
@@ -73,6 +73,9 @@ void P_Projectile::Update(float delta_second)
     }
 
     angle = std::atan2((location.y - old_location.y), (location.x - old_location.x));
+
+    SoundControl();
+    old_state = now_state;
 
     old_location = location;
     if (location.y >= end_loc  + (collision.hitbox_size.y / 2))
@@ -124,6 +127,7 @@ void P_Projectile::OnAreaDetection(GameObject* hit_object)
 
     if (hit_collision.object_type == eObjectType::Enemy)
     {
+        PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
         hit_object->HPControl(Damage);
         Finalize();
     }
@@ -163,7 +167,7 @@ void P_Projectile::SoundControl()
         switch (now_state)
         {
 
-        case State::Attack:
+        case State::Move:
             sounds = rm->GetSounds("Resource/Images/UnitSE/Ranged/Arrow_Hit.mp3");
             break;
         default:
