@@ -317,7 +317,7 @@ void E_Tank::AnimationControl(float delta_second)
 
 	// 光に入っていたらアニメーションを遅くする
 	float delay = 1.0f;
-	if (in_light == true && now_state != State::Death)
+	if (in_light == true && (now_state != State::Death && now_state != State::Attack))
 	{
 		delay = 2.0f;
 	}

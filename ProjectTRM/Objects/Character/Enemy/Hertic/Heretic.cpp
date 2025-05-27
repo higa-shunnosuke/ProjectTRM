@@ -15,7 +15,7 @@
 #define COST_UPNUM 10
 
 
-#define ENEMY_TEST
+//#define ENEMY_TEST
 
 #include"../../../../Utility/Input/InputManager.h"
 
