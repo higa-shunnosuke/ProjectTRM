@@ -17,8 +17,6 @@ void Ground::Initialize()
 
 	collision.is_blocking = true;
 	collision.object_type = eObjectType::Ground;
-	collision.hit_object_type.push_back(eObjectType::Player);
-	collision.hit_object_type.push_back(eObjectType::Enemy);
 	collision.collision_size = Vector2D(60.0f, 60.0f);
 
 	HP = 1;

@@ -72,7 +72,7 @@ void SceneManager::Update(float delta_second)
 		}
 	}
 
-	int count = 0;		// カウンタ
+	bool is_hit;		// 攻撃フラグ
 
 	// 攻撃判定確認処理
 	for (int i = 0; i < objects_list.size(); i++)
@@ -86,26 +86,17 @@ void SceneManager::Update(float delta_second)
 		{
 			for (int j = 0; j < objects_list.size(); j++)
 			{
-				count++;
-
-				//攻撃前の対象のHP
-				int old_HP = objects_list[j]->GetHP();
-
 				// 攻撃判定確認処理
 				if (CheckHitBox(objects_list[i], objects_list[j]) == true)
-		
-				// 攻撃していたらループを抜ける
-				if (old_HP > objects_list[j]->GetHP())
 				{
-					count--;
-					break;
+					is_hit = true;
 				}
+			}
 
-				// 攻撃対象がいないことを通知する
-				if (count >= objects_list.size())
-				{
-					objects_list[i]->NoHit();
-				}
+			// 攻撃対象がいないことを通知する
+			if (is_hit != true)
+			{
+				objects_list[i]->NoHit();
 			}
 		}
 	}
@@ -347,7 +338,7 @@ void SceneManager::CheckLightRange(GameObject* target, GameObject* partner)
 	Vector2D boxPos = target->GetLocation();
 	Vector2D boxSize = pc.collision_size;
 
-	if (tc.CheckCircleRectCollision(circlePos, radius, boxPos, boxSize))
+	if (tc.CheckCircleRectCollision(circlePos, radius, boxPos))
 	{
 		// 当たっていることを通知する
 		target->InLightRange();

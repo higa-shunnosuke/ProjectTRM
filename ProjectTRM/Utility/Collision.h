@@ -58,7 +58,6 @@ public:
 	/// <param name="circlePos">円の中心</param>
 	/// <param name="radius">円の半径</param>
 	/// <param name="boxPos">矩形の中心</param>
-	/// <param name="box_size">矩形の大きさ</param>
 	/// <returns></returns>
-	bool CheckCircleRectCollision(Vector2D circlePos, float radius, Vector2D boxPos, Vector2D box_size);
+	bool CheckCircleRectCollision(Vector2D circlePos, float radius, Vector2D BoxPos);
 };

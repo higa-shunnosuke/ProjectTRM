@@ -12,11 +12,12 @@ size_t E_Melee::GetCount()
 
 // コンストラクタ
 E_Melee::E_Melee() :
-	Damage(),
 	anim_max_count(),
 	recovery_time(),
 	damage_rate(),
-	anim_rate()
+	anim_rate(),
+	speed(),
+	Damage()
 {
 	count++;
 }
@@ -37,7 +38,7 @@ void E_Melee::Initialize()
 	collision.object_type = eObjectType::Enemy;
 	collision.hit_object_type.push_back(eObjectType::Player);
 	collision.collision_size = Vector2D(50.0f, 100.0f);
-	collision.hitbox_size = Vector2D(80.0f, 120.0f);
+	collision.hitbox_size = Vector2D(90.0f, 120.0f);
 	z_layer = 2;
 
 	flip_flag = false;
@@ -46,10 +47,13 @@ void E_Melee::Initialize()
 	now_state = State::Move;
 
 	//攻撃力
-	Damage = 5;
+	Damage = 4;
 
 	// HP初期化
-	HP = 200;
+	HP = 20;
+
+	// スピードの初期化
+	speed = 80.0f;
 
 	alpha = MAX_ALPHA;
 	add = -ALPHA_ADD;
@@ -58,10 +62,16 @@ void E_Melee::Initialize()
 // 更新処理
 void E_Melee::Update(float delta_second)
 {
-	// 持続ダメージを与える
-	if (in_light == true && damage_rate >= 0.1f)
+	// HPが０になると終了処理
+	if (HP <= 0)
 	{
-		HP -= 1;
+		now_state = State::Death;
+	}
+
+	// 持続ダメージを与える
+	if (in_light == true && damage_rate >= 1.0f)
+	{
+		HPControl(1);
 		damage_rate = 0;
 	}
 	else
@@ -82,12 +92,6 @@ void E_Melee::Update(float delta_second)
 
 	// アニメーション管理処理
 	AnimationControl(delta_second);
-
-	// HPが０になると終了処理
-	if (HP <= 0)
-	{
-		now_state = State::Death;
-	}
 }
 
 // 描画処理
@@ -107,16 +111,16 @@ void E_Melee::Draw(const Vector2D camera_pos) const
 		2.0, 0.0, image, TRUE, flip_flag);
 
 	if (ProjectConfig::DEBUG)
-	{	//残りHPの表示
-		if (in_light == true)
-		{
-			DrawFormatString((int)position.x, (int)(position.y - 40.0f), 0xffffff, "%d", HP);
+	{
+		int color;
+		if (in_light == true) {
+			color = 0xffffff;
 		}
-		else
-		{
-			DrawFormatString((int)position.x, (int)(position.y - 40.0f), 0xff0000, "%d", HP);
+		else {
+			color = 0xff0000;
 		}
-
+		//残りHPの表示
+		DrawFormatString((int)position.x, (int)(position.y - 40.0f), color, "%d", HP);
 		// 中心を表示
 		DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
 		// 当たり判定表示
@@ -161,7 +165,7 @@ void E_Melee::OnAreaDetection(GameObject* hit_object)
 		else if (now_state == State::Idle)
 		{
 			// 待機時間が終わったら攻撃状態にする
-			if (recovery_time >= 1.0f)
+			if (recovery_time >= 2.0f)
 			{
 				now_state = State::Attack;
 			}
@@ -173,6 +177,10 @@ void E_Melee::OnAreaDetection(GameObject* hit_object)
 			{
 				// 攻撃処理
 				Attack(hit_object);
+
+				// 硬直開始
+				now_state = State::Idle;
+				recovery_time = 0;
 			}
 		}
 	}
@@ -181,14 +189,10 @@ void E_Melee::OnAreaDetection(GameObject* hit_object)
 // 攻撃範囲通知処理
 void E_Melee::NoHit()
 {
-	// 待機状態なら待機する
-	if (now_state == State::Idle)
+	// 移動状態にする
+	if (now_state != State::Death)
 	{
-		// 待機時間が終わったら移動状態にする
-		if (recovery_time >= 1.0f)
-		{
-			now_state = State::Move;
-		}
+		now_state = State::Move;
 	}
 }
 
@@ -196,12 +200,16 @@ void E_Melee::NoHit()
 void E_Melee::InLightRange()
 {
 	in_light = true;
+	Damage = 2;
+	speed = 40.0f;
 }
 
 // ライト範囲通知処理
 void E_Melee::OutLightRange()
 {
 	in_light = false;
+	Damage = 4;
+	speed = 80.0f;
 }
 
 // HP管理処理
@@ -210,9 +218,10 @@ void E_Melee::HPControl(int Damage)
 	// ダメージ軽減
 	if (!in_light)
 	{
-		Damage = (int)(Damage * 0.5);
+		Damage = 0;
 	}
 
+	// ダメージ反映
 	this->HP -= Damage;
 	if (this->HP < 0)
 	{
@@ -231,10 +240,10 @@ void E_Melee::Attack(GameObject* hit_object)
 void E_Melee::Movement(float delta_second)
 {
 	// 右向きに移動させる
-	velocity.x = 5.0f;
+	velocity.x = speed;
 
 	// 移動の実行
-	location += velocity * 10 * delta_second;
+	location += velocity * delta_second;
 }
 
 // アニメーション制御処理
@@ -294,12 +303,6 @@ void E_Melee::AnimationControl(float delta_second)
 		break;
 	case State::Attack:
 		image = animation[Anim_count];
-		// 硬直開始
-		if (Anim_count == anim_max_count)
-		{
-			now_state = State::Idle;
-			recovery_time = 0;
-		}
 		break;
 	case State::Death:
 		image = animation[Anim_count];
@@ -313,6 +316,13 @@ void E_Melee::AnimationControl(float delta_second)
 
 	// アニメーションの更新
 	Anim_flame += delta_second;
+
+	// 光に入っていたらアニメーションを遅くする
+	float delay = 1.0f;
+	if (in_light == true && now_state != State::Death)
+	{
+		delay = 2.0f;
+	}
 
 	// アニメーション間隔
 	if (Anim_flame >= anim_rate)

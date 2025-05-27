@@ -48,7 +48,7 @@ void Boss::Update(float delta_second)
 	// 持続ダメージを与える
 	if (in_light == true && anime_time >= 0.1f)
 	{
-		HP -= 1;
+		HPControl(1);
 		anime_time = 0;
 	}
 
@@ -195,9 +195,10 @@ void Boss::HPControl(int Damage)
 	// ダメージ軽減
 	if (!in_light)
 	{
-		Damage *= 0.5;
+		Damage = 0;
 	}
 
+	// ダメージ反映
 	this->HP -= (int)Damage;
 	if (this->HP < 0)
 	{

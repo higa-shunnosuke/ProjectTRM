@@ -1,5 +1,6 @@
 #include "Collision.h"
 #include <math.h>
+#include <cmath>
 
 // 適用オブジェクトか確認する処理
 bool Collision::IsCheckHitTarget(eObjectType hit_object) const
@@ -17,14 +18,13 @@ bool Collision::IsCheckHitTarget(eObjectType hit_object) const
 }
 
 // 円と矩形の当たり判定
-bool Collision::CheckCircleRectCollision(Vector2D circlePos, float radius, Vector2D boxPos, Vector2D box_size)
+bool Collision::CheckCircleRectCollision(Vector2D circlePos, float radius, Vector2D BoxPos)
 {
-	// 円の中心と矩形の最近接点の距離を計算
-	float nearestX = (std::max)(boxPos.x, (std::min)(circlePos.x, boxPos.x + box_size.x));
-	float nearestY = (std::max)(boxPos.y, (std::min)(circlePos.y, boxPos.y + box_size.y));
+	// 円の中心と対象の最近接点の距離を計算
+	float distance;
+	float dx = circlePos.x - BoxPos.x;
+	float dy = circlePos.y - BoxPos.y;
+	distance = std::sqrt(dx * dx + dy * dy);
 
-	float dx = circlePos.x - nearestX;
-	float dy = circlePos.y - nearestY;
-
-	return (dx * dx + dy * dy) < (radius * radius);
+	return radius >= distance;
 }

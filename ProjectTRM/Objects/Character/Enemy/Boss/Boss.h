@@ -9,6 +9,8 @@ private:
 	int Damage;	//ダメージ
 	float anime_time;		// アニメーション時間
 	float recovery_time;	// 硬直時間
+	float speed;			// 歩く速さ
+
 public:
 	//コンストラクタ
 	Boss();

@@ -12,16 +12,15 @@ private:
 	float recovery_time;	// 硬直時間
 	float damage_rate;		// 持続ダメージの頻度
 	float anim_rate;		// アニメーションの早さ
+	float speed;			// 歩く速さ
+	int Damage;				//ダメージ
 
 public:
 	/// <summary>
 	/// 敵近接のカウント取得処理
 	/// </summary>
 	/// <returns>敵近接の数</returns>
-	static size_t GetCount();
-
-private:
-	int Damage;	//ダメージ
+	static size_t GetCount();	
 
 public:
 	//コンストラクタ
