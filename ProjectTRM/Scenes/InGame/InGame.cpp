@@ -24,7 +24,14 @@ InGame::InGame():
 	player(nullptr),
 	enemy(nullptr),
 	unit_ui(),
-	Sun_Level(1)
+	Sun_Level(1),
+	BackGroundImage(),
+	Click(),
+	ClickUp(),
+	Cost_Max(),
+	SunImages(),
+	move_camera(),
+	sound()
 {
 	
 }
@@ -51,9 +58,22 @@ void InGame::Initialize()
 	unit_ui[1]= rm->GetImages("Resource/Images/Unit/Melee/Melee_Cost.png")[0]	;
 	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Cost.png")[0];
 	unit_ui[3] = rm->GetImages("Resource/Images/BackGround/Sun.png")[0];
+
 	BackGroundImage[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
 	BackGroundImage[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
 	BackGroundImage[2]= rm->GetImages("Resource/Images/BackGround/RedMoon.png")[0];
+
+	std::string Imagestring , Imagepng,Number;;
+	Imagestring = "Resource/Images/BackGround/Sun";
+	Imagepng = ".png";
+
+	for (int i = 0; i < 10; i++)
+	{
+		Number = std::to_string(i);
+		//太陽の画像
+		SunImages[i] = rm->GetImages(Imagestring + Number + Imagepng)[0];
+	}
+
 
 	Click = rm->GetSounds("Resource/Sounds/InGame/Click.mp3");
 	ClickUp = rm->GetSounds("Resource/Sounds/InGame/ClickUp.mp3");
@@ -292,11 +312,22 @@ void InGame::Draw() const
 					if (cost < Sun_Level * 100)
 						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 
-					// キャラ画像を中心に描画
-					DrawExtendGraph(
-						(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
-						(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
-						unit_ui[i], TRUE);
+					for (int i = 0; i < 10; i++)
+					{
+						if (Sun_Level - 1 >= i)
+						{
+							// キャラ画像を中心に描画
+							DrawExtendGraph(
+								(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
+								(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
+								SunImages[i], TRUE);
+						}
+						else
+						{
+							break;
+						}
+					}
+
 					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 
 				}
@@ -314,7 +345,7 @@ void InGame::Draw() const
 
 				if (i == 3)
 				{
-					if (cost < Sun_Level * 100)
+					if (cost < Sun_Level * 100 && Sun_Level < 9)
 						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 
 					// 枠（背景）を描画
@@ -323,11 +354,23 @@ void InGame::Draw() const
 					SetDrawArea(x, y, x + button_width, y + button_height);
 
 
-					// キャラ画像を中心に描画
-					DrawExtendGraph(
-						(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
-						(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
-						unit_ui[i], TRUE);
+					for (int i = 0; i < 10; i++)
+					{
+						if (Sun_Level - 1 >= i)
+						{
+							// キャラ画像を中心に描画
+							DrawExtendGraph(
+								(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
+								(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
+								SunImages[i], TRUE);
+
+						}
+						else
+						{
+							break;
+						}
+					}
+		
 
 					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 
@@ -352,7 +395,7 @@ void InGame::Draw() const
 			SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
 		}
 
-		DrawFormatString(1000, 30, 0x00ffff, "Level:%d", Sun_Level);
+		DrawFormatString(1000, 30, 0x00ffff, "Level:%d/10", Sun_Level);
 		// コスト表示
 		if (cost < Sun_Level * 100)
 		{
@@ -406,7 +449,6 @@ void InGame::Finalize()
 	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();
 
-	//SceneBase::win_flg = this->win_flg;
 
 }
 
@@ -548,7 +590,8 @@ void InGame::RegenerateCost()
 	{
 		if (now_time - prev_time > std::chrono::milliseconds(500))
 		{
-			cost += Cost_UpNum + ((Sun_Level - 1) * 5);
+			cost += Cost_UpNum + ((Sun_Level) * 5);
+
 			if (cost >= Sun_Level * 100)
 			{
 				PlaySoundMem(Click, DX_PLAYTYPE_BACK);

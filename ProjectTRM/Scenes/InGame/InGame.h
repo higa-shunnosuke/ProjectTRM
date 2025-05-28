@@ -7,7 +7,7 @@
 
 #include <chrono>
 
-#define Cost_UpNum 10
+#define Cost_UpNum 5
 #define Tank_Cost 20
 #define Melee_Cost 50
 #define Range_Cost 100
@@ -28,6 +28,7 @@ private:
 	std::chrono::steady_clock::time_point	summon_time[3];		// 召喚開始時間
 	std::chrono::seconds					cooldown[3];		// 召喚クールダウン
 	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数
+	int SunImages[10];
 	int BackGroundImage[3];
 	int sound;
 	int Click;
