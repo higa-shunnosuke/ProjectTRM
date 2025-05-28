@@ -362,7 +362,7 @@ void Heretic::ThinkingEnemy()
 		//ラッシュ(波のように襲い来る)
 	{
 		//・相手の評価が高くなった際に手持ち最大コストを生成する。
-		if (Pcount_sum > Ecount_sum + 500)
+		if (Pcount_sum > Ecount_sum + 1000)
 		{
 			//【プロト版のみ】
 			Cost -= BOSS_cost;
