@@ -60,7 +60,7 @@ void P_Tank::Initialize()
 	Damage = BASIC_POWER;
 
 	// HPèâä˙âª
-	HP = 20;
+	HP = 40;
 
 	alpha = MAX_ALPHA;
 	effect_alpha = MAX_ALPHA;

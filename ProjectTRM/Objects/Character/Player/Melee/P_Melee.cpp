@@ -96,11 +96,13 @@ void P_Melee::Update(float delta_second)
 			}
 			else
 			{
+				now_state = State::Idle;
 				attack_flame -= delta_second * (1 + (Ingame->GetSunLevel() / 10));
 			}
 			if (attack_flame <= 0.0f)
 			{
 				attack_flag = false;
+				now_state = State::Move;
 			}
 		}
 
@@ -124,6 +126,7 @@ void P_Melee::Update(float delta_second)
 	{
 		AnimationControl(delta_second);
 	}
+
 	EffectControl(delta_second);
 
 	SoundControl();
@@ -230,7 +233,7 @@ void P_Melee::NoHit()
 	// ˆÚ“®ó‘Ô‚É‚·‚é
 	if (now_state != State::Death)
 	{
-		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
+		now_state = State::Move;
 	}
 }
 
@@ -319,7 +322,7 @@ void P_Melee::AnimationControl(float delta_second)
 		image = animation[0];
 		break;
 	case State::Move:
-
+		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 		image = animation[1 + Anim_count];
 		break;
 	case State::Attack:
@@ -327,8 +330,8 @@ void P_Melee::AnimationControl(float delta_second)
 		if (Anim_count >= 2)
 		{
 			attack_flag = true;
-			now_state = State::Idle;
-
+			now_state = State::Move;
+			velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 		}
 		break;
 	case State::Damage:
@@ -412,16 +415,12 @@ void P_Melee::EffectControl(float delta_second)
 		break;
 	case State::Attack:	
 		effect_image = Effect[Effect_count];
-		if (Effect_count >= 2)
-		{
-			now_state = State::Idle;
-		}
 		break;
 	case State::Damage:
 		effect_image = Effect[Effect_count];
 		if (dmage_flame <= 0.0f)
 		{
-			now_state = State::Idle;
+			now_state = State::Move;
 		}
 		break;
 	case State::Death: 
