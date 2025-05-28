@@ -28,7 +28,7 @@ void P_Tank::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32);
 	effect_image = rm->GetImages("Resource/Images/Effect/Unit/Tank_Ghost.png", 1, 1, 1, 32, 32)[0];
-	sounds = rm->GetSounds("Resource/Images/UnitSE/Tank/Tank_Attack.mp3");
+	sounds = rm->GetSounds("Resource/Sounds/UnitSE/Tank/Tank_Attack.mp3");
 
 	light = LightMapManager::GetInstance();
 	light->AddLight(this);
@@ -426,7 +426,7 @@ void P_Tank::SoundControl()
 		{
 
 		case State::Attack:
-			sounds = rm->GetSounds("Resource/Images/UnitSE/Tank/Tank_Attack.mp3");
+			sounds = rm->GetSounds("Resource/Sounds/UnitSE/Tank/Tank_Attack.mp3");
 			break;
 		default:
 			break;

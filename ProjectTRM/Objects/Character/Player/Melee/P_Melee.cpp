@@ -30,7 +30,7 @@ void P_Melee::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
 	Effect = rm->GetImages("Resource/Images/Effect/Melee_Attack_Effect.png", 3, 3, 1, 32, 32);
-	sounds = rm->GetSounds("Resource/Images/UnitSE/damage02.wav");
+	sounds = rm->GetSounds("Resource/Sounds/UnitSE/damage02.wav");
 
 	LightMapManager* light = LightMapManager::GetInstance();
 	light->AddLight(this);
@@ -448,7 +448,7 @@ void P_Melee::SoundControl()
 		{
 
 		case State::Attack:
-			sounds = rm->GetSounds("Resource/Images/UnitSE/Tank/Tank_Hit.mp3");
+			sounds = rm->GetSounds("Resource/Sounds/UnitSE/Tank/Tank_Hit.mp3");
 			break;
 		default:
 			break;
