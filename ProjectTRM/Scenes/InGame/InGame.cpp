@@ -314,14 +314,13 @@ void InGame::Draw() const
 
 				if (i == 3)
 				{
-					if (cost < Sun_Level * 100)
+					if (cost < Sun_Level * 100 && Sun_Level < 10)
 						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 
 					// ˜gi”wŒij‚ð•`‰æ
 					DrawBox(x, y, x + button_width, y + button_height, GetColor(100, 100, 100), TRUE);
 					//ƒLƒƒƒ‰‚Ì•`‰æ”ÍˆÍ‚ð§ŒÀ
 					SetDrawArea(x, y, x + button_width, y + button_height);
-
 
 					// ƒLƒƒƒ‰‰æ‘œ‚ð’†S‚É•`‰æ
 					DrawExtendGraph(
