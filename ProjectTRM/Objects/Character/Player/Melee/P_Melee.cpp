@@ -419,6 +419,10 @@ void P_Melee::EffectControl(float delta_second)
 		break;
 	case State::Damage:
 		effect_image = Effect[Effect_count];
+		if (dmage_flame <= 0.0f)
+		{
+			now_state = State::Idle;
+		}
 		break;
 	case State::Death: 
 		effect_image = Effect[0];
