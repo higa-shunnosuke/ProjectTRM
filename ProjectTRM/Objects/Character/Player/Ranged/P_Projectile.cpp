@@ -62,7 +62,7 @@ void P_Projectile::Update(float delta_second)
 
         end_loc = location.y;
 
-        Damage = BASIC_POWER * (Ingame->GetSunLevel() / 5);
+        Damage = BASIC_POWER;
 
         now_state = State::Move;
     }

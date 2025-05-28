@@ -53,6 +53,9 @@ void P_Tank::Initialize()
 	//‰Šú‰»
 	now_state = State::Move;
 
+	//ˆÚ“®‘¬“x
+	velocity.x = BASIC_SPEED;
+
 	//UŒ‚—Í
 	Damage = BASIC_POWER;
 

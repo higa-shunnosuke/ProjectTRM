@@ -44,6 +44,9 @@ void P_Ranged::Initialize()
 
 	now_state = State::Move;
 
+	//ˆÚ“®‘¬“x
+	velocity.x = BASIC_SPEED;
+
 	// HP‰Šú‰»
 	HP = 10;
 
@@ -399,7 +402,7 @@ void P_Ranged::SoundControl()
 		default:
 			break;
 		}
-		ChangeVolumeSoundMem(200, sounds);
+		ChangeVolumeSoundMem(150, sounds);
 	}
 }
 
