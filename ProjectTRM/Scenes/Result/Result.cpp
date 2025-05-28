@@ -20,10 +20,6 @@ void Result::Initialize()
 
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
-
-
-	DeadImage[0] = rm->GetImages("Resource/Images/Enemy/Heretic/NotDead.png")[0];
-	DeadImage[1] = rm->GetImages("Resource/Images/Enemy/Heretic/ImDead.png")[0];
 }
 
 // 更新処理
@@ -192,6 +188,14 @@ eSceneType Result::Update(const float& delta_second)
 		select_time = std::chrono::steady_clock::now();
 	}
 
+	if (cursor == -1)
+	{
+		if (now_time - choice_time > std::chrono::milliseconds(1000))
+		{
+			cursor = 2;
+		}
+	}
+	
 
 	// 親クラスの更新処理を呼び出す
 	return __super::Update(delta_second);

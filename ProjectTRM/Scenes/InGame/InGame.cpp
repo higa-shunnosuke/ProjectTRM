@@ -156,6 +156,23 @@ void InGame::Initialize()
 // XVˆ—
 eSceneType InGame::Update(const float& delta_second)
 {
+	int Pcount_sum = 0;
+	int Ecount_sum = 0;
+
+	Pcount_sum = (int)P_Tank::GetCount() + (int)P_Melee::GetCount() + (int)P_Ranged::GetCount() ;
+	Ecount_sum = (int)E_Tank::GetCount() + (int)E_Melee::GetCount() + (int)E_Ranged::GetCount()	;
+
+	if(Pcount_sum < max_unit)
+	{
+		dead_unit = max_unit - Pcount_sum;
+	}
+	max_unit = Pcount_sum;
+
+	if (Ecount_sum < max_enemy)
+	{
+		dead_enemy = max_enemy - Ecount_sum;
+	}
+	max_enemy = Ecount_sum;
 
 	if (enemy->GetHP() <= 0 || player->GetHP() <= 0)
 	{
