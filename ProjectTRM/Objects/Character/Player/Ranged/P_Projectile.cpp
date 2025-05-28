@@ -168,7 +168,7 @@ void P_Projectile::SoundControl()
         {
 
         case State::Move:
-            sounds = rm->GetSounds("Resource/Images/UnitSE/Ranged/Arrow_Hit.mp3");
+            sounds = rm->GetSounds("Resource/Sounds/UnitSE/Ranged/Arrow_Hit.mp3");
             break;
         default:
             break;

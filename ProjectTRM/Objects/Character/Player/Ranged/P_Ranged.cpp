@@ -397,7 +397,7 @@ void P_Ranged::SoundControl()
 		{
 
 		case State::Attack:
-			sounds = rm->GetSounds("Resource/Images/UnitSE/Ranged/Ranged_Attack.mp3");
+			sounds = rm->GetSounds("Resource/Sounds/UnitSE/Ranged/Ranged_Attack.mp3");
 			break;
 		default:
 			break;
