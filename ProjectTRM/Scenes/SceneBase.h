@@ -34,6 +34,12 @@ protected:
 	// 各シーンが所有する情報
 	int cursor;					// カーソル
 public:
+	int make_unit;
+	int make_enemy;
+	int max_unit = -1;
+	int max_enemy;
+	int dead_unit;
+	int dead_enemy;
 
 	bool win_flg;				//プレイヤーが勝利したかどうか
 	int StageNumber;

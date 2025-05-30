@@ -223,6 +223,16 @@ void SceneManager::ChangeScene(eSceneType next_type)
 	{
 	next_scene->win_flg = current_scene->win_flg;
 	next_scene->StageNumber = current_scene->StageNumber;
+	if(current_scene->max_unit != -1)
+	{
+		next_scene->make_unit = current_scene->make_unit;
+		next_scene->dead_unit = current_scene->dead_unit;
+		next_scene->max_unit = current_scene->max_unit;
+		next_scene->make_enemy = current_scene->make_enemy;
+		next_scene->dead_enemy = current_scene->dead_enemy;
+		next_scene->max_enemy = current_scene->max_enemy;
+	}
+	
 	}
 
 	// ƒV[ƒ“î•ñ‚ªŠi”[‚³‚ê‚Ä‚¢‚½‚çAíœ‚·‚é

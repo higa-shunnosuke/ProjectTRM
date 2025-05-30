@@ -162,9 +162,14 @@ eSceneType InGame::Update(const float& delta_second)
 	Pcount_sum = (int)P_Tank::GetCount() + (int)P_Melee::GetCount() + (int)P_Ranged::GetCount() ;
 	Ecount_sum = (int)E_Tank::GetCount() + (int)E_Melee::GetCount() + (int)E_Ranged::GetCount()	;
 
+	if (max_unit < Pcount_sum)
+	{
+		make_unit +=  Pcount_sum - max_unit ;
+	}
+
 	if(Pcount_sum < max_unit)
 	{
-		dead_unit = max_unit - Pcount_sum;
+		dead_unit -= max_unit - Pcount_sum;
 	}
 	max_unit = Pcount_sum;
 
@@ -173,6 +178,12 @@ eSceneType InGame::Update(const float& delta_second)
 		dead_enemy = max_enemy - Ecount_sum;
 	}
 	max_enemy = Ecount_sum;
+
+	if (CheckHitKey(KEY_INPUT_Z))
+	{
+		IsPlayerWin(false);
+		return eSceneType::result;
+	}
 
 	if (enemy->GetHP() <= 0 || player->GetHP() <= 0)
 	{

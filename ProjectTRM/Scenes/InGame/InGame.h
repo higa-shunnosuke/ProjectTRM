@@ -24,10 +24,6 @@ enum class GameState
 class InGame : public SceneBase
 {
 private:
-	int max_unit;
-	int max_enemy;
-	int dead_unit;
-	int dead_enemy;
 
 	GameState state = GameState::PLAYING;
 	std::chrono::steady_clock::time_point	summon_time[3];		// ¢Š«ŠJnŠÔ

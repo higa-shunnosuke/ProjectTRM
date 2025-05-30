@@ -76,7 +76,7 @@ void StageSelect::Draw() const
 	SetFontSize(60);
 	DrawFormatString(20, 40, 0xffffff, "Stage Select");
 	SetFontSize(32);
-	DrawFormatString(100, 400, 0xffffff, "Aボタンを押してください");
+	DrawFormatString(100, 400, 0xffffff, "A Button");
 	DrawFormatString(100, 450, 0x000000, "Stage:%d", SerectStage);
 
 
@@ -101,7 +101,6 @@ void StageSelect::Draw() const
 	DrawBox(200 - upnum1, 200 - upnum1, 350 + upnum1, 300 + upnum1, 0x00ffff, 1);
 	DrawBox(450 - upnum2, 200 - upnum2, 600 + upnum2, 300 + upnum2, 0x00ffff, 1);
 	DrawBox(700 - upnum3, 200 - upnum3, 850 + upnum3, 300 + upnum3, 0x00ffff, 1);
-
 
 	// 親クラスの描画処理を呼び出す
 	__super::Draw();

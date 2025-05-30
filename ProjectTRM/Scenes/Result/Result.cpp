@@ -204,6 +204,9 @@ eSceneType Result::Update(const float& delta_second)
 // 描画処理
 void Result::Draw() const
 {
+
+	DrawFormatString(500, 150, 0xffffff, "死亡したユニット:%d\n生産したユニット:%d", -dead_unit, make_unit - 1);
+
 	SetFontSize(60);
 	DrawFormatString(120, 140, 0xffffff, "Result");
 	SetFontSize(32);
