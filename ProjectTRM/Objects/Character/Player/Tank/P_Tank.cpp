@@ -41,7 +41,7 @@ void P_Tank::Initialize()
 	collision.object_type = eObjectType::Player;
 	collision.hit_object_type.push_back(eObjectType::Enemy);
 	collision.collision_size = Vector2D(60.0f, 60.0f);
-	collision.hitbox_size = Vector2D(100.0f, 100.0f);
+	collision.hitbox_size = Vector2D(50.0f, 100.0f);
 	z_layer = 1;
 
 	//”½“]ƒtƒ‰ƒO
@@ -119,15 +119,14 @@ void P_Tank::Update(float delta_second)
 		}
 	}
 
-	if (Anim_count <= 2)
-	{
-		AnimationControl(delta_second);
-	}
 	EffectControl(delta_second);
 
 	SoundControl();
 
-	old_state = now_state;
+	if (Anim_count <= 2)
+	{
+		AnimationControl(delta_second);
+	}
 }
 
 // •`‰æˆ—
@@ -296,6 +295,7 @@ void P_Tank::AnimationControl(float delta_second)
 		default:
 			break;
 		}
+		old_state = now_state;
 	}
 
 	Anim_flame += delta_second;

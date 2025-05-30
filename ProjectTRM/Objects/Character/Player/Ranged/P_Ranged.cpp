@@ -83,11 +83,13 @@ void P_Ranged::Update(float delta_second)
 			}
 			else
 			{
+				now_state = State::Idle;
 				attack_flame -= delta_second * ( 1 + (Ingame->GetSunLevel() / 10));
 			}
 			if (attack_flame <= 0.0f)
 			{
 				attack_flag = false;
+				now_state = State::Move;
 			}
 		}
 
@@ -107,15 +109,16 @@ void P_Ranged::Update(float delta_second)
 		}
 	}
 
-	if (Anim_count <= 2)
-	{
-		AnimationControl(delta_second);
-	}
+
 	EffectControl(delta_second);
 
 	SoundControl();
 
-	old_state = now_state;
+	if (Anim_count <= 2)
+	{
+		AnimationControl(delta_second);
+	}
+
 }
 
 // 描画処理
@@ -174,7 +177,7 @@ void P_Ranged::Finalize()
 // 当たり判定通知処理
 void P_Ranged::OnHitCollision(GameObject* hit_object)
 {
-
+	
 }
 
 // 攻撃範囲通知処理
@@ -187,16 +190,37 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 
 		if (hit_col.object_type == eObjectType::Enemy)
 		{
-			velocity.x = 0.0f;
-			if (attack_flag == false)
+			if (hit_object->GetInLight())
 			{
-				now_state = State::Attack;
+				velocity.x = 0.0f;
+				if (attack_flag == false)
+				{
+					now_state = State::Attack;
+				}
+				else
+				{
+					if (attack_flame <= 0.0f)
+					{
+						Attack(hit_object);
+					}
+				}
 			}
 			else
 			{
-				if (attack_flame <= 0.0f)
+				//２つのオブジェクトの距離を取得
+				Vector2D diff = this->GetLocation() - hit_object->GetLocation();
+
+				//２つのオブジェクトの当たり判定の大きさを取得
+				Vector2D box_size = (this->collision.collision_size + hit_col.collision_size) / 2.0f;
+
+					// 矩形同士の当たり判定
+				if ((fabsf(diff.x) < box_size.x) && (fabsf(diff.y) < box_size.y))
 				{
-					Attack(hit_object);
+					velocity.x = 0;
+				}
+				else
+				{
+					velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 				}
 			}
 		}
@@ -207,7 +231,7 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 void P_Ranged::NoHit()
 {
 	// 移動状態にする
-	if (now_state != State::Death)
+	if (now_state != State::Death && now_state != State::Damage)
 	{
 		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 	}
@@ -248,7 +272,7 @@ void P_Ranged::AnimationControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Idle:
-			animation = rm->GetImages("Resource/Images/Unit/Ranged/Melee_Walk.png", 3, 3, 1, 32, 32);
+			animation = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 3, 3, 1, 32, 32);
 			break;
 		case State::Move:
 			animation = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 3, 3, 1, 32, 32);
@@ -269,6 +293,7 @@ void P_Ranged::AnimationControl(float delta_second)
 		default:
 			break;
 		}
+		old_state = now_state;
 	}
 
 	Anim_flame += delta_second;
@@ -299,8 +324,8 @@ void P_Ranged::AnimationControl(float delta_second)
 		if (Anim_count >= 2)
 		{
 			attack_flag = true;
-			now_state = State::Idle;
-
+			now_state = State::Move;
+			velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 		}
 		break;
 	case State::Damage:
@@ -369,7 +394,7 @@ void P_Ranged::EffectControl(float delta_second)
 		effect_image = Effect[Effect_count];
 		if (dmage_flame <= 0.0f)
 		{
-			now_state = State::Idle;
+			now_state = State::Move;
 		}
 		break;
 	case State::Death:
