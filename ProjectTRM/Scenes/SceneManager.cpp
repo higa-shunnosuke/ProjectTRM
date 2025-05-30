@@ -72,7 +72,7 @@ void SceneManager::Update(float delta_second)
 		}
 	}
 
-	bool is_hit;		// 攻撃フラグ
+	bool is_hit = false;		// 攻撃フラグ
 
 	// 攻撃判定確認処理
 	for (int i = 0; i < objects_list.size(); i++)

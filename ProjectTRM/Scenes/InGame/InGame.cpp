@@ -523,10 +523,9 @@ void InGame::Draw() const
 // 終了処理
 void InGame::Finalize()
 {
-	for (int i = 0; i < 3; i++)
+	if (CheckSoundMem(bgmHandle[StageNumber - 1]) == 1)
 	{
-		// BGMの削除
-		DeleteSoundMem(bgmHandle[i]);
+		StopSoundMem(bgmHandle[StageNumber - 1]);
 	}
 	
 	// 親クラスの終了時処理を呼び出す
