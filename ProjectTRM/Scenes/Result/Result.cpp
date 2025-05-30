@@ -18,8 +18,49 @@ void Result::Initialize()
 	// 親クラスの初期化処理を呼び出す
 	__super::Initialize();
 
-	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
+
+	bgmHandle[0] = rm->GetSounds("Resource/Sounds/Result/Lost.mp3");
+	bgmHandle[1] = rm->GetSounds("Resource/Sounds/Result/Loose_BGM.mp3");
+	bgmHandle[2] = rm->GetSounds("Resource/Sounds/Result/Win_BGM.mp3");
+	bgmHandle[3] = rm->GetSounds("Resource/Sounds/Result/Win_BGM.mp3");
+
+	if (win_flg)
+	{
+		if (bgmHandle[2] == -1)
+		{
+			MessageBoxA(NULL, "BGM1の読み込みに失敗しました", "エラー", MB_OK);
+		}
+		else
+		{
+			// 音量設定
+			ChangeVolumeSoundMem(100, bgmHandle[2]);
+			// BGM再生
+			if (PlaySoundMem(bgmHandle[2], DX_PLAYTYPE_BACK) == -1)
+			{
+				MessageBoxA(NULL, "BGM1の再生に失敗しました", "エラー", MB_OK);
+			}
+		}
+	}
+	else
+	{
+		if (bgmHandle[1] == -1)
+		{
+			MessageBoxA(NULL, "BGM1の読み込みに失敗しました", "エラー", MB_OK);
+		}
+		else
+		{
+			// 音量設定
+			ChangeVolumeSoundMem(100, bgmHandle[1]);
+			// BGM再生
+			if (PlaySoundMem(bgmHandle[1], DX_PLAYTYPE_BACK) == -1)
+			{
+				MessageBoxA(NULL, "BGM1の再生に失敗しました", "エラー", MB_OK);
+			}
+		}
+	}
+
+
 }
 
 // 更新処理
@@ -287,6 +328,12 @@ void Result::Draw() const
 // 終了処理
 void Result::Finalize()
 {
+	for (int i = 0; i < 4; i++)
+	{
+		// BGMの削除
+		DeleteSoundMem(bgmHandle[i]);
+	}
+
 	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();
 }
