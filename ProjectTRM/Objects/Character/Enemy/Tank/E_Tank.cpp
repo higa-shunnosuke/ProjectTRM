@@ -16,8 +16,11 @@ E_Tank::E_Tank() :
 	recovery_time(),
 	damage_rate(),
 	anim_rate(),
+	effect_flame(),
 	speed(),
-	Damage()
+	Damage(),
+	effect(),
+	old_light(false)
 {
 	count++;
 }
@@ -31,6 +34,11 @@ E_Tank::~E_Tank()
 // 初期化処理
 void E_Tank::Initialize()
 {
+	// 画像の読み込み
+	ResourceManager* rm = ResourceManager::GetInstance();
+	effect_image = rm->GetImages("Resource/Images/Effect/Smoke-Sheet.png", 19, 4, 5, 80, 80);
+	effect = effect_image[0];
+
 	is_mobility = true;
 	is_aggressive = true;
 
@@ -55,7 +63,7 @@ void E_Tank::Initialize()
 	// スピードの初期化
 	speed = 50.0f;
 
-	alpha = MAX_ALPHA;
+	alpha = 240;
 	add = -ALPHA_ADD;
 }
 
@@ -92,6 +100,32 @@ void E_Tank::Update(float delta_second)
 	
 	// アニメーション管理処理
 	AnimationControl(delta_second);
+
+	// エフェクトの透明化処理
+	if (old_light == false)
+	{
+		if (alpha < 200)
+		{
+			alpha += 1;
+		}
+		else
+		{
+			alpha = 200;
+			old_light = in_light;
+		}
+	}
+	else if(old_light == true)
+	{
+		if (alpha > 0)
+		{
+			alpha -= 2;
+		}
+		else
+		{
+			alpha = 0;
+			old_light = in_light;
+		}
+	}
 }
 
 // 描画処理
@@ -109,6 +143,11 @@ void E_Tank::Draw(const Vector2D camera_pos) const
 	// 敵近接の描画
 	DrawRotaGraphF(position.x + offset.x, position.y + offset.y,
 		2.0, 0.0, image, TRUE, flip_flag);
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+	DrawRotaGraphF(position.x, position.y - 70.0f,
+		3.0, 0.0, effect, TRUE, flip_flag);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	if (ProjectConfig::DEBUG)
 	{	
@@ -188,7 +227,7 @@ void E_Tank::OnAreaDetection(GameObject* hit_object)
 void E_Tank::NoHit()
 {
 	// 移動状態にする
-	if (now_state != State::Death)
+	if (now_state != State::Death && now_state != State::Attack)
 	{
 		now_state = State::Move;
 	}
@@ -216,7 +255,7 @@ void E_Tank::HPControl(int Damage)
 	// ダメージ軽減
 	if (!in_light)
 	{
-		Damage = 0;
+		Damage = 1;
 	}
 
 	// ダメージ反映
@@ -312,6 +351,26 @@ void E_Tank::AnimationControl(float delta_second)
 		break;
 	}
 
+	// エフェクトのアニメーションの実行
+	effect = effect_image[effect_count];
+
+	// エフェクトのアニメーションの更新
+	effect_flame += delta_second;
+
+	if (effect_flame >= 0.2f)
+	{
+		if (effect_count < 18)
+		{
+			effect_count++;
+		}
+		else
+		{
+			effect_count = 0;
+		}
+
+		effect_flame = 0.0f;
+	}
+
 	// アニメーションの更新
 	Anim_flame += delta_second;
 
@@ -336,7 +395,7 @@ void E_Tank::AnimationControl(float delta_second)
 		}
 
 		// アニメーション開始時間の初期化
-		Anim_flame = 0;
+		Anim_flame = 0.0f;
 	}
 }
 

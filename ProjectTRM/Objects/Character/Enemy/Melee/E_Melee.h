@@ -13,6 +13,13 @@ private:
 	float damage_rate;		// 持続ダメージの頻度
 	float anim_rate;		// アニメーションの早さ
 	float speed;			// 歩く速さ
+	bool old_light;			// 前回のライトフラグ
+
+	// エフェクト
+	int effect;
+	std::vector<int> effect_image;
+	float effect_flame;		// エフェクトアニメーションの早さ
+	float effect_count;		// エフェクトアニメーションのカウント
 
 public:
 	/// <summary>
