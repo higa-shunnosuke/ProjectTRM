@@ -251,6 +251,7 @@ void P_Melee::HPControl(int Damage)
 // UŒ‚ˆ—
 void P_Melee::Attack(GameObject* hit_object)
 {
+	PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
 	hit_object->HPControl(Damage);
 	attack_flame = 2.0f;
 }
