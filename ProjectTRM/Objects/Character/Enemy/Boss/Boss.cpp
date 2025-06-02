@@ -3,7 +3,16 @@
 
 // コンストラクタ
 Boss::Boss() :
-	Damage()
+	anim_max_count(),
+	recovery_time(),
+	damage_rate(),
+	anim_rate(),
+	effect_flame(),
+	effect(),
+	effect_count(),
+	speed(),
+	Damage(),
+	old_light(false)
 {
 
 }
@@ -17,6 +26,11 @@ Boss::~Boss()
 // 初期化処理
 void Boss::Initialize()
 {
+	// 画像の読み込み
+	ResourceManager* rm = ResourceManager::GetInstance();
+	effect_image = rm->GetImages("Resource/Images/Effect/Smoke-Sheet.png", 19, 4, 5, 80, 80);
+	effect = effect_image[0];
+
 	is_mobility = true;
 	is_aggressive = true;
 
@@ -38,18 +52,31 @@ void Boss::Initialize()
 	// HP初期化
 	HP = 800;
 
-	alpha = MAX_ALPHA;
+	// スピードの初期化
+	speed = 20.0f;
+
+	alpha = 240;
 	add = -ALPHA_ADD;
 }
 
 // 更新処理
 void Boss::Update(float delta_second)
 {
+	// HPが０になると終了処理
+	if (HP <= 0)
+	{
+		now_state = State::Death;
+	}
+
 	// 持続ダメージを与える
-	if (in_light == true && anime_time >= 0.1f)
+	if (in_light == true && damage_rate >= 1.0f)
 	{
 		HPControl(1);
-		anime_time = 0;
+		damage_rate = 0;
+	}
+	else
+	{
+		damage_rate += delta_second;
 	}
 
 	// 移動処理
@@ -66,47 +93,73 @@ void Boss::Update(float delta_second)
 	// アニメーション管理処理
 	AnimationControl(delta_second);
 
-	// 状態更新処理
-	old_state = now_state;
-
-	// HPが０になると終了処理
-	if (HP <= 0)
+	// エフェクトの透明化処理
+	if (old_light == false)
 	{
-		Finalize();
+		if (alpha < 200)
+		{
+			alpha += 1;
+		}
+		else
+		{
+			alpha = 200;
+			old_light = in_light;
+		}
+	}
+	else if (old_light == true)
+	{
+		if (alpha > 0)
+		{
+			alpha -= 2;
+		}
+		else
+		{
+			alpha = 0;
+			old_light = in_light;
+		}
 	}
 }
 
 // 描画処理
 void Boss::Draw(const Vector2D camera_pos) const
 {
+	// 画像のずれ
+	Vector2D offset;
+	offset.x = 30.0f;
+	offset.y = -30.0f;
+
 	// カメラ座標をもとに描画位置を計算
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
 	// 敵近接の描画
-	DrawRotaGraphF(position.x, position.y, 0.2, 0.0, image, TRUE, flip_flag);
+	DrawRotaGraphF(position.x + offset.x, position.y + offset.y,
+		3.0, 0.0, image, TRUE, flip_flag);
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+	DrawRotaGraphF(position.x, position.y - 70.0f,
+		3.0, 0.0, effect, TRUE, flip_flag);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	if (ProjectConfig::DEBUG)
-	{	//残りHPの表示
-		if (in_light == true)
-		{
-			DrawFormatString((int)position.x, (int)(position.y - 40.0f), 0xffffff, "%d", HP);
+	{
+		int color;
+		if (in_light == true) {
+			color = 0xffffff;
 		}
-		else
-		{
-			DrawFormatString((int)position.x, (int)(position.y - 40.0f), 0xff0000, "%d", HP);
+		else {
+			color = 0xff0000;
 		}
-
+		//残りHPの表示
+		DrawFormatString((int)position.x, (int)(position.y - 40.0f), color, "%d", HP);
 		// 中心を表示
 		DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
 		// 当たり判定表示
-		/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-			(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff00a0, TRUE);*/
 		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
-			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0x0000ff, FALSE);
+			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0xff0000, FALSE);
 		// 攻撃範囲を表示
 		DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
-			(int)(position.x + collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
+			(int)(position.x + collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0xff0000, FALSE);
 	}
 }
 
@@ -141,7 +194,7 @@ void Boss::OnAreaDetection(GameObject* hit_object)
 		else if (now_state == State::Idle)
 		{
 			// 待機時間が終わったら攻撃状態にする
-			if (recovery_time >= 1.0f)
+			if (recovery_time >= 6.0f)
 			{
 				now_state = State::Attack;
 			}
@@ -149,10 +202,14 @@ void Boss::OnAreaDetection(GameObject* hit_object)
 		// 攻撃状態なら攻撃する
 		else if (now_state == State::Attack)
 		{
-			if (Anim_count == 3)
+			if (Anim_count == anim_max_count)
 			{
 				// 攻撃処理
 				Attack(hit_object);
+
+				// 硬直開始
+				now_state = State::Idle;
+				recovery_time = 0;
 			}
 		}
 	}
@@ -161,17 +218,8 @@ void Boss::OnAreaDetection(GameObject* hit_object)
 // 攻撃範囲通知処理
 void Boss::NoHit()
 {
-	// 待機状態なら待機する
-	if (now_state == State::Idle)
-	{
-		// 待機時間が終わったら移動状態にする
-		if (recovery_time >= 1.0f)
-		{
-			now_state = State::Move;
-		}
-	}
-	// 攻撃状態でなければ移動状態にする
-	else if (now_state != State::Attack)
+	// 移動状態にする
+	if (now_state != State::Death && now_state != State::Attack)
 	{
 		now_state = State::Move;
 	}
@@ -181,12 +229,16 @@ void Boss::NoHit()
 void Boss::InLightRange()
 {
 	in_light = true;
+	Damage = 3;
+	speed = 10.0f;
 }
 
 // ライト範囲通知処理
 void Boss::OutLightRange()
 {
 	in_light = false;
+	Damage = 5;
+	speed = 20.0f;
 }
 
 // HP管理処理
@@ -195,7 +247,7 @@ void Boss::HPControl(int Damage)
 	// ダメージ軽減
 	if (!in_light)
 	{
-		Damage = 0;
+		Damage = 1;
 	}
 
 	// ダメージ反映
@@ -217,10 +269,10 @@ void Boss::Attack(GameObject* hit_object)
 void Boss::Movement(float delta_second)
 {
 	// 右向きに移動させる
-	velocity.x = 1.0f;
+	velocity.x = speed;
 
 	// 移動の実行
-	location += velocity * 10 * delta_second;
+	location += velocity * delta_second;
 }
 
 // アニメーション制御処理
@@ -233,66 +285,99 @@ void Boss::AnimationControl(float delta_second)
 
 		// 画像の読み込み
 		ResourceManager* rm = ResourceManager::GetInstance();
-		int anime = NULL;
 
 		// 各状態のアニメーション画像に差し替え
 		switch (now_state)
 		{
 		case State::Idle:
-			animation = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Idol.png", 1, 1, 1, 1024, 1536);
+			animation = rm->GetImages("Resource/Images/Enemy/Tank/E_Tank_Idle.png", 4, 4, 1, 100, 75);
+			image = animation[Anim_count];
+			anim_max_count = 3;
+			anim_rate = 0.3f;
 			break;
 		case State::Move:
-			animation = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Back.png", 1, 1, 1, 1024,1024);
+			animation = rm->GetImages("Resource/Images/Enemy/Tank/E_Tank_Walk.png", 6, 6, 1, 100, 75);
+			image = animation[Anim_count];
+			anim_max_count = 5;
+			anim_rate = 0.1f;
 			break;
 		case State::Attack:
-			animation = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Attack_1.png", 1, 1, 1, 1024, 1024);
-			anime = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Attack_2.png", 1, 1, 1, 1024, 1024)[0];
-			animation.push_back(anime);
-			anime = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Attack_3.png", 1, 1, 1, 1024, 1024)[0];
-			animation.push_back(anime);
-			anime = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Idol.png", 1, 1, 1, 1024, 1536)[0];
-			animation.push_back(anime);
+			animation = rm->GetImages("Resource/Images/Enemy/Tank/E_Tank_Attack.png", 8, 8, 1, 100, 75);
 			image = animation[Anim_count];
+			anim_max_count = 7;
+			anim_rate = 0.1f;
 			break;
 		case State::Damage:
 			break;
 		case State::Death:
+			animation = rm->GetImages("Resource/Images/Enemy/Tank/E_Tank_Dead.png", 4, 4, 1, 100, 75);
+			image = animation[Anim_count];
+			anim_max_count = 3;
+			anim_rate = 0.2f;
 			break;
 		}
 	}
+
+	// 状態更新処理
+	old_state = now_state;
 
 	// アニメーションの実行
 	switch (now_state)
 	{
 	case State::Idle:
-		image = animation[0];
+		image = animation[Anim_count];
 		break;
 	case State::Move:
-		image = animation[0];
+		image = animation[Anim_count];
 		break;
 	case State::Attack:
 		image = animation[Anim_count];
-		// 硬直開始
-		if (Anim_count == 3)
-		{
-			now_state = State::Idle;
-			recovery_time = 0;
-		}
-		break;
-	case State::Damage:
 		break;
 	case State::Death:
+		image = animation[Anim_count];
+		// 硬直開始
+		if (Anim_count == anim_max_count)
+		{
+			Finalize();
+		}
 		break;
 	}
 
+	// エフェクトのアニメーションの実行
+	effect = effect_image[effect_count];
+
+	// エフェクトのアニメーションの更新
+	effect_flame += delta_second;
+
+	if (effect_flame >= 0.2f)
+	{
+		if (effect_count < 18)
+		{
+			effect_count++;
+		}
+		else
+		{
+			effect_count = 0;
+		}
+
+		effect_flame = 0.0f;
+	}
+
 	// アニメーションの更新
-	anime_time += delta_second;
+	Anim_flame += delta_second;
+
+	// 光に入っていたらアニメーションを遅くする
+	float delay = 1.0f;
+	if (in_light == true && (now_state != State::Death && now_state != State::Attack))
+	{
+		delay = 2.0f;
+	}
 
 	// アニメーション間隔
-	if (anime_time >= 0.1f)
+	if (Anim_flame >= anim_rate * delay)
 	{
 		// 次のアニメーションに進める
-		if (Anim_count < 3)
+		if (Anim_count < anim_max_count)
 		{
 			Anim_count++;
 		}
@@ -301,11 +386,8 @@ void Boss::AnimationControl(float delta_second)
 			Anim_count = 0;
 		}
 
-		if (in_light == false)
-		{
-			// アニメーション開始時間の初期化
-			anime_time = 0;
-		}
+		// アニメーション開始時間の初期化
+		Anim_flame = 0.0f;
 	}
 }
 // エフェクト制御処理

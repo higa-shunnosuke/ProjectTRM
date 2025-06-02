@@ -6,10 +6,20 @@
 class Boss :public Character
 {
 private:
-	int Damage;	//ダメージ
-	float anime_time;		// アニメーション時間
+	static size_t count;
+	int anim_max_count;		// アニメーション画像の枚数
 	float recovery_time;	// 硬直時間
+	float damage_rate;		// 持続ダメージの頻度
+	float anim_rate;		// アニメーションの早さ
 	float speed;			// 歩く速さ
+	int Damage;				// ダメージ
+	bool old_light;			// 前回のライトフラグ
+
+	// エフェクト
+	int effect;
+	std::vector<int> effect_image;
+	float effect_flame;		// エフェクトアニメーションの早さ
+	int effect_count;		// エフェクトアニメーションのカウント
 
 public:
 	//コンストラクタ
