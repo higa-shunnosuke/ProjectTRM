@@ -81,6 +81,7 @@ void InGame::Initialize()
 	bgmHandle[0] = rm->GetSounds("Resource/Sounds/Ingame/BGM/Stage1.mp3");
 	bgmHandle[1] = rm->GetSounds("Resource/Sounds/Ingame/BGM/Stage2.mp3");
 	bgmHandle[2] = rm->GetSounds("Resource/Sounds/Ingame/BGM/Stage3.mp3");
+	bgmHandle[3] = rm->GetSounds("Resource/Sounds/Result/Win_BGM.mp3");
 
 	// ライトマップの初期化
 	LightMapManager* light_map = LightMapManager::GetInstance();
@@ -243,6 +244,11 @@ eSceneType InGame::Update(const float& delta_second)
 		}
 		else
 		{
+			if (!CheckSoundMem(bgmHandle[3]))
+			{
+				ChangeVolumeSoundMem(100, bgmHandle[3]);
+				PlaySoundMem(bgmHandle[3], DX_PLAYTYPE_BACK);
+			}
 			IsPlayerWin(true);
 			state = GameState::BOSS_DEAD;
 		}

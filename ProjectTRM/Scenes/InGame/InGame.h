@@ -43,7 +43,7 @@ private:
 	Oracle*		player;				// 巫女のポインタ
 	Heretic*	enemy;				// 異端者のポインタ
 	int			unit_ui[4];			// ユニット選択UIの画像
-	int bgmHandle[3];				// BGM
+	int bgmHandle[4];				// BGM
 
 public:
 	// コンストラクタ

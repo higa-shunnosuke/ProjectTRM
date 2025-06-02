@@ -23,20 +23,20 @@ void Result::Initialize()
 	bgmHandle[0] = rm->GetSounds("Resource/Sounds/Result/Lost.mp3");
 	bgmHandle[1] = rm->GetSounds("Resource/Sounds/Result/Loose_BGM.mp3");
 	bgmHandle[2] = rm->GetSounds("Resource/Sounds/Result/Win_BGM.mp3");
-	bgmHandle[3] = rm->GetSounds("Resource/Sounds/Result/Win_BGM.mp3");
+	bgmHandle[3] = rm->GetSounds("Resource/Sounds/Result/Wining.mp3");
 
 	if (win_flg)
 	{
-		if (bgmHandle[2] == -1)
+		if (bgmHandle[3] == -1)
 		{
 			MessageBoxA(NULL, "BGM1の読み込みに失敗しました", "エラー", MB_OK);
 		}
 		else
 		{
 			// 音量設定
-			ChangeVolumeSoundMem(100, bgmHandle[2]);
+			ChangeVolumeSoundMem(150, bgmHandle[3]);
 			// BGM再生
-			if (PlaySoundMem(bgmHandle[2], DX_PLAYTYPE_BACK) == -1)
+			if (PlaySoundMem(bgmHandle[3], DX_PLAYTYPE_BACK) == -1)
 			{
 				MessageBoxA(NULL, "BGM1の再生に失敗しました", "エラー", MB_OK);
 			}
