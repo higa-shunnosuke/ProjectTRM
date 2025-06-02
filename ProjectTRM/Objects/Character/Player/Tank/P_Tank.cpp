@@ -288,6 +288,7 @@ void P_Tank::AnimationControl(float delta_second)
 			}
 			break;
 		case State::Damage:
+			PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
 			break;
 		case State::Death:
 			animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Down.png", 3, 3, 1, 32, 32);
@@ -428,6 +429,8 @@ void P_Tank::SoundControl()
 		case State::Attack:
 			sounds = rm->GetSounds("Resource/Sounds/UnitSE/Tank/Tank_Attack.mp3");
 			break;
+		case State::Damage:
+			sounds = rm->GetSounds("Resource/Sounds/UnitSE/damage02.wav");
 		default:
 			break;
 		}
