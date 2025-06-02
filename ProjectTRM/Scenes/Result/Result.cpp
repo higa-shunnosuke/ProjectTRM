@@ -46,16 +46,16 @@ void Result::Initialize()
 	{
 		if (bgmHandle[1] == -1)
 		{
-			MessageBoxA(NULL, "BGM1の読み込みに失敗しました", "エラー", MB_OK);
+			MessageBoxA(NULL, "BGM2の読み込みに失敗しました", "エラー", MB_OK);
 		}
 		else
 		{
 			// 音量設定
-			ChangeVolumeSoundMem(100, bgmHandle[1]);
+			ChangeVolumeSoundMem(150, bgmHandle[1]);
 			// BGM再生
 			if (PlaySoundMem(bgmHandle[1], DX_PLAYTYPE_BACK) == -1)
 			{
-				MessageBoxA(NULL, "BGM1の再生に失敗しました", "エラー", MB_OK);
+				MessageBoxA(NULL, "BGM2の再生に失敗しました", "エラー", MB_OK);
 			}
 		}
 	}
@@ -328,12 +328,16 @@ void Result::Draw() const
 // 終了処理
 void Result::Finalize()
 {
-	for (int i = 0; i < 4; i++)
+	
+	if (win_flg)
 	{
-		// BGMの削除
-		DeleteSoundMem(bgmHandle[i]);
+		StopSoundMem(bgmHandle[2]);
 	}
-
+	else
+	{
+		StopSoundMem(bgmHandle[1]);
+	}
+	
 	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();
 }

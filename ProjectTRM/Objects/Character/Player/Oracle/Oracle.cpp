@@ -46,9 +46,12 @@ void Oracle::Update(float delta_second)
 {
 
 
-	if (CheckHitKey(KEY_INPUT_6))
+	if (ProjectConfig::DEBUG)
 	{
-		HP--;
+		if (CheckHitKey(KEY_INPUT_6))
+		{
+			HPControl(1);
+		}
 	}
 
 	/*if (summon_flag == true)
