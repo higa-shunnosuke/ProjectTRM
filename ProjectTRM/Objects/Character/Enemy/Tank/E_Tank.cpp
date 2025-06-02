@@ -17,9 +17,10 @@ E_Tank::E_Tank() :
 	damage_rate(),
 	anim_rate(),
 	effect_flame(),
+	effect(),
+	effect_count(),
 	speed(),
 	Damage(),
-	effect(),
 	old_light(false)
 {
 	count++;

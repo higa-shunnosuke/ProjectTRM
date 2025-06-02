@@ -13,7 +13,7 @@ protected:
 	Collision		collision;		// 当たり判定情報
 	int				image;			// 画像情報
 	int				z_layer;		// レイヤー情報
-	int				HP;				// キャラクターのHP
+	float			HP;				// キャラクターのHP
 	bool			is_mobility;	// 可動性
 	bool			is_aggressive;	// 攻撃性
 	bool			in_light;		// ライトの範囲内にいるか
