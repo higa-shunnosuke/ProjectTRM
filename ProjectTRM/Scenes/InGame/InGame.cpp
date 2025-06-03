@@ -50,9 +50,6 @@ void InGame::Initialize()
 	// 親クラスの初期化処理を呼び出す
 	__super::Initialize();
 
-
-
-
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 	unit_ui[0] = rm->GetImages("Resource/Images/Unit/Tank/Tank_Cost.png")[0];
@@ -121,19 +118,12 @@ void InGame::Initialize()
 		enemy = object->CreateObject<Heretic>(Vector2D(100, 630));
 		enemy->SetInGamePoint(this);
 
-		if (bgmHandle[0] == -1)
+		// 音量設定
+		ChangeVolumeSoundMem(100, bgmHandle[0]);
+		// BGM再生
+		if (PlaySoundMem(bgmHandle[0], DX_PLAYTYPE_LOOP) == -1)
 		{
-			MessageBoxA(NULL, "BGM1の読み込みに失敗しました", "エラー", MB_OK);
-		}
-		else 
-		{
-			// 音量設定
-			ChangeVolumeSoundMem(100, bgmHandle[0]);
-			// BGM再生
-			if (PlaySoundMem(bgmHandle[0], DX_PLAYTYPE_LOOP) == -1)
-			{
-				MessageBoxA(NULL, "BGM1の再生に失敗しました", "エラー", MB_OK);
-			}
+			MessageBoxA(NULL, "BGM1の再生に失敗しました", "エラー", MB_OK);
 		}
 			break;
 	case 2:
@@ -143,19 +133,12 @@ void InGame::Initialize()
 		enemy = object->CreateObject<Heretic>(Vector2D(30, 630));
 		enemy->SetInGamePoint(this);
 
-		if (bgmHandle[1] == -1)
+		// 音量設定
+		ChangeVolumeSoundMem(100, bgmHandle[1]);
+		// BGM再生
+		if (PlaySoundMem(bgmHandle[1], DX_PLAYTYPE_LOOP) == -1)
 		{
-			MessageBoxA(NULL, "BGM2の読み込みに失敗しました", "エラー", MB_OK);
-		}
-		else
-		{
-			// 音量設定
-			ChangeVolumeSoundMem(100, bgmHandle[1]);
-			// BGM再生
-			if (PlaySoundMem(bgmHandle[1], DX_PLAYTYPE_LOOP) == -1)
-			{
-				MessageBoxA(NULL, "BGM2の再生に失敗しました", "エラー", MB_OK);
-			}
+			MessageBoxA(NULL, "BGM2の再生に失敗しました", "エラー", MB_OK);
 		}
 			break;
 	default:
@@ -165,21 +148,14 @@ void InGame::Initialize()
 		enemy = object->CreateObject<Heretic>(Vector2D(30, 630));
 		enemy->SetInGamePoint(this);
 
-		if (bgmHandle[2] == -1)
+		// 音量設定
+		ChangeVolumeSoundMem(100, bgmHandle[2]);
+		// BGM再生
+		if (PlaySoundMem(bgmHandle[2], DX_PLAYTYPE_LOOP) == -1)
 		{
-			MessageBoxA(NULL, "BGM3の読み込みに失敗しました", "エラー", MB_OK);
+			MessageBoxA(NULL, "BGM3の再生に失敗しました", "エラー", MB_OK);
 		}
-		else 
-		{
-			// 音量設定
-			ChangeVolumeSoundMem(100, bgmHandle[2]);
-			// BGM再生
-			if (PlaySoundMem(bgmHandle[2], DX_PLAYTYPE_LOOP) == -1)
-			{
-				MessageBoxA(NULL, "BGM3の再生に失敗しました", "エラー", MB_OK);
-			}
-			break;
-		}
+		break;
 	}
 	
 	for (int i = 1; i < 3; i++)
@@ -194,13 +170,6 @@ void InGame::Initialize()
 	cost = 0;
 	prev_time = std::chrono::steady_clock::now();
 
-	//// クールダウン / 召喚フラグの初期化
-	//for (int i = 0; i < 3; i++)
-	//{
-	//	cooldown[i] = std::chrono::seconds((i+1) * 2);
-	//	summon_flag[i] = false;
-	//}
-	
 }
 
 // 更新処理
@@ -254,7 +223,6 @@ eSceneType InGame::Update(const float& delta_second)
 		}
 	}
 
-
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
 
@@ -282,17 +250,12 @@ eSceneType InGame::Update(const float& delta_second)
 		// コスト管理処理
 		RegenerateCost();
 
-		//// クールダウン管理処理
-		//CooldownManagement(delta_second);
-
-
 		if (old_camerapos.x != camera->GetCameraPos().x)
 		{
 			move_camera = old_camerapos.x - camera->GetCameraPos().x;
 			old_camerapos = camera->GetCameraPos();
 
 		}
-
 
 		// 親クラスの更新処理を呼び出す
 		return __super::Update(delta_second);
@@ -524,6 +487,15 @@ void InGame::Draw() const
 		break;
 	}
 	}
+	Vector2D P_position = player->GetLocation();
+	P_position.x -= camera->GetCameraPos().x - D_WIN_MAX_X / 2;
+	Vector2D E_position = enemy->GetLocation();
+	E_position.x -= camera->GetCameraPos().x - D_WIN_MAX_X / 2;
+	// 巫女HP表示
+	DrawBoxAA(P_position.x - 50.0f, P_position.y - 150.0f, P_position.x + (50.0f - (100 - player->GetHP())), P_position.y - 135.0f, 0xFFFFFF, true);
+	// 異端者HP表示
+	DrawBoxAA(E_position.x - 50.0f, E_position.y - 150.0f, E_position.x + (50.0f - (100 - ((double)enemy->GetHP() / 500) * 100)), E_position.y - 135.0f, 0xFFFFFF, true);
+
 }
 
 // 終了処理
@@ -692,44 +664,6 @@ void InGame::RegenerateCost()
 	{
 
 		prev_time = std::chrono::steady_clock::now();
-	}
-}
-
-// クールダウン処理
-void InGame::CooldownManagement()
-{
-	auto now_time = std::chrono::steady_clock::now();
-
-	for (int i = 0; i < 3; i++)
-	{
-		if (summon_flag[i] == false)
-		{
-			continue;
-		}
-		else
-		{
-			switch (i)
-			{
-			case 0:
-				if (now_time - summon_time[0] >= cooldown[0])
-				{
-					summon_flag[0] = false;
-				}
-				break;
-			case 1:
-				if (now_time - summon_time[1] >= cooldown[1])
-				{
-					summon_flag[1] = false;
-				}
-				break;
-			case 2:
-				if (now_time - summon_time[2] >= cooldown[2])
-				{
-					summon_flag[2] = false;
-				}
-				break;
-			}
-		}
 	}
 }
 

@@ -106,11 +106,6 @@ private:
 	///	コスト管理処理
 	/// </summary>
 	void RegenerateCost();
-	
-	/// <summary>
-	/// クールダウン管理処理
-	/// </summary>
-	void CooldownManagement();
 
 	/// <summary>
 	/// 画像読込み処理
