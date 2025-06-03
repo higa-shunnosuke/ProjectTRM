@@ -21,7 +21,6 @@ void StageSelect::Initialize()
 	// ‰æ‘œ‚Ì“Ç‚Ýž‚Ý
 	ResourceManager* rm = ResourceManager::GetInstance();
 
-
 	Stage_Image[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
 	Stage_Image[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
 	Stage_Image[2] = rm->GetImages("Resource/Images/BackGround/RedMoon.png")[0];

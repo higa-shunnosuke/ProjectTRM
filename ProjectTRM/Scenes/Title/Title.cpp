@@ -17,7 +17,13 @@ void Title::Initialize()
 {
 	// 親クラスの初期化処理を呼び出す
 	__super::Initialize();
-	
+
+	// 画像の読み込み
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+
+	BackGroundImage = rm->GetImages("Resource/Images/BackGround/Title.png")[0];
+
 	Anim_flame = 0;
 	Anim_count = 0;
 }
@@ -27,6 +33,7 @@ eSceneType Title::Update(const float& delta_second)
 {
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
+
 
 	// インゲームシーンに遷移する
 	if (input->GetKeyState(KEY_INPUT_RETURN)==eInputState::Pressed)
@@ -62,6 +69,10 @@ eSceneType Title::Update(const float& delta_second)
 // 描画処理
 void Title::Draw() const
 {
+
+	DrawGraph(0, 0, BackGroundImage, 0);
+
+	/*
 	SetFontSize(120);
 	DrawFormatString(500, 150, 0xff5500, "Project\n -TRM-");
 	SetFontSize(60);
@@ -79,6 +90,7 @@ void Title::Draw() const
 		SetFontSize(32);
 		DrawFormatString(100, 300, 0xffffff, "Enterを押してね!");
 	}
+	*/
 
 	// 親クラスの描画処理を呼び出す
 	__super::Draw();

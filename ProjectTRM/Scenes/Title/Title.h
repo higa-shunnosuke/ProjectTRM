@@ -10,6 +10,8 @@ private:
 	int		Anim_count;
 	float	Anim_flame;
 
+	int BackGroundImage;
+
 public:
 	// コンストラクタ
 	Title();
