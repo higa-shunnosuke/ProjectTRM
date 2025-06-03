@@ -97,36 +97,16 @@ void E_Tank::Update(float delta_second)
 	else if (now_state == State::Idle)
 	{
 		recovery_time += delta_second;
+
+		// 待機時間が終わったら攻撃状態にする
+		if (recovery_time >= 2.0f)
+		{
+			now_state = State::Attack;
+		}
 	}
 	
 	// アニメーション管理処理
 	AnimationControl(delta_second);
-
-	// エフェクトの透明化処理
-	if (old_light == false)
-	{
-		if (alpha < 200)
-		{
-			alpha += 1;
-		}
-		else
-		{
-			alpha = 200;
-			old_light = in_light;
-		}
-	}
-	else if(old_light == true)
-	{
-		if (alpha > 0)
-		{
-			alpha -= 2;
-		}
-		else
-		{
-			alpha = 0;
-			old_light = in_light;
-		}
-	}
 }
 
 // 描画処理
@@ -198,15 +178,6 @@ void E_Tank::OnAreaDetection(GameObject* hit_object)
 		if (now_state == State::Move)
 		{
 			now_state = State::Attack;
-		}
-		// 待機状態なら待機する
-		else if (now_state == State::Idle)
-		{
-			// 待機時間が終わったら攻撃状態にする
-			if (recovery_time >= 4.0f)
-			{
-				now_state = State::Attack;
-			}
 		}
 		// 攻撃状態なら攻撃する
 		else if (now_state == State::Attack)
@@ -352,10 +323,7 @@ void E_Tank::AnimationControl(float delta_second)
 		break;
 	}
 
-	// エフェクトのアニメーションの実行
-	effect = effect_image[effect_count];
-
-	// エフェクトのアニメーションの更新
+	// エフェクトの更新
 	effect_flame += delta_second;
 
 	if (effect_flame >= 0.2f)
@@ -369,8 +337,38 @@ void E_Tank::AnimationControl(float delta_second)
 			effect_count = 0;
 		}
 
+		// エフェクトの透明化処理
+		if (old_light == false)
+		{
+			if (alpha < 200)
+			{
+				alpha += 40;
+			}
+			else
+			{
+				alpha = 200;
+			}
+		}
+		else if (old_light == true)
+		{
+			if (alpha > 0)
+			{
+				alpha -= 40;
+			}
+			else
+			{
+				alpha = 0;
+			}
+		}
+
 		effect_flame = 0.0f;
 	}
+
+	// ライトフラグの更新
+	old_light = in_light;
+
+	// エフェクトのアニメーション
+	effect = effect_image[Anim_count];
 
 	// アニメーションの更新
 	Anim_flame += delta_second;

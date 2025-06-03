@@ -37,11 +37,11 @@ void Boss::Initialize()
 	collision.is_blocking = true;
 	collision.object_type = eObjectType::Enemy;
 	collision.hit_object_type.push_back(eObjectType::Player);
-	collision.collision_size = Vector2D(200.0f, 200.0f);
-	collision.hitbox_size = Vector2D(300.0f, 300.0f);
+	collision.collision_size = Vector2D(180.0f, 180.0f);
+	collision.hitbox_size = Vector2D(280.0f, 300.0f);
 	z_layer = 2;
 
-	flip_flag = false;
+	flip_flag = true;
 
 	// 最初の状態を移動にする
 	now_state = State::Move;
@@ -88,36 +88,16 @@ void Boss::Update(float delta_second)
 	else if (now_state == State::Idle)
 	{
 		recovery_time += delta_second;
+
+		// 待機時間が終わったら攻撃状態にする
+		if (recovery_time >= 4.0f)
+		{
+			now_state = State::Attack;
+		}
 	}
 
 	// アニメーション管理処理
 	AnimationControl(delta_second);
-
-	// エフェクトの透明化処理
-	if (old_light == false)
-	{
-		if (alpha < 200)
-		{
-			alpha += 1;
-		}
-		else
-		{
-			alpha = 200;
-			old_light = in_light;
-		}
-	}
-	else if (old_light == true)
-	{
-		if (alpha > 0)
-		{
-			alpha -= 2;
-		}
-		else
-		{
-			alpha = 0;
-			old_light = in_light;
-		}
-	}
 }
 
 // 描画処理
@@ -125,8 +105,8 @@ void Boss::Draw(const Vector2D camera_pos) const
 {
 	// 画像のずれ
 	Vector2D offset;
-	offset.x = 30.0f;
-	offset.y = -30.0f;
+	offset.x = 100.0f;
+	offset.y = -50.0f;
 
 	// カメラ座標をもとに描画位置を計算
 	Vector2D position = this->GetLocation();
@@ -137,8 +117,8 @@ void Boss::Draw(const Vector2D camera_pos) const
 		3.0, 0.0, image, TRUE, flip_flag);
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(position.x, position.y - 70.0f,
-		3.0, 0.0, effect, TRUE, flip_flag);
+	DrawRotaGraphF(position.x, position.y - 80.0f,
+		5.0, 0.0, effect, TRUE, flip_flag);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	if (ProjectConfig::DEBUG)
@@ -151,7 +131,7 @@ void Boss::Draw(const Vector2D camera_pos) const
 			color = 0xff0000;
 		}
 		//残りHPの表示
-		DrawFormatString((int)position.x, (int)(position.y - 40.0f), color, "%d", HP);
+		DrawFormatString((int)position.x, (int)(position.y - 40.0f), color, "%.1f", HP);
 		// 中心を表示
 		DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
 		// 当たり判定表示
@@ -189,15 +169,6 @@ void Boss::OnAreaDetection(GameObject* hit_object)
 		if (now_state == State::Move)
 		{
 			now_state = State::Attack;
-		}
-		// 待機状態なら待機する
-		else if (now_state == State::Idle)
-		{
-			// 待機時間が終わったら攻撃状態にする
-			if (recovery_time >= 6.0f)
-			{
-				now_state = State::Attack;
-			}
 		}
 		// 攻撃状態なら攻撃する
 		else if (now_state == State::Attack)
@@ -290,30 +261,30 @@ void Boss::AnimationControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Idle:
-			animation = rm->GetImages("Resource/Images/Enemy/Tank/E_Tank_Idle.png", 4, 4, 1, 100, 75);
+			animation = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Idle.png", 8, 8, 1, 140, 93);
 			image = animation[Anim_count];
 			anim_max_count = 3;
 			anim_rate = 0.3f;
 			break;
 		case State::Move:
-			animation = rm->GetImages("Resource/Images/Enemy/Tank/E_Tank_Walk.png", 6, 6, 1, 100, 75);
+			animation = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Walk.png", 8, 8, 1, 140, 93);
 			image = animation[Anim_count];
 			anim_max_count = 5;
-			anim_rate = 0.1f;
+			anim_rate = 0.3f;
 			break;
 		case State::Attack:
-			animation = rm->GetImages("Resource/Images/Enemy/Tank/E_Tank_Attack.png", 8, 8, 1, 100, 75);
+			animation = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Attack.png", 10, 10, 1, 140, 93);
 			image = animation[Anim_count];
 			anim_max_count = 7;
-			anim_rate = 0.1f;
+			anim_rate = 0.15f;
 			break;
 		case State::Damage:
 			break;
 		case State::Death:
-			animation = rm->GetImages("Resource/Images/Enemy/Tank/E_Tank_Dead.png", 4, 4, 1, 100, 75);
+			animation = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Death.png", 10, 10, 1, 140, 93);
 			image = animation[Anim_count];
 			anim_max_count = 3;
-			anim_rate = 0.2f;
+			anim_rate = 0.3f;
 			break;
 		}
 	}
@@ -343,10 +314,7 @@ void Boss::AnimationControl(float delta_second)
 		break;
 	}
 
-	// エフェクトのアニメーションの実行
-	effect = effect_image[effect_count];
-
-	// エフェクトのアニメーションの更新
+	// エフェクトの更新
 	effect_flame += delta_second;
 
 	if (effect_flame >= 0.2f)
@@ -360,21 +328,44 @@ void Boss::AnimationControl(float delta_second)
 			effect_count = 0;
 		}
 
+		// エフェクトの透明化処理
+		if (old_light == false)
+		{
+			if (alpha < 200)
+			{
+				alpha += 40;
+			}
+			else
+			{
+				alpha = 200;
+			}
+		}
+		else if (old_light == true)
+		{
+			if (alpha > 0)
+			{
+				alpha -= 40;
+			}
+			else
+			{
+				alpha = 0;
+			}
+		}
+
 		effect_flame = 0.0f;
 	}
+
+	// ライトフラグの更新
+	old_light = in_light;
+
+	// エフェクトのアニメーション
+	effect = effect_image[Anim_count];
 
 	// アニメーションの更新
 	Anim_flame += delta_second;
 
-	// 光に入っていたらアニメーションを遅くする
-	float delay = 1.0f;
-	if (in_light == true && (now_state != State::Death && now_state != State::Attack))
-	{
-		delay = 2.0f;
-	}
-
 	// アニメーション間隔
-	if (Anim_flame >= anim_rate * delay)
+	if (Anim_flame >= anim_rate)
 	{
 		// 次のアニメーションに進める
 		if (Anim_count < anim_max_count)
