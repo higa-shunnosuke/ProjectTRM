@@ -72,7 +72,7 @@ void SceneManager::Update(float delta_second)
 		}
 	}
 
-	bool is_hit = false;		// 攻撃フラグ
+	bool is_hit = false;	// 攻撃フラグ
 
 	// 攻撃判定確認処理
 	for (int i = 0; i < objects_list.size(); i++)
@@ -86,6 +86,12 @@ void SceneManager::Update(float delta_second)
 		{
 			for (int j = 0; j < objects_list.size(); j++)
 			{
+				// 自分同士の当たり判定確認処理はしない
+				if (i == j)
+				{
+					continue;
+				}
+
 				// 攻撃判定確認処理
 				if (CheckHitBox(objects_list[i], objects_list[j]) == true)
 				{
@@ -104,6 +110,7 @@ void SceneManager::Update(float delta_second)
 	// 明暗判定確認処理
 	LightMapManager* light = LightMapManager::GetInstance();
 	std::vector<GameObject*> light_list = light->GetLightsList();
+	bool in_light = false;	// ライトフラグ
 
 	for (int i = 0; i < objects_list.size(); i++)
 	{
@@ -119,38 +126,24 @@ void SceneManager::Update(float delta_second)
 			{
 				// 当たっていないことを通知する
 				objects_list[i]->OutLightRange();
+				break;
 			}
-			// 最も近いライトとの判定を確認
 			else
 			{
-				// 最短距離
-				float shortest_distance;
-				int count = 0;
-
 				for (int j = 0; j < light_list.size(); j++)
 				{
-					// ２点間の距離
-					float distance;
-
-					float dx = objects_list[i]->GetLocation().x - light_list[j]->GetLocation().x;
-					float dy = objects_list[i]->GetLocation().y - light_list[j]->GetLocation().y;
-					distance = std::sqrt(dx * dx + dy * dy);
-
-					// 最短距離の初期化
-					if (j == 0)
+					// 明暗判定確認処理
+					if (CheckLightRange(objects_list[i], light_list[j]) == true)
 					{
-						shortest_distance = distance;
-					}
-
-					// 最短距離を更新
-					if (shortest_distance > distance)
-					{
-						shortest_distance = distance;
-						count = j;
+						in_light = true;
 					}
 				}
-				// 明暗判定確認処理
-				CheckLightRange(objects_list[i], light_list[count]);
+
+				// ライトに当たっていないことを通知する
+				if (in_light != true)
+				{
+					objects_list[i]->OutLightRange();
+				}
 			}
 		}
 	}
@@ -331,12 +324,12 @@ bool SceneManager::CheckHitBox(GameObject* target, GameObject* partner)
 }
 
 // 明暗検知処理
-void SceneManager::CheckLightRange(GameObject* target, GameObject* partner)
+bool SceneManager::CheckLightRange(GameObject* target, GameObject* partner)
 {
 	// ヌルポチェック
 	if (partner == nullptr || target == nullptr)
 	{
-		return;
+		return false;
 	}
 
 	// 当たり判定情報を取得
@@ -352,10 +345,10 @@ void SceneManager::CheckLightRange(GameObject* target, GameObject* partner)
 	{
 		// 当たっていることを通知する
 		target->InLightRange();
+		return true;
 	}
 	else
 	{
-		// 当たっていないことを通知する
-		target->OutLightRange();
+		return false;
 	}
 }
