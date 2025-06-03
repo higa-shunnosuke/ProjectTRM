@@ -75,7 +75,7 @@ void InGame::Initialize()
 		SunImages[i] = rm->GetImages(Imagestring + Number + Imagepng)[0];
 	}
 
-
+	cursor = 1;
 	Click = rm->GetSounds("Resource/Sounds/InGame/Click.mp3");
 	ClickUp = rm->GetSounds("Resource/Sounds/InGame/ClickUp.mp3");
 	bgmHandle[0] = rm->GetSounds("Resource/Sounds/Ingame/BGM/Stage1.mp3");
