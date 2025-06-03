@@ -67,7 +67,8 @@ void P_Guardian::Initialize()
 // XVˆ—
 void P_Guardian::Update(float delta_second)
 {
-	Damage = BASIC_POWER + (Ingame->GetSunLevel() / 2);
+
+	Damage = BASIC_POWER + (Ingame->GetSunLevel() / 5);
 
 	if (ProjectConfig::DEBUG)
 	{
@@ -78,11 +79,11 @@ void P_Guardian::Update(float delta_second)
 		}
 	}
 
-	// ˆÚ“®ˆ—
-	Movement(delta_second);
-
 	if (now_state != State::Death)
 	{
+		// ˆÚ“®ˆ—
+		Movement(delta_second);
+
 		if (attack_flag == true)
 		{
 			if (velocity.x < 0.0f)
@@ -92,34 +93,40 @@ void P_Guardian::Update(float delta_second)
 			}
 			else
 			{
+				now_state = State::Idle;
 				attack_flame -= delta_second * (1 + (Ingame->GetSunLevel() / 10));
 			}
 			if (attack_flame <= 0.0f)
 			{
 				attack_flag = false;
+				now_state = State::Move;
 			}
+		}
+
+		dmage_flame -= delta_second;
+
+		if (dmage_flame <= 0.0f)
+		{
+			dmage_flame = 0.0f;
+			alpha = MAX_ALPHA;
+			add = -ALPHA_ADD;
+		}
+
+		if (HP <= 0)
+		{
+			now_state = State::Death;
+			add = -1;
 		}
 	}
 
-	if (HP <= 0)
-	{
-		now_state = State::Death;
-	}
-
-	AnimationControl(delta_second);
-
 	EffectControl(delta_second);
 
-	dmage_flame -= delta_second;
+	SoundControl();
 
-	if (dmage_flame <= 0.0f)
+	if (Anim_count <= 2)
 	{
-		dmage_flame = 0.0f;
-		alpha = MAX_ALPHA;
-		add = -ALPHA_ADD;
+		AnimationControl(delta_second);
 	}
-
-	old_state = now_state;
 }
 
 // •`‰æˆ—
@@ -188,10 +195,16 @@ void P_Guardian::OnAreaDetection(GameObject* hit_object)
 				}
 			}
 		}
-		else
-		{
-			velocity.x = BASIC_SPEED + ((BASIC_SPEED / 10) * (Ingame->GetSunLevel() - 1));
-		}
+	}
+}
+
+// UŒ‚”ÍˆÍ’Ê’mˆ—
+void P_Guardian::NoHit()
+{
+	// ˆÚ“®ó‘Ô‚É‚·‚é
+	if (now_state != State::Death)
+	{
+		now_state = State::Move;
 	}
 }
 
@@ -259,6 +272,7 @@ void P_Guardian::AnimationControl(float delta_second)
 		default:
 			break;
 		}
+		old_state = now_state;
 	}
 
 	Anim_flame += delta_second;
@@ -281,7 +295,7 @@ void P_Guardian::AnimationControl(float delta_second)
 		image = animation[0];
 		break;
 	case State::Move:
-
+		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 10) * (Ingame->GetSunLevel() - 1));
 		image = animation[Anim_count];
 		break;
 	case State::Attack:

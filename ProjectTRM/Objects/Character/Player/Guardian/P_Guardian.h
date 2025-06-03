@@ -57,6 +57,11 @@ public:
 	virtual void OnAreaDetection(GameObject* hit_object);
 
 	/// <summary>
+	/// 攻撃範囲通知処理
+	/// </summary>
+	virtual void NoHit() override;
+
+	/// <summary>
 	/// HP管理処理
 	/// </summary>
 	/// <param name="hit_object">ダメージ</param>
