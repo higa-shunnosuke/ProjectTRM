@@ -18,6 +18,8 @@ private:
 	int effect_alpha;
 	std::vector<int> Effect;
 	int sounds;	//音
+	Vector2D target_loc;
+
 public:
 	//コンストラクタ
 	P_Ranged();

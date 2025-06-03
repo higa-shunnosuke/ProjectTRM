@@ -68,7 +68,7 @@ void P_Ranged::Update(float delta_second)
 			HP = 0;
 		}
 	}
-	
+
 	if (now_state != State::Death)
 	{
 		// 移動処理
@@ -84,7 +84,7 @@ void P_Ranged::Update(float delta_second)
 			else
 			{
 				now_state = State::Idle;
-				attack_flame -= delta_second * ( 1 + (Ingame->GetSunLevel() / 10));
+				attack_flame -= delta_second * (1 + (Ingame->GetSunLevel() / 10));
 			}
 			if (attack_flame <= 0.0f)
 			{
@@ -108,7 +108,6 @@ void P_Ranged::Update(float delta_second)
 			add = -1;
 		}
 	}
-
 
 	EffectControl(delta_second);
 
@@ -183,6 +182,10 @@ void P_Ranged::OnHitCollision(GameObject* hit_object)
 // 攻撃範囲通知処理
 void P_Ranged::OnAreaDetection(GameObject* hit_object)
 {
+	if (target_loc.x == 0.0f || target_loc.x < hit_object->GetLocation().x - this->GetLocation().x)
+	{
+		target_loc = hit_object->GetLocation() - this->GetLocation();
+	}
 	//現在のステータスが死亡状態かどうか
 	if (now_state != State::Death)
 	{
@@ -192,6 +195,7 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 		{
 			if (hit_object->GetInLight())
 			{
+				
 				velocity.x = 0.0f;
 				if (attack_flag == false)
 				{
@@ -207,20 +211,28 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 			}
 			else
 			{
-				//２つのオブジェクトの距離を取得
-				Vector2D diff = this->GetLocation() - hit_object->GetLocation();
+				if (target_loc.x < hit_object->GetLocation().x - this->GetLocation().x)
+				{
 
-				//２つのオブジェクトの当たり判定の大きさを取得
-				Vector2D box_size = (this->collision.collision_size + hit_col.collision_size) / 2.0f;
+					//２つのオブジェクトの距離を取得
+					Vector2D diff = this->GetLocation() - hit_object->GetLocation();
+
+					//２つのオブジェクトの当たり判定の大きさを取得
+					Vector2D box_size = (this->collision.collision_size + hit_col.collision_size) / 2.0f;
 
 					// 矩形同士の当たり判定
-				if ((fabsf(diff.x) < box_size.x) && (fabsf(diff.y) < box_size.y))
-				{
-					velocity.x = 0;
-				}
-				else
-				{
-					velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
+					if ((fabsf(diff.x) < box_size.x) && (fabsf(diff.y) < box_size.y))
+					{
+						velocity.x = 0;
+						now_state = State::Idle;
+						target_loc = 0.0f;
+					}
+					else
+					{
+						velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
+						now_state = State::Move;
+						target_loc = 0.0f;
+					}
 				}
 			}
 		}
@@ -316,7 +328,7 @@ void P_Ranged::AnimationControl(float delta_second)
 		image = animation[0];
 		break;
 	case State::Move:
-
+		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 		image = animation[1 + Anim_count];
 		break;
 	case State::Attack:
@@ -438,5 +450,6 @@ void P_Ranged::Attack(GameObject* hit_object)
 	P_Projectile* obj = object->CreateObject<P_Projectile>(this->location);
 	obj->SetTargetLocation(hit_object->GetLocation());
 	obj->SetInGamePoint(Ingame);
+	target_loc = 0.0f;
 	attack_flame = 2.0f;
 }
