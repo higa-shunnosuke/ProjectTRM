@@ -319,7 +319,7 @@ void P_Tank::AnimationControl(float delta_second)
 		image = animation[0];
 		break;
 	case State::Move:
-
+		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 		image = animation[1 + Anim_count];
 		break;
 	case State::Attack:

@@ -1,23 +1,17 @@
 #pragma once
 
-#include "../../Character.h"
-#include "../../../../Utility/LightMapManager.h"
+#include "../Character.h"
+#include "../../GameObjectManager.h"
+#include "../../../Utility/LightMapManager.h"
+#include "../../../Scenes/InGame/InGame.h"
 
-#define BASIC_POWER (1)
-#define BASIC_SPEED (-4.0f)
-
-// ゲームオブジェクト基底クラス
-class P_Tank :public Character
+class UnitBase : public Character
 {
-private:
-	static size_t count;
-
-public:
-	static size_t GetCount();
-
-private:
+protected:
 	int Damage;	//ダメージ
 	int sounds;	//音
+	float basic_power;	//基礎攻撃力
+	float basic_speed;	//基礎移動速度
 	LightMapManager* light; //明り
 
 	//エフェクト類
@@ -27,53 +21,50 @@ private:
 
 public:
 	//コンストラクタ
-	P_Tank();
+	UnitBase();
 	//デストラクタ
-	virtual ~P_Tank();
+	virtual ~UnitBase();
 
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	virtual void Initialize();
+	virtual void Initialize() override;
 	/// <summary>
 	/// 更新処理
 	/// </summary>
 	/// <param name="delta_second">1フレームあたりの時間</param>
-	virtual void Update(float delta_second);
+	virtual void Update(float delta_second) override;
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	virtual void Draw(const Vector2D camera_pos) const;
+	virtual void Draw(const Vector2D camera_pos) const override;
 	/// <summary>
 	/// 終了時処理
 	/// </summary>
-	virtual void Finalize();
+	virtual void Finalize() override;
 
 public:
 	/// <summary>
 	/// 当たり判定通知処理
 	/// </summary>
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
-	virtual void OnHitCollision(GameObject* hit_object);
-
+	virtual void OnHitCollision(GameObject* hit_object) override;
 	/// <summary>
 	/// 攻撃範囲通知処理
 	/// </summary>
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
-	virtual void OnAreaDetection(GameObject* hit_object);
-
+	virtual void OnAreaDetection(GameObject* hit_object) override;
 	/// <summary>
 	/// 攻撃範囲通知処理
 	/// </summary>
 	virtual void NoHit() override;
-
 	/// <summary>
 	/// HP管理処理
 	/// </summary>
 	/// <param name="hit_object">ダメージ</param>
 	virtual void HPControl(int Damage) override;
 
-private:
+protected:
 	/// <summary>
 	/// 攻撃処理
 	/// </summary>
@@ -93,8 +84,10 @@ private:
 	/// </summary>
 	/// <param name="hit_object">1フレームあたりの時間</param>
 	virtual void EffectControl(float delta_second);
+
 	/// <summary>
 	/// SE制御処理
 	/// </summary>
 	virtual void SoundControl();
 };
+
