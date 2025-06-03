@@ -331,7 +331,7 @@ void Result::Finalize()
 	
 	if (win_flg)
 	{
-		StopSoundMem(bgmHandle[2]);
+		StopSoundMem(bgmHandle[3]);
 	}
 	else
 	{
