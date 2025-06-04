@@ -184,8 +184,9 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 {
 	if (target_loc.x == 0.0f || target_loc.x < hit_object->GetLocation().x - this->GetLocation().x)
 	{
-		target_loc = hit_object->GetLocation() - this->GetLocation();
+		target_loc.x = hit_object->GetLocation().x - this->GetLocation().x;
 	}
+	target_loc.y = hit_object->GetLocation().y;
 	//現在のステータスが死亡状態かどうか
 	if (now_state != State::Death)
 	{
@@ -193,7 +194,7 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 
 		if (hit_col.object_type == eObjectType::Enemy)
 		{
-			if (hit_object->GetInLight())
+			if (hit_object->GetInLight() || target_loc.y == 630.0f)
 			{
 				
 				velocity.x = 0.0f;
@@ -211,7 +212,7 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 			}
 			else
 			{
-				if (target_loc.x < hit_object->GetLocation().x - this->GetLocation().x)
+				if (target_loc.x <= hit_object->GetLocation().x - this->GetLocation().x)
 				{
 
 					//２つのオブジェクトの距離を取得
