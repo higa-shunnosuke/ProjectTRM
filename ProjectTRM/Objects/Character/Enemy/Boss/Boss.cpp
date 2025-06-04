@@ -55,7 +55,7 @@ void Boss::Initialize()
 	// スピードの初期化
 	speed = 20.0f;
 
-	alpha = 240;
+	alpha = 0;
 	add = -ALPHA_ADD;
 }
 

@@ -280,7 +280,6 @@ eSceneType InGame::Update(const float& delta_second)
 // 描画処理
 void InGame::Draw() const
 {
-
 	// カメラの情報取得
 	Camera* camera = Camera::GetInstance();
 	float ShowBackGround_Y = 0;
@@ -299,8 +298,6 @@ void InGame::Draw() const
 		break;
 	}
 
-
-
 	switch (state)
 	{
 	case GameState::PLAYING:
@@ -312,11 +309,11 @@ void InGame::Draw() const
 		// 光を加算合成
 		light_map->DrawLights(camera->GetCameraPos());
 
-		// 親クラスの描画処理を呼び出す
-		__super::Draw();
-
 		// ライトマップを描画
 		light_map->DrawLightMap();
+
+		// 親クラスの描画処理を呼び出す
+		__super::Draw();
 
 		// ボタンサイズ
 		const int button_width = 200;

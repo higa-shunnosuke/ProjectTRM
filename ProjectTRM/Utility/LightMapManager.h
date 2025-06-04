@@ -26,12 +26,12 @@ public:
 	{
 		// 画像の読み込み
 		ResourceManager* rm = ResourceManager::GetInstance();
-		light_graph = rm->GetImages("Resource/Images/Light/light02.png", 1, 1, 1, 1024, 1024)[0];
+		light_graph = rm->GetImages("Resource/Images/Light/light03.png", 1, 1, 1, 1024, 1024)[0];
 		
 		// ライトマップを生成
 		light_screen = MakeScreen(D_WIN_MAX_X, D_WIN_MAX_Y, TRUE);
 
-		screen_brightness = 150;
+		screen_brightness = 255;
 	}
 
 	/// <summary>
@@ -75,28 +75,32 @@ public:
 	{
 		// 描画先をライトマップに反映する
 		SetDrawScreen(light_screen);
-		// ライトマップの初期化（暗いグレーで塗る）
-		DrawBox(0, 0, 1280, 720,
-			GetColor(screen_brightness, screen_brightness, screen_brightness),
-			TRUE);
-		
-		// ライトリスト内の座標に光の画像を ALPHA 合成
-		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+		//// ライトマップの初期化（暗いグレーで塗る）
+		//DrawBox(0, 0, 1280, 720,
+		//	GetColor(screen_brightness, screen_brightness, screen_brightness),
+		//	TRUE);
+		//ライトマップの初期化（透明でクリア）
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		ClearDrawScreen();
+
+		// ライトリスト内の座標に光の画像を 加算合成
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 		for (GameObject* light :lights_list)
 		{
 			if (light != nullptr)
 			{
 				// 座標を取得
 				Vector2D light_pos = light->GetLocation();
-
 				// カメラ座標をもとに描画位置を計算
 				light_pos.x -= camera_pos.x - D_WIN_MAX_X / 2;
 				// ライトの半径を取得
 				Collision lc = light->GetCollision();
 				float radius = lc.light_size * 0.2;
 				// ライトマップ上に光を描画
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 				DrawRotaGraphF(light_pos.x, light_pos.y,
 					radius, 0.0,light_graph, TRUE,0);
+				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			}
 		}
 		// ブレンドモードを初期化
@@ -133,7 +137,7 @@ public:
 	void DrawLightMap() const
 	{
 		// ライトマップを乗算合成して描画
-		SetDrawBlendMode(DX_BLENDMODE_MUL, 255);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 		DrawGraph(0, 0, light_screen, TRUE);
 		
 		// ブレンドモードを初期化

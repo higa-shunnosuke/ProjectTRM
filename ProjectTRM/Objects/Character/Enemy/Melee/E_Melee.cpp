@@ -62,7 +62,7 @@ void E_Melee::Initialize()
 	// スピードの初期化
 	speed = 80.0f;
 
-	alpha = 240;
+	alpha = 0;
 	add = -ALPHA_ADD;
 }
 
@@ -138,7 +138,7 @@ void E_Melee::Draw(const Vector2D camera_pos) const
 			color = 0xff0000;
 		}
 		//残りHPの表示
-		DrawFormatString((int)position.x, (int)(position.y - 40.0f), color, "%d", HP);
+		DrawFormatString((int)position.x, (int)(position.y - 40.0f), color, "%f", HP);
 		// 中心を表示
 		DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
 		// 当たり判定表示
