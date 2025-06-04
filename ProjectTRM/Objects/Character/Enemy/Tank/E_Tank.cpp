@@ -101,12 +101,15 @@ void E_Tank::Update(float delta_second)
 		// 待機時間が終わったら攻撃状態にする
 		if (recovery_time >= 2.0f)
 		{
-			now_state = State::Attack;
+			now_state = State::Move;
 		}
 	}
 	
 	// アニメーション管理処理
 	AnimationControl(delta_second);
+
+	// エフェクト管理処理
+	EffectControl(delta_second);
 }
 
 // 描画処理
@@ -198,11 +201,7 @@ void E_Tank::OnAreaDetection(GameObject* hit_object)
 // 攻撃範囲通知処理
 void E_Tank::NoHit()
 {
-	// 移動状態にする
-	if (now_state != State::Death && now_state != State::Attack)
-	{
-		now_state = State::Move;
-	}
+	
 }
 
 // ライト範囲通知処理
@@ -312,10 +311,16 @@ void E_Tank::AnimationControl(float delta_second)
 		break;
 	case State::Attack:
 		image = animation[Anim_count];
+		// 硬直開始
+		if (Anim_count == anim_max_count)
+		{
+			now_state = State::Idle;
+			recovery_time = 0;
+		}
 		break;
 	case State::Death:
 		image = animation[Anim_count];
-		// 硬直開始
+		// 死亡
 		if (Anim_count == anim_max_count)
 		{
 			Finalize();
@@ -323,6 +328,37 @@ void E_Tank::AnimationControl(float delta_second)
 		break;
 	}
 
+	// アニメーションの更新
+	Anim_flame += delta_second;
+
+	// 光に入っていたらアニメーションを遅くする
+	float delay = 1.0f;
+	if (in_light == true && (now_state != State::Death && now_state != State::Attack))
+	{
+		delay = 2.0f;
+	}
+
+	// アニメーション間隔
+	if (Anim_flame >= anim_rate * delay)
+	{
+		// 次のアニメーションに進める
+		if (Anim_count < anim_max_count)
+		{
+			Anim_count++;
+		}
+		else
+		{
+			Anim_count = 0;
+		}
+
+		// アニメーション開始時間の初期化
+		Anim_flame = 0.0f;
+	}
+}
+
+// エフェクト制御処理
+void E_Tank::EffectControl(float delta_second)
+{
 	// エフェクトの更新
 	effect_flame += delta_second;
 
@@ -369,37 +405,4 @@ void E_Tank::AnimationControl(float delta_second)
 
 	// エフェクトのアニメーション
 	effect = effect_image[Anim_count];
-
-	// アニメーションの更新
-	Anim_flame += delta_second;
-
-	// 光に入っていたらアニメーションを遅くする
-	float delay = 1.0f;
-	if (in_light == true && (now_state != State::Death && now_state != State::Attack))
-	{
-		delay = 2.0f;
-	}
-
-	// アニメーション間隔
-	if (Anim_flame >= anim_rate * delay)
-	{
-		// 次のアニメーションに進める
-		if (Anim_count < anim_max_count)
-		{
-			Anim_count++;
-		}
-		else
-		{
-			Anim_count = 0;
-		}
-
-		// アニメーション開始時間の初期化
-		Anim_flame = 0.0f;
-	}
-}
-
-// エフェクト制御処理
-void E_Tank::EffectControl(float delta_second)
-{
-
 }

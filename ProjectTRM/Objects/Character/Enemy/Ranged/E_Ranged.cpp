@@ -101,7 +101,7 @@ void E_Ranged::Update(float delta_second)
 		// 待機時間が終わったら攻撃状態にする
 		if (recovery_time >= 2.0f)
 		{
-			now_state = State::Attack;
+			now_state = State::Move;
 		}
 	}
 
@@ -198,11 +198,7 @@ void E_Ranged::OnAreaDetection(GameObject* hit_object)
 // 攻撃範囲通知処理
 void E_Ranged::NoHit()
 {
-	// 移動状態にする
-	if (now_state != State::Death && now_state != State::Attack)
-	{
-		now_state = State::Move;
-	}
+	
 }
 
 // ライト範囲通知処理
@@ -312,10 +308,16 @@ void E_Ranged::AnimationControl(float delta_second)
 		break;
 	case State::Attack:
 		image = animation[Anim_count];
+		// 硬直開始
+		if (Anim_count == anim_max_count)
+		{
+			now_state = State::Idle;
+			recovery_time = 0;
+		}
 		break;
 	case State::Death:
 		image = animation[Anim_count];
-		// 硬直開始
+		// 死亡
 		if (Anim_count == anim_max_count)
 		{
 			Finalize();

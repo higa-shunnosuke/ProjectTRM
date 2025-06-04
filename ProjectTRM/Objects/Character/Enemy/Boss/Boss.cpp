@@ -38,7 +38,7 @@ void Boss::Initialize()
 	collision.object_type = eObjectType::Enemy;
 	collision.hit_object_type.push_back(eObjectType::Player);
 	collision.collision_size = Vector2D(180.0f, 180.0f);
-	collision.hitbox_size = Vector2D(280.0f, 300.0f);
+	collision.hitbox_size = Vector2D(250.0f, 300.0f);
 	z_layer = 2;
 
 	flip_flag = true;
@@ -92,7 +92,7 @@ void Boss::Update(float delta_second)
 		// 待機時間が終わったら攻撃状態にする
 		if (recovery_time >= 4.0f)
 		{
-			now_state = State::Attack;
+			now_state = State::Move;
 		}
 	}
 
@@ -117,7 +117,7 @@ void Boss::Draw(const Vector2D camera_pos) const
 		3.0, 0.0, image, TRUE, flip_flag);
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(position.x, position.y - 80.0f,
+	DrawRotaGraphF(position.x, position.y - 110.0f,
 		5.0, 0.0, effect, TRUE, flip_flag);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
@@ -189,11 +189,7 @@ void Boss::OnAreaDetection(GameObject* hit_object)
 // 攻撃範囲通知処理
 void Boss::NoHit()
 {
-	// 移動状態にする
-	if (now_state != State::Death && now_state != State::Attack)
-	{
-		now_state = State::Move;
-	}
+	
 }
 
 // ライト範囲通知処理
@@ -263,19 +259,19 @@ void Boss::AnimationControl(float delta_second)
 		case State::Idle:
 			animation = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Idle.png", 8, 8, 1, 140, 93);
 			image = animation[Anim_count];
-			anim_max_count = 3;
+			anim_max_count = 7;
 			anim_rate = 0.3f;
 			break;
 		case State::Move:
 			animation = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Walk.png", 8, 8, 1, 140, 93);
 			image = animation[Anim_count];
-			anim_max_count = 5;
+			anim_max_count = 7;
 			anim_rate = 0.3f;
 			break;
 		case State::Attack:
 			animation = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Attack.png", 10, 10, 1, 140, 93);
 			image = animation[Anim_count];
-			anim_max_count = 7;
+			anim_max_count = 9;
 			anim_rate = 0.15f;
 			break;
 		case State::Damage:
@@ -283,7 +279,7 @@ void Boss::AnimationControl(float delta_second)
 		case State::Death:
 			animation = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Death.png", 10, 10, 1, 140, 93);
 			image = animation[Anim_count];
-			anim_max_count = 3;
+			anim_max_count = 9;
 			anim_rate = 0.3f;
 			break;
 		}
@@ -303,10 +299,16 @@ void Boss::AnimationControl(float delta_second)
 		break;
 	case State::Attack:
 		image = animation[Anim_count];
+		// 硬直開始
+		if (Anim_count == anim_max_count)
+		{
+			now_state = State::Idle;
+			recovery_time = 0;
+		}
 		break;
 	case State::Death:
 		image = animation[Anim_count];
-		// 硬直開始
+		// 死亡
 		if (Anim_count == anim_max_count)
 		{
 			Finalize();

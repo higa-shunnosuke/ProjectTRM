@@ -99,7 +99,7 @@ void E_Melee::Update(float delta_second)
 		// 待機時間が終わったら攻撃状態にする
 		if (recovery_time >= 2.0f)
 		{
-			now_state = State::Attack;
+			now_state = State::Move;
 		}
 	}
 
@@ -198,11 +198,7 @@ void E_Melee::OnAreaDetection(GameObject* hit_object)
 // 攻撃範囲通知処理
 void E_Melee::NoHit()
 {
-	// 移動状態にする
-	if (now_state != State::Death)
-	{
-		now_state = State::Move;
-	}
+	
 }
 
 // ライト範囲通知処理

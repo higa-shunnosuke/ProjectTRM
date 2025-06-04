@@ -96,6 +96,7 @@ void SceneManager::Update(float delta_second)
 				if (CheckHitBox(objects_list[i], objects_list[j]) == true)
 				{
 					is_hit = true;
+					break;
 				}
 			}
 
@@ -136,6 +137,11 @@ void SceneManager::Update(float delta_second)
 					if (CheckLightRange(objects_list[i], light_list[j]) == true)
 					{
 						in_light = true;
+						break;
+					}
+					else
+					{
+						in_light = false;
 					}
 				}
 
