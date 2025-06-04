@@ -2,9 +2,10 @@
 
 #include "../../Character.h"
 #include "../../../../Utility/LightMapManager.h"
+#include "../../../GameObjectManager.h"
 
 #define BASIC_POWER (1)
-#define BASIC_SPEED (-4.0f)
+#define BASIC_SPEED (-2.0f)
 
 // ゲームオブジェクト基底クラス
 class P_Tank :public Character
@@ -16,9 +17,10 @@ public:
 	static size_t GetCount();
 
 private:
-	int Damage;	//ダメージ
+
 	int sounds;	//音
 	LightMapManager* light; //明り
+	GameObjectManager* object;
 
 	//エフェクト類
 	int effect_image;
@@ -74,10 +76,6 @@ public:
 	virtual void HPControl(int Damage) override;
 
 private:
-	/// <summary>
-	/// 攻撃処理
-	/// </summary>
-	virtual void Attack(GameObject* hit_object);
 	/// <summary>
 	/// 移動処理
 	/// </summary>

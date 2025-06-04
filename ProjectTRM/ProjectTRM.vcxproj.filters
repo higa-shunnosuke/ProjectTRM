@@ -78,7 +78,7 @@
     <ClCompile Include="Objects\Character\Enemy\Melee\E_Melee.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Character\Player\Melee\Torch.cpp">
+    <ClCompile Include="Objects\Character\Player\Tank\Torch.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Objects\Character\Player\Ranged\P_Ranged.cpp">
@@ -112,6 +112,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Objects\Character\Enemy\EnemyBase.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Character\Player\UnitBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -191,7 +194,7 @@
     <ClInclude Include="Objects\Character\Enemy\Melee\E_Melee.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Objects\Character\Player\Melee\Torch.h">
+    <ClInclude Include="Objects\Character\Player\Tank\Torch.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Objects\Character\Player\Ranged\P_Ranged.h">
@@ -228,6 +231,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Objects\Character\Enemy\EnemyBase.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Character\Player\UnitBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

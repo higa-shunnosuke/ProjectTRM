@@ -1,4 +1,5 @@
 #include "P_Tank.h"
+#include "Torch.h"
 #include "../../../GameObjectManager.h"
 #include "../../../../Scenes/InGame/InGame.h"
 
@@ -9,8 +10,7 @@ size_t P_Tank::GetCount()
 }
 
 // コンストラクタ
-P_Tank::P_Tank() :
-	Damage()
+P_Tank::P_Tank()
 {
 	count++;
 }
@@ -41,7 +41,7 @@ void P_Tank::Initialize()
 	collision.object_type = eObjectType::Player;
 	collision.hit_object_type.push_back(eObjectType::Enemy);
 	collision.collision_size = Vector2D(60.0f, 60.0f);
-	collision.hitbox_size = Vector2D(50.0f, 100.0f);
+	collision.hitbox_size = Vector2D(200.0f, 100.0f);
 	z_layer = 1;
 
 	//反転フラグ
@@ -53,14 +53,14 @@ void P_Tank::Initialize()
 	//初期化
 	now_state = State::Move;
 
+
+	object = GameObjectManager::GetInstance();
+
 	//移動速度
 	velocity.x = BASIC_SPEED;
 
-	//攻撃力
-	Damage = BASIC_POWER;
-
 	// HP初期化
-	HP = 40;
+	HP = 4;
 
 	alpha = MAX_ALPHA;
 	effect_alpha = MAX_ALPHA;
@@ -70,7 +70,6 @@ void P_Tank::Initialize()
 // 更新処理
 void P_Tank::Update(float delta_second)
 {
-	Damage = BASIC_POWER + (Ingame->GetSunLevel() / 5);
 
 	if (ProjectConfig::DEBUG)
 	{
@@ -205,17 +204,7 @@ void P_Tank::OnAreaDetection(GameObject* hit_object)
 		if (hit_col.object_type == eObjectType::Enemy)
 		{
 			velocity.x = 0.0f;
-			if (attack_flag == false)
-			{
-				now_state = State::Attack;
-			}
-			else
-			{
-				if (attack_flame <= 0.0f)
-				{
-					Attack(hit_object);
-				}
-			}
+			now_state = State::Idle;
 		}
 	}
 }
@@ -227,6 +216,7 @@ void P_Tank::NoHit()
 	if (now_state != State::Death)
 	{
 		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
+		now_state = State::Move;
 	}
 }
 
@@ -243,14 +233,6 @@ void P_Tank::HPControl(int Damage)
 	__super::HPControl(Damage);
 }
 
-// 攻撃処理
-void P_Tank::Attack(GameObject* hit_object)
-{
-	
-	PlaySoundMem(sounds, DX_PLAYTYPE_BACK, TRUE);
-	hit_object->HPControl(Damage);
-	attack_flame = 2.0f;
-}
 
 // 移動処理
 void P_Tank::Movement(float delta_second)
@@ -322,15 +304,6 @@ void P_Tank::AnimationControl(float delta_second)
 		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 		image = animation[1 + Anim_count];
 		break;
-	case State::Attack:
-		image = animation[1 + Anim_count];
-		if (Anim_count >= 2)
-		{
-			attack_flag = true;
-			now_state = State::Idle;
-
-		}
-		break;
 	case State::Damage:
 		alpha += add;
 		if (alpha <= 0 || alpha >= 255)
@@ -343,6 +316,7 @@ void P_Tank::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		if (Anim_count >= 2)
 		{
+			object->CreateObject<Torch>(this->location);
 			location.y -= Anim_count * 10 + Anim_flame * 10;
 			Anim_count = 3;
 			//他のオブジェクトの邪魔をしないようにオブジェクトタイプの消去

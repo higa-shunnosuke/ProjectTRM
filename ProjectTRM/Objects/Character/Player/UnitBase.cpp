@@ -47,6 +47,10 @@ void UnitBase::Initialize()
 
 	//‰Šú‰»
 	now_state = State::Move;
+
+	alpha = MAX_ALPHA;
+	effect_alpha = MAX_ALPHA;
+	add = -ALPHA_ADD;
 }
 
 // XVˆ—

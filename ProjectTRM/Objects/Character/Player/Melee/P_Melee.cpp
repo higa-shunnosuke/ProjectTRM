@@ -1,5 +1,4 @@
 #include "P_Melee.h"
-#include "Torch.h"
 #include "../../../../Utility/LightMapManager.h"
 #include "../../../../Scenes/InGame/InGame.h"
 
@@ -32,10 +31,6 @@ void P_Melee::Initialize()
 	Effect = rm->GetImages("Resource/Images/Effect/Melee_Attack_Effect.png", 3, 3, 1, 32, 32);
 	sounds = rm->GetSounds("Resource/Sounds/UnitSE/damage02.wav");
 
-	LightMapManager* light = LightMapManager::GetInstance();
-	light->AddLight(this);
-	collision.light_size = 1.0;
-
 	is_mobility = true;
 	is_aggressive = true;
 
@@ -58,7 +53,7 @@ void P_Melee::Initialize()
 	Damage = BASIC_POWER;
 
 	// HP初期化
-	HP = 10;
+	HP = 40;
 
 	object = GameObjectManager::GetInstance();
 
@@ -353,7 +348,7 @@ void P_Melee::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		if (Anim_count >= 2)
 		{
-			object->CreateObject<Torch>(this->location);
+
 			location.y -= Anim_count * 10 + Anim_flame * 10;
 			Anim_count = 3;
 			//他のオブジェクトの邪魔をしないようにオブジェクトタイプの消去

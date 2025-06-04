@@ -23,7 +23,7 @@ void Torch::Initialize()
 	
 	LightMapManager* light = LightMapManager::GetInstance();
 	light->AddLight(this);
-	collision.light_size = 0.5;
+	collision.light_size = 1.5f;
 
 	z_layer = 4;	
 	

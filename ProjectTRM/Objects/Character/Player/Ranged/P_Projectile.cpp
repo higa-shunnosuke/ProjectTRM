@@ -47,6 +47,16 @@ void P_Projectile::Update(float delta_second)
         // 初速度
         float speed = INITIAL_SPEED;
 
+        if (target_location.y + 50.0f < location.y)
+        {
+            target_location.y += 100.0f;
+        }
+        else
+        {
+            target_location.y += 25.0f;
+        }
+
+
         // ターゲットまでの距離と角度を計算
         float dx = target_location.x - location.x;
         float dy = target_location.y - location.y;

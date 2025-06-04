@@ -158,7 +158,7 @@
     <ClCompile Include="Scenes\SceneManager.cpp" />
     <ClCompile Include="Scenes\Title\Title.cpp" />
     <ClCompile Include="Scenes\StageSelect\StageSelect.cpp" />
-    <ClCompile Include="Objects\Character\Player\Melee\Torch.cpp" />
+    <ClCompile Include="Objects\Character\Player\Tank\Torch.cpp" />
     <ClCompile Include="Objects\Character\Player\UnitBase.cpp" />
     <ClCompile Include="Utility\Camera\Camera.cpp" />
     <ClCompile Include="Utility\Collision.cpp" />
@@ -197,7 +197,7 @@
     <ClInclude Include="Scenes\SceneManager.h" />
     <ClInclude Include="Scenes\Title\Title.h" />
     <ClInclude Include="Scenes\StageSelect\StageSelect.h" />
-    <ClInclude Include="Objects\Character\Player\Melee\Torch.h" />
+    <ClInclude Include="Objects\Character\Player\Tank\Torch.h" />
     <ClInclude Include="Objects\Character\Player\UnitBase.h" />
     <ClInclude Include="Utility\Camera\Camera.h" />
     <ClInclude Include="Utility\Collision.h" />
