@@ -27,7 +27,7 @@ void P_Melee::Initialize()
 {
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
-	animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
+	animation = rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Walk.png", 10, 10, 1, 100, 55);
 	Effect = rm->GetImages("Resource/Images/Effect/Melee_Attack_Effect.png", 3, 3, 1, 32, 32);
 	sounds = rm->GetSounds("Resource/Sounds/UnitSE/damage02.wav");
 
@@ -121,7 +121,7 @@ void P_Melee::Update(float delta_second)
 
 	SoundControl();
 
-	if (Anim_count <= 2)
+	if (Anim_count <= sizeof(animation))
 	{
 		AnimationControl(delta_second);
 	}
@@ -136,18 +136,14 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う
-	if (Anim_count <= 2)
-	{
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-	}
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+	DrawRotaGraphF(position.x, position.y, 1.5, 0.0, image, TRUE, flip_flag);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
 	
 	switch (now_state)
 	{
-	case State::Attack:
-		DrawRotaGraphF(position.x - (collision.collision_size.x / 2), position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
-		break;
 	case State::Damage:
 		DrawRotaGraphF(position.x, position.y, 1.0, 0.0, effect_image, TRUE, flip_flag);
 		break;
@@ -273,14 +269,17 @@ void P_Melee::AnimationControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Idle:
-			animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 3, 3, 1, 32, 32);
+			animation = rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Idle.png", 8, 8, 1, 100, 55);
+			anim_max_count = 8;
 			break;
 		case State::Move:
-			animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 3, 3, 1, 32, 32);
+			animation = rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Walk.png", 10, 10, 1, 100, 55);
+			anim_max_count = 10;
 			break;
 		case State::Attack:
-			animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
-			if (Anim_count >= 2)
+			animation = rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Attack.png", 9, 9, 1, 100, 55);
+			anim_max_count = 9;
+			if (Anim_count == anim_max_count)
 			{
 				attack_flag = true;
 				now_state = State::Idle;
@@ -289,7 +288,8 @@ void P_Melee::AnimationControl(float delta_second)
 		case State::Damage:
 			break;
 		case State::Death:
-			animation = rm->GetImages("Resource/Images/Unit/Melee/Melee_Down.png", 3, 3, 1, 32, 32);
+			animation = rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Death.png", 9, 9, 1, 100, 55);
+			anim_max_count = 9;
 			break;
 		default:
 			break;
@@ -301,11 +301,11 @@ void P_Melee::AnimationControl(float delta_second)
 
 	if (Anim_flame >= 0.1f)
 	{
-		Anim_count += con;
+		Anim_count++;
 
-		if (Anim_count == 0 || Anim_count == 2)
+		if (Anim_count == anim_max_count)
 		{
-			con *= -1;
+			Anim_count = 0;
 		}
 
 		Anim_flame = 0.0f;
@@ -314,15 +314,15 @@ void P_Melee::AnimationControl(float delta_second)
 	switch (now_state)
 	{
 	case State::Idle:	
-		image = animation[0];
+		image = animation[Anim_count];
 		break;
 	case State::Move:
 		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
-		image = animation[1 + Anim_count];
+		image = animation[Anim_count];
 		break;
 	case State::Attack:
-		image = animation[1 + Anim_count];
-		if (Anim_count >= 2)
+		image = animation[Anim_count];
+		if (Anim_count == anim_max_count - 1)
 		{
 			attack_flag = true;
 			now_state = State::Move;
@@ -346,11 +346,11 @@ void P_Melee::AnimationControl(float delta_second)
 		break;
 	case State::Death:
 		image = animation[Anim_count];
-		if (Anim_count >= 2)
+		if (Anim_count == anim_max_count - 1)
 		{
 
 			location.y -= Anim_count * 10 + Anim_flame * 10;
-			Anim_count = 3;
+			Anim_count += 2;
 			//他のオブジェクトの邪魔をしないようにオブジェクトタイプの消去
 			collision.hit_object_type.clear();
 			collision.object_type = eObjectType::None;
@@ -374,9 +374,6 @@ void P_Melee::EffectControl(float delta_second)
 		Effect_flame = 0.0f;
 		switch (now_state)
 		{
-		case State::Attack:
-			Effect = rm->GetImages("Resource/Images/Effect/Melee_Attack_Effect.png", 3, 3, 1, 32, 32);
-			break;
 		case State::Damage:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 36, 6, 5, 100, 100);
 			break;

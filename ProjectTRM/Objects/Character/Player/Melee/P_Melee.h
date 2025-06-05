@@ -22,6 +22,7 @@ private:
 	GameObjectManager* object;
 	int effect_alpha;	//エフェクトの透明度調整用
 	int sounds;	//音
+	int anim_max_count;		// アニメーション画像の枚数
 
 public:
 	//コンストラクタ

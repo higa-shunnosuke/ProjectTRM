@@ -41,7 +41,7 @@ void P_Tank::Initialize()
 	collision.object_type = eObjectType::Player;
 	collision.hit_object_type.push_back(eObjectType::Enemy);
 	collision.collision_size = Vector2D(60.0f, 60.0f);
-	collision.hitbox_size = Vector2D(200.0f, 100.0f);
+	collision.hitbox_size = Vector2D(100.0f, 100.0f);
 	z_layer = 1;
 
 	//”½“]ƒtƒ‰ƒO
