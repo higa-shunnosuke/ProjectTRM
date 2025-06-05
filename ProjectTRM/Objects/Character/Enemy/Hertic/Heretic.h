@@ -42,6 +42,7 @@ private:
 	int SoptLight;
 	int LightStrong = 0 ;
 	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数
+	std::chrono::steady_clock::time_point	rush_time;			// コスト加算用変数
 	std::chrono::steady_clock::time_point	efect_time;			// エフェクト加算用変数
 	int Player_evaluation[4];
 	int Enemy_evaluation[3];
@@ -49,6 +50,7 @@ private:
 	bool Summon_Boss = false;	//ボス1度でも生成したかどうか
 	bool	JustDead = false;	//死亡時アニメーションも終わって丁度死んだ
 	bool	Iam_Dead = false;
+	bool	Time_rush = false;;
 	bool	summon_flag;	//召喚フラグ
 	bool	summon_effect;	//召喚フラグ
 	std::vector<GameObject*> ObjectList;

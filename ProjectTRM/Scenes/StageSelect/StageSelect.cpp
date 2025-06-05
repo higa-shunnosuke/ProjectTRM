@@ -127,7 +127,7 @@ void StageSelect::Draw() const
 	{
 		//	‘I‘ğˆ‚ÌˆÊ’u
 		int x = spacing + i * (button_width + spacing);
-		int y = 60;
+		int y = 120;
 
 		// Šg‘å—p•Ï”
 		int w = button_width;

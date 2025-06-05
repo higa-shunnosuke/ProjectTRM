@@ -20,7 +20,7 @@
 #include"../../../../Utility/Input/InputManager.h"
 
 
-#define Enemy_Plan_Evaluation // 戦場評価型
+//#define Enemy_Plan_Evaluation // 戦場評価型
 #ifdef Enemy_Plan_Evaluation
 #else
 #define Enemy_Plan_WAVE//ウェーブ型
@@ -130,6 +130,7 @@ void Heretic::Update(float delta_second)
 			summon_flag = true;
 		}
 #else
+
 		if (Cost >= 0)
 		{
 			switch (Ingame->StageNumber)
@@ -244,7 +245,8 @@ void Heretic::Draw(const Vector2D camera_pos) const
 
 		if (ProjectConfig::DEBUG)
 		{
-			DrawFormatString(0, 50, 0xFFFFFF, "EC:%d", Cost);
+			DrawFormatString(120, 700, 0xFFFFFF, "EC:%d", Cost);
+			DrawFormatString(120, 650, 0xFFFFFF, "time:%d", rush_time);
 			// 中心を表示
 			DrawCircle((int)position.x, (int)position.y, 2, 0xff0000, TRUE);
 			// 当たり判定表示
@@ -271,19 +273,27 @@ void Heretic::SetInGamePoint(InGame* point)
 
 void Heretic::ThinkingEnemy()
 {
+
+
+
 	int Pcount_sum = 0;
+	int Pcount_num = 0;
 	int Ecount_sum = 0;
+	int Ecount_num = 0;
 
 	int Ptank_count = (int)P_Tank::GetCount() * TANK_eva;
 	int Pmelee_count = (int)P_Melee::GetCount() * MELEE_eva;
 	int Prange_count = (int)P_Ranged::GetCount() * RANGE_eva;
 	Pcount_sum += (Ptank_count + Pmelee_count + Prange_count);
+	Pcount_num += (Ptank_count/TANK_eva + Pmelee_count/MELEE_eva + Prange_count/RANGE_eva);
 
 	int Etank_count = (int)E_Tank::GetCount() * TANK_eva;
 	int Emelee_count = (int)E_Melee::GetCount() * MELEE_eva;
 	int Erange_count = (int)E_Ranged::GetCount() * RANGE_eva;
 	Ecount_sum += (Etank_count + Emelee_count + Erange_count);
+	Ecount_num += (Etank_count / TANK_eva + Emelee_count / MELEE_eva + Erange_count / RANGE_eva);
 
+#ifdef Enemy_Plan_Evaluation
 
 	if (old_EnemySum > Ecount_sum)
 	{
@@ -400,6 +410,80 @@ void Heretic::ThinkingEnemy()
 	default:
 		break;
 	}
+#else
+
+auto now_time = std::chrono::steady_clock::now();
+
+if (now_time - rush_time > std::chrono::milliseconds(100))
+{
+	if (Time_rush)
+	{
+		Time_rush = false;
+	}
+	else
+	{
+		Time_rush = true;
+	}
+	rush_time = std::chrono::steady_clock::now();
+}
+
+if (Time_rush != true)
+{
+	if (Pcount_sum > Ecount_sum + 500)
+	{
+		//【仮】
+		//これがワイの…切り札や！！！！
+		Cost -= BOSS_cost;
+		SamonEnemy(E_enemy::Boss);
+		summon_flag = true;
+	}
+	else
+	{
+		//前衛5体で後衛を出す
+		if ((Etank_count / TANK_eva) <= 1)
+		{
+			Cost -= (TANK_cost - 5);
+			SamonEnemy(E_enemy::Tank);
+			summon_flag = true;
+		}
+		else if ((Emelee_count / MELEE_eva) <= 1)
+		{
+			Cost -= (MELEE_cost - 10);
+			SamonEnemy(E_enemy::Melee);
+			summon_flag = true;
+		}
+		else
+		{
+			Cost -= (RANGE_cost - 30);
+			SamonEnemy(E_enemy::Range);
+			summon_flag = true;
+		}
+	}
+}
+else
+{
+	//前衛5体で後衛を出す
+	if ((Etank_count / TANK_eva) <= 5)
+	{
+		Cost -= Ecount_num;
+		SamonEnemy(E_enemy::Tank);
+		summon_flag = true;
+		}
+	else if ((Emelee_count / MELEE_eva) <= 3)
+	{
+		Cost -= Ecount_num;
+		SamonEnemy(E_enemy::Melee);
+		summon_flag = true;
+	}
+	else
+	{
+		Cost -= Ecount_num;
+		SamonEnemy(E_enemy::Range);
+		summon_flag = true;
+	}
+}
+
+#endif // Enemy_Plan_Evaluation
 
 	
 }
