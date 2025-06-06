@@ -127,7 +127,6 @@ void SceneManager::Update(float delta_second)
 			{
 				// “–‚½‚Á‚Ä‚¢‚È‚¢‚±‚Æ‚ð’Ê’m‚·‚é
 				objects_list[i]->OutLightRange();
-				break;
 			}
 			else
 			{

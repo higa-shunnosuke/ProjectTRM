@@ -97,7 +97,7 @@ public:
 				Collision lc = light->GetCollision();
 				float radius = lc.light_size * 0.2;
 				// ライトマップ上に光を描画
-				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 130);
 				DrawRotaGraphF(light_pos.x, light_pos.y,
 					radius, 0.0,light_graph, TRUE,0);
 				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
