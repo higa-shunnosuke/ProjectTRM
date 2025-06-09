@@ -11,7 +11,11 @@ size_t P_Melee::GetCount()
 // コンストラクタ
 P_Melee::P_Melee() :
 	Damage(),
-	effect_image()
+	effect_image(),
+	effect_alpha(),
+	anim_max_count(),
+	object(nullptr),
+	sounds()
 {
 	count++;
 }
@@ -121,7 +125,7 @@ void P_Melee::Update(float delta_second)
 
 	SoundControl();
 
-	if (Anim_count <= sizeof(animation))
+	if (Anim_count <= anim_max_count)
 	{
 		AnimationControl(delta_second);
 	}
