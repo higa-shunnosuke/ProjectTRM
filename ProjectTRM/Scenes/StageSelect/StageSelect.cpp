@@ -21,9 +21,20 @@ void StageSelect::Initialize()
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 
+	DecisionSE = rm->GetSounds("Resource/Sounds/StageSelect/決定.mp3");
+	CursorMoveSE= rm->GetSounds("Resource/Sounds/StageSelect/カーソル移動.mp3");
+
 	Stage_Image[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
 	Stage_Image[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
 	Stage_Image[2] = rm->GetImages("Resource/Images/BackGround/RedMoon.png")[0];
+
+	BGM = rm->GetSounds("Resource/Sounds/StageSelect/StageSelect.mp3");
+
+	ChangeVolumeSoundMem(100, BGM);
+	if (PlaySoundMem(BGM, DX_PLAYTYPE_LOOP) == -1)
+	{
+		MessageBoxA(NULL, "BGM1の再生に失敗しました", "エラー", MB_OK);
+	}
 
 }
 
@@ -42,6 +53,10 @@ eSceneType StageSelect::Update(const float& delta_second)
 		{
 			SerectStage = 4;
 		}
+		else
+		{
+			PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
+		}
 	}
 	// ステージ選択シーンに遷移する
 	else if (input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Pressed ||
@@ -52,17 +67,23 @@ eSceneType StageSelect::Update(const float& delta_second)
 		{
 			SerectStage = 1;
 		}
+		else
+		{
+			PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
+		}
 	}
 
 	// インゲームシーンに遷移する
 	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
 	{
 		SetStageNumber(SerectStage);
+		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
 		return eSceneType::in_game;
 	}
 	if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 	{
 		SetStageNumber(SerectStage);
+		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
 		return eSceneType::in_game;
 	}
 
@@ -177,6 +198,8 @@ void StageSelect::Draw() const
 // 終了処理
 void StageSelect::Finalize()
 {
+
+	StopSoundMem(BGM);
 
 	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();

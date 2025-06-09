@@ -24,8 +24,17 @@ void Title::Initialize()
 
 	BackGroundImage = rm->GetImages("Resource/Images/BackGround/Title.png")[0];
 
+	BGM = rm->GetSounds("Resource/Sounds/Title/BGM/OP.mp3");
+	DecisionSE = rm->GetSounds("Resource/Sounds/Title/決定.mp3");
+
 	Anim_flame = 0;
 	Anim_count = 0;
+
+	ChangeVolumeSoundMem(100, BGM);
+	if (PlaySoundMem(BGM, DX_PLAYTYPE_LOOP) == -1)
+	{
+		MessageBoxA(NULL, "BGM1の再生に失敗しました", "エラー", MB_OK);
+	}
 }
 
 // 更新処理
@@ -38,10 +47,12 @@ eSceneType Title::Update(const float& delta_second)
 	// インゲームシーンに遷移する
 	if (input->GetKeyState(KEY_INPUT_RETURN)==eInputState::Pressed)
 	{
+		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
 		return eSceneType::stage_select;
 	}
 	if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 	{
+		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
 		return eSceneType::stage_select;
 	}
 	if (input->GetButtonState(XINPUT_BUTTON_B) == eInputState::Pressed)
@@ -100,6 +111,9 @@ void Title::Draw() const
 // 終了処理
 void Title::Finalize()
 {
+
+	StopSoundMem(BGM);
+
 	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();
 }
