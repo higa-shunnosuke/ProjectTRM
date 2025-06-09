@@ -95,7 +95,7 @@ public:
 				light_pos.x -= camera_pos.x - D_WIN_MAX_X / 2;
 				// ライトの半径を取得
 				Collision lc = light->GetCollision();
-				float radius = lc.light_size * 0.2;
+				float radius = (float)(lc.light_size * 0.2);
 				// ライトマップ上に光を描画
 				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 130);
 				DrawRotaGraphF(light_pos.x, light_pos.y,

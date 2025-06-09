@@ -1,15 +1,6 @@
 #include "EnemyBase.h"
 #include "../../GameObjectManager.h"
 
-// 敵近接のカウンタを初期化
-size_t EnemyBase::count = 0;
-
-// 敵近接の数取得処理
-size_t EnemyBase::GetCount()
-{
-	return count;
-}
-
 // コンストラクタ
 EnemyBase::EnemyBase() :
 	anim_max_count(),
@@ -23,13 +14,13 @@ EnemyBase::EnemyBase() :
 	Damage(),
 	old_light(false)
 {
-	count++;
+	
 }
 
 // デストラクタ
 EnemyBase::~EnemyBase()
 {
-	count--;
+	
 }
 
 // 初期化処理
@@ -40,38 +31,14 @@ void EnemyBase::Initialize()
 	effect_image = rm->GetImages("Resource/Images/Effect/Smoke-Sheet.png", 19, 4, 5, 80, 80);
 	effect = effect_image[0];
 
-	is_mobility = true;
-	is_aggressive = true;
-
-	collision.is_blocking = true;
-	collision.object_type = eObjectType::Enemy;
-	collision.hit_object_type.push_back(eObjectType::Player);
-	collision.collision_size = Vector2D(50.0f, 100.0f);
-	collision.hitbox_size = Vector2D(50.0f, 120.0f);
-	z_layer = 2;
-
-	flip_flag = false;
-
-	// 最初の状態を移動にする
-	now_state = State::Move;
-
-	//攻撃力
-	Damage = 2;
-
-	// HP初期化
-	HP = 100;
-
-	// スピードの初期化
-	speed = 50.0f;
-
-	alpha = 240;
+	alpha = 200;
 	add = -ALPHA_ADD;
 }
 
 // 更新処理
 void EnemyBase::Update(float delta_second)
 {
-	// HPが０になると終了処理
+	// HPが０になると死亡状態にする
 	if (HP <= 0)
 	{
 		now_state = State::Death;
@@ -115,23 +82,9 @@ void EnemyBase::Update(float delta_second)
 // 描画処理
 void EnemyBase::Draw(const Vector2D camera_pos) const
 {
-	// 画像のずれ
-	Vector2D offset;
-	offset.x = 30.0f;
-	offset.y = -30.0f;
-
 	// カメラ座標をもとに描画位置を計算
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-
-	// 敵近接の描画
-	DrawRotaGraphF(position.x + offset.x, position.y + offset.y,
-		2.0, 0.0, image, TRUE, flip_flag);
-
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(position.x, position.y - 70.0f,
-		3.0, 0.0, effect, TRUE, flip_flag);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	if (ProjectConfig::DEBUG)
 	{
@@ -203,17 +156,13 @@ void EnemyBase::NoHit()
 // ライト範囲通知処理
 void EnemyBase::InLightRange()
 {
-	in_light = true;
-	Damage = 1;
-	speed = 30.0f;
+	
 }
 
 // ライト範囲通知処理
 void EnemyBase::OutLightRange()
 {
-	in_light = false;
-	Damage = 2;
-	speed = 50.0f;
+	
 }
 
 // HP管理処理
@@ -253,46 +202,6 @@ void EnemyBase::Movement(float delta_second)
 // アニメーション制御処理
 void EnemyBase::AnimationControl(float delta_second)
 {
-	// 状態が切り替わったらカウントを初期化
-	if (old_state != now_state)
-	{
-		Anim_count = 0;
-
-		// 画像の読み込み
-		ResourceManager* rm = ResourceManager::GetInstance();
-
-		// 各状態のアニメーション画像に差し替え
-		switch (now_state)
-		{
-		case State::Idle:
-			animation = rm->GetImages("Resource/Images/Enemy/Tank/E_Tank_Idle.png", 4, 4, 1, 100, 75);
-			image = animation[Anim_count];
-			anim_max_count = 3;
-			anim_rate = 0.3f;
-			break;
-		case State::Move:
-			animation = rm->GetImages("Resource/Images/Enemy/Tank/E_Tank_Walk.png", 6, 6, 1, 100, 75);
-			image = animation[Anim_count];
-			anim_max_count = 5;
-			anim_rate = 0.1f;
-			break;
-		case State::Attack:
-			animation = rm->GetImages("Resource/Images/Enemy/Tank/E_Tank_Attack.png", 8, 8, 1, 100, 75);
-			image = animation[Anim_count];
-			anim_max_count = 7;
-			anim_rate = 0.1f;
-			break;
-		case State::Damage:
-			break;
-		case State::Death:
-			animation = rm->GetImages("Resource/Images/Enemy/Tank/E_Tank_Dead.png", 4, 4, 1, 100, 75);
-			image = animation[Anim_count];
-			anim_max_count = 3;
-			anim_rate = 0.2f;
-			break;
-		}
-	}
-
 	// 状態更新処理
 	old_state = now_state;
 
