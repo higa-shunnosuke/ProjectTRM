@@ -10,7 +10,12 @@ size_t P_Ranged::GetCount()
 }
 
 // コンストラクタ
-P_Ranged::P_Ranged()
+P_Ranged::P_Ranged():
+	effect_image(),
+	effect_alpha(),
+	anim_max_count(),
+	object(nullptr),
+	sounds()
 {
 	count++;
 }
@@ -26,7 +31,7 @@ void P_Ranged::Initialize()
 {
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
-	animation = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32);
+	animation = rm->GetImages("Resource/Images/Unit/Ranged/Archer_All.png", 55, 11, 5, 64, 64);
 	effect_image = rm->GetImages("Resource/Images/Effect/Unit/Ranged_Ghost.png", 1, 1, 1, 32, 32)[0];
 
 	is_mobility = true;
@@ -113,7 +118,7 @@ void P_Ranged::Update(float delta_second)
 
 	SoundControl();
 
-	if (Anim_count <= 2)
+	if (Anim_count <= anim_max_count)
 	{
 		AnimationControl(delta_second);
 	}
@@ -130,12 +135,9 @@ void P_Ranged::Draw(const Vector2D camera_pos) const
 
 	// 近接ユニットの描画
 		// オフセット値を基に画像の描画を行う
-	if (Anim_count <= 2)
-	{
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-	}
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+	DrawRotaGraphF(position.x, position.y, 1.4, 0.0, image, TRUE, flip_flag);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	switch (now_state)
 	{
@@ -285,14 +287,14 @@ void P_Ranged::AnimationControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Idle:
-			animation = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 3, 3, 1, 32, 32);
+			anim_max_count = 4;
 			break;
 		case State::Move:
-			animation = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 3, 3, 1, 32, 32);
+			anim_max_count = 7;
 			break;
 		case State::Attack:
-			animation = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Attack.png", 4, 4, 1, 32, 32);
-			if (Anim_count >= 2)
+			anim_max_count = 10;
+			if (Anim_count == anim_max_count)
 			{
 				attack_flag = true;
 				now_state = State::Idle;
@@ -301,7 +303,7 @@ void P_Ranged::AnimationControl(float delta_second)
 		case State::Damage:
 			break;
 		case State::Death:
-			animation = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Down.png", 3, 3, 1, 32, 32);
+			anim_max_count = 5;
 			break;
 		default:
 			break;
@@ -313,11 +315,11 @@ void P_Ranged::AnimationControl(float delta_second)
 
 	if (Anim_flame >= 0.1f)
 	{
-		Anim_count += con;
+		Anim_count++;
 
-		if (Anim_count <= 0 || Anim_count >= 2)
+		if (Anim_count == anim_max_count)
 		{
-			con *= -1;
+			Anim_count = 0;
 		}
 
 		Anim_flame = 0.0f;
@@ -326,15 +328,15 @@ void P_Ranged::AnimationControl(float delta_second)
 	switch (now_state)
 	{
 	case State::Idle:
-		image = animation[0];
+		image = animation[Anim_count];
 		break;
 	case State::Move:
 		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
-		image = animation[1 + Anim_count];
+		image = animation[Anim_count + 23];
 		break;
 	case State::Attack:
-		image = animation[1 + Anim_count];
-		if (Anim_count >= 2)
+		image = animation[Anim_count + 12];
+		if (Anim_count == anim_max_count - 2)
 		{
 			attack_flag = true;
 			now_state = State::Move;
@@ -347,17 +349,27 @@ void P_Ranged::AnimationControl(float delta_second)
 		{
 			add = -add;
 		}
-		image = animation[0];
+		if (velocity.x < 0.0f)
+		{
+			image = animation[Anim_count + 23];
+		}
+		else
+		{
+			image = animation[Anim_count];
+		}
 		break;
 	case State::Death:
-		image = animation[Anim_count];
-		if (Anim_count == 2)
+		image = animation[Anim_count + 45];
+		if (Anim_count == anim_max_count - 1)
 		{
+
 			location.y -= Anim_count * 10 + Anim_flame * 10;
-			Anim_count = 3;
+			Anim_count += 2;
 			//他のオブジェクトの邪魔をしないようにオブジェクトタイプの消去
 			collision.hit_object_type.clear();
 			collision.object_type = eObjectType::None;
+			LightMapManager* light = LightMapManager::GetInstance();
+			light->DeleteLight(this);
 		}
 		break;
 	default:

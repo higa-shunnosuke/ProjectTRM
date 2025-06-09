@@ -23,7 +23,7 @@ P_Projectile::~P_Projectile()
 void P_Projectile::Initialize()
 {
     ResourceManager* rm = ResourceManager::GetInstance();
-    image = rm->GetImages("Resource/Images/Unit/Ranged/Arrow.png", 1, 1, 1, 32, 32)[0];
+    image = rm->GetImages("Resource/Images/Unit/Ranged/Arrow.png", 1, 1, 1, 30, 5)[0];
 
     is_mobility = true;
     is_aggressive = true;
@@ -102,7 +102,7 @@ void P_Projectile::Draw(const Vector2D camera_pos) const
 
 
 	// オフセット値を基に画像の描画を行う
-	DrawRotaGraphF(position.x, position.y, 2.0, angle, image, TRUE);
+	DrawRotaGraphF(position.x, position.y, 1.5, angle, image, TRUE);
 
     if (ProjectConfig::DEBUG)
     {
