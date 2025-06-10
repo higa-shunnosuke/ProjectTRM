@@ -20,6 +20,9 @@ void Result::Initialize()
 
 	ResourceManager* rm = ResourceManager::GetInstance();
 
+	CursorMoveSE = rm->GetSounds("Resource/Sounds/Result/CursorMove.mp3");
+	DecisionSE = rm->GetSounds("Resource/Sounds/Result/Decision.mp3");
+
 	bgmHandle[0] = rm->GetSounds("Resource/Sounds/Result/Lost.mp3");
 	bgmHandle[1] = rm->GetSounds("Resource/Sounds/Result/Loose_BGM.mp3");
 	bgmHandle[2] = rm->GetSounds("Resource/Sounds/Result/Win_BGM.mp3");
@@ -78,18 +81,22 @@ eSceneType Result::Update(const float& delta_second)
 			if (input->GetKeyState(KEY_INPUT_UP) == eInputState::Pressed)
 			{
 				cursor++;
+				PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
 			}
 			if (input->GetButtonState(XINPUT_BUTTON_DPAD_UP) == eInputState::Pressed)
 			{
 				cursor++;
+				PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
 			}
 			// ステージ選択シーンに遷移する
- 			 if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+ 			if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
 			{
-				return eSceneType::title;
+				PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
+				 return eSceneType::title;
 			}
 			else if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 			{
+				PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
 				 return eSceneType::title;
 			}
 		}
@@ -144,10 +151,12 @@ eSceneType Result::Update(const float& delta_second)
 		{
 			if (input->GetKeyState(KEY_INPUT_UP) == eInputState::Pressed)
 			{
+				PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
 				cursor++;
 			}
 			else if (input->GetButtonState(XINPUT_BUTTON_DPAD_UP) == eInputState::Pressed)
 			{
+				PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
 				cursor++;
 			}
 			// ステージ選択シーンに遷移する
@@ -166,10 +175,12 @@ eSceneType Result::Update(const float& delta_second)
 
 			if (input->GetKeyState(KEY_INPUT_DOWN) == eInputState::Pressed)
 			{
+				PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
 				cursor--;
 			}
 			else if (input->GetButtonState(XINPUT_BUTTON_DPAD_DOWN) == eInputState::Pressed)
 			{
+				PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);	
 				cursor--;
 			}
 			// タイトルシーンに遷移する
@@ -338,6 +349,9 @@ void Result::Finalize()
 		StopSoundMem(bgmHandle[1]);
 	}
 	
+	StopSoundMem(CursorMoveSE);
+	StopSoundMem(DecisionSE);	
+
 	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();
 }

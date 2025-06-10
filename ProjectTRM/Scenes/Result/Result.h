@@ -13,7 +13,8 @@ private:
 	std::chrono::steady_clock::time_point	select_time;			// 選択用変数
 	std::chrono::steady_clock::time_point	choice_time = std::chrono::steady_clock::now();			// 選択用変数
 	int bgmHandle[4];				// BGM
-
+	int CursorMoveSE;
+	int DecisionSE;
 public:
 	// コンストラクタ
 	Result();

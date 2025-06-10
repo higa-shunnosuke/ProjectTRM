@@ -25,7 +25,7 @@ void Title::Initialize()
 	BackGroundImage = rm->GetImages("Resource/Images/BackGround/Title.png")[0];
 
 	BGM = rm->GetSounds("Resource/Sounds/Title/BGM/OP.mp3");
-	DecisionSE = rm->GetSounds("Resource/Sounds/Title/Œˆ’è.mp3");
+	DecisionSE = rm->GetSounds("Resource/Sounds/Title/Decision.mp3");
 
 	Anim_flame = 0;
 	Anim_count = 0;
@@ -57,6 +57,7 @@ eSceneType Title::Update(const float& delta_second)
 	}
 	if (input->GetButtonState(XINPUT_BUTTON_B) == eInputState::Pressed)
 	{
+		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
 		return eSceneType::end;
 	}
 
