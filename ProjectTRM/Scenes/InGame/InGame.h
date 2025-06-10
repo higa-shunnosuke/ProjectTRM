@@ -11,6 +11,7 @@
 #define Tank_Cost 20
 #define Melee_Cost 50
 #define Range_Cost 100
+#define Guardian_Cost 500
 
 
 enum class GameState
@@ -37,10 +38,10 @@ private:
 	int Sun_Level;
 	Vector2D old_camerapos;
 	int			cost;				// コスト
-	bool		summon_flag[3];		// 召喚フラグ
+	bool		summon_flag[4];		// 召喚フラグ
 	Oracle*		player;				// 巫女のポインタ
 	Heretic*	enemy;				// 異端者のポインタ
-	int			unit_ui[4];			// ユニット選択UIの画像
+	int			unit_ui[5];			// ユニット選択UIの画像
 	int bgmHandle[4];				// BGM
 
 public:

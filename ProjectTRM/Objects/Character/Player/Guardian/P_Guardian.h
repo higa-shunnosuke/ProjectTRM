@@ -2,8 +2,8 @@
 #include "../../Character.h"
 #include "../../../GameObjectManager.h"
 
-#define BASIC_POWER (4)
-#define BASIC_SPEED (-2.0f)
+#define BASIC_POWER (20)
+#define BASIC_SPEED (-5.0f)
 
 class P_Guardian : public Character
 {
@@ -18,6 +18,7 @@ private:
 	int effect_image;
 	int Damage;	//ダメージ
 	GameObjectManager* object;
+	int anim_max_count;		// アニメーション画像の枚数
 
 public:
 	//コンストラクタ
