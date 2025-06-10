@@ -25,8 +25,6 @@ void InputManager::Update()
 	stick[1].x = StickNormalize(input.ThumbRX);
 	stick[1].y = StickNormalize(input.ThumbRY);
 
-	//マウスの入力値更新
-
 }
 
 /// <summary>
@@ -166,7 +164,13 @@ float InputManager::TriggerNormalize(unsigned char value)
 /// <returns>入力値を正規化した値</returns>
 float InputManager::StickNormalize(short value)
 {
+	const short DEAD_ZONE = 3000;	// デッドゾーン
 	float result = 0.0f;
+
+	if (abs(value) < DEAD_ZONE)
+	{
+		return result;
+	}
 
 	if (value >= 0)
 	{

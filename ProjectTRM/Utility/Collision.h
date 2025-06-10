@@ -17,7 +17,7 @@ class Collision
 {
 public:
 	bool						is_blocking;		// すり抜けフラグ
-	Vector2D					collision_size;			// オブジェクトのサイズ
+	Vector2D					collision_size;		// オブジェクトのサイズ
 	Vector2D					hitbox_size;		// 攻撃判定のサイズ
 	Vector2D					pivot;				// 始点と終点（相対座標）
 	eObjectType					object_type;		// 自身のオブジェクトタイプ

@@ -1,12 +1,15 @@
 #include "Camera.h"
 #include "../ProjectConfig.h"
 #include "../Input/InputManager.h"
-#include "DxLib.h"
+#include "../../Objects/GameObjectManager.h"
+#include "../Collision.h"
+#include <cmath>
 
 // コンストラクタ
 Camera::Camera():
 	location(),
-	size()
+	size(),
+	oracle(nullptr)
 {
 
 }
@@ -37,11 +40,51 @@ void Camera::Update()
 
 	if (input->GetLeftStick().x < 0.0f)
 	{
-		location.x += input->GetLeftStick().x;
+		location.x += input->GetLeftStick().x * 1.5;
 	}
-	if (input->GetLeftStick().x > 0.3f)
+	else if (input->GetLeftStick().x > 0.0f)
 	{
-		location.x += input->GetLeftStick().x;
+		location.x += input->GetLeftStick().x * 1.5;
+	}
+	else
+	{
+		// オブジェクトマネージャーの情報取得
+		GameObjectManager* object = GameObjectManager::GetInstance();
+		// オブジェクトリストを取得
+		std::vector<GameObject*> objects_list = object->GetObjectsList();
+
+		// 最長距離を初期化
+		float longest_distance = 0.0f;
+		GameObject* front_line = nullptr;
+
+		if (!objects_list.empty() && oracle != nullptr)
+		{
+			for (auto* obj : objects_list)
+			{
+				// ユニット以外は無視する
+				if (obj->GetCollision().object_type != eObjectType::Player ||
+					obj->GetMobility() == false)
+				{
+					continue;
+				}
+
+				// 巫女とユニットの距離を計算
+				Vector2D diff = obj->GetLocation() - oracle->GetLocation();
+				float distance = sqrtf(diff.x * diff.x + diff.y * diff.y);
+
+				// 最長距離を更新
+				if (distance > longest_distance)
+				{
+					longest_distance = distance;
+					front_line = obj;
+				}
+			}
+			// 前線を追跡
+			if (front_line != nullptr)
+			{
+				location.x = front_line->GetLocation().x;
+			}
+		}
 	}
 
 #ifdef DEBUG
@@ -89,4 +132,10 @@ void Camera::SetCameraPos(Vector2D location)
 Vector2D Camera::GetScreeenSize()
 {
 	return this->size;
+}
+
+// 巫女情報設定処理
+void Camera::SetPlayer(Oracle* oracle)
+{
+	this->oracle = oracle;
 }

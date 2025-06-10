@@ -112,7 +112,7 @@ void InGame::Initialize()
 			MessageBoxA(NULL, "BGM2の再生に失敗しました", "エラー", MB_OK);
 		}
 		// ステージサイズ設定
-		ProjectConfig::STAGE_WIDTH = 2000;
+		ProjectConfig::STAGE_WIDTH = 1500;
 		ProjectConfig::STAGE_HEIGHT = 720;
 		break;
 	default:
@@ -124,7 +124,7 @@ void InGame::Initialize()
 			MessageBoxA(NULL, "BGM3の再生に失敗しました", "エラー", MB_OK);
 		}
 		// ステージサイズ設定
-		ProjectConfig::STAGE_WIDTH = 1000;
+		ProjectConfig::STAGE_WIDTH = 1280;
 		ProjectConfig::STAGE_HEIGHT = 720;
 		break;
 	}
@@ -147,6 +147,7 @@ void InGame::Initialize()
 	}
 	// カメラ生成
 	camera->Initialize();
+	camera->SetPlayer(player);
 
 	// カーソルの初期化
 	cursor = 0;

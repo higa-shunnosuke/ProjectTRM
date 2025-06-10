@@ -2,12 +2,14 @@
 
 #include "../Singleton.h"
 #include "../Vector2D.h"
+#include "../../Objects/Character/Player/Oracle/Oracle.h"
 
 class Camera : public Singleton<Camera>
 {
 private:
 	Vector2D location;	// カメラ座標
 	Vector2D size;		// スクリーンサイズ
+	Oracle* oracle;		// 巫女のポインタ
 
 public:
 	// コンストラクタ
@@ -43,5 +45,11 @@ public:
 	/// </summary>
 	/// <returns>スクリーンサイズ</returns>
 	Vector2D GetScreeenSize();
+
+	/// <summary>
+	/// 巫女情報設定処理
+	/// </summary>
+	/// <param name="oracle"></param>
+	void SetPlayer(Oracle* oracle);
 };
 
