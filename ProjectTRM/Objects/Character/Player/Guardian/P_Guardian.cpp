@@ -27,7 +27,7 @@ void P_Guardian::Initialize()
 {
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
-	animation = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Walk.png", 3, 3, 1, 1024, 1024);
+	animation = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_All.png", 121, 11, 11, 96, 96);
 
 	LightMapManager* light = LightMapManager::GetInstance();
 	light->AddLight(this);
@@ -44,7 +44,7 @@ void P_Guardian::Initialize()
 	z_layer = 1;
 
 	attack_flag = false;
-	flip_flag = false;
+	flip_flag = true;
 
 	now_state = State::Move;
 
@@ -123,7 +123,7 @@ void P_Guardian::Update(float delta_second)
 
 	SoundControl();
 
-	if (Anim_count <= 2)
+	if (Anim_count <= anim_max_count)
 	{
 		AnimationControl(delta_second);
 	}
@@ -139,7 +139,7 @@ void P_Guardian::Draw(const Vector2D camera_pos) const
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(position.x, position.y, 0.1, 0.0, image, TRUE, flip_flag);
+	DrawRotaGraphF(position.x, position.y, 1.2, 0.0, image, TRUE, flip_flag);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
@@ -251,14 +251,14 @@ void P_Guardian::AnimationControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Idle:
-			animation = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Idle.png", 1, 1, 1, 1000, 1000);
+			anim_max_count = 9;
 			break;
 		case State::Move:
-			animation = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Walk.png", 3, 3, 1, 1024, 1024);
+			anim_max_count = 5;
 			break;
 		case State::Attack:
-			animation = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Attack.png", 3, 3, 1, 1024, 1024);
-			if (Anim_count >= 2)
+			anim_max_count = 5;
+			if (Anim_count == anim_max_count)
 			{
 				attack_flag = true;
 				now_state = State::Idle;
@@ -267,7 +267,7 @@ void P_Guardian::AnimationControl(float delta_second)
 		case State::Damage:
 			break;
 		case State::Death:
-			animation = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Down.png", 3, 3, 1, 1024, 1024);
+			anim_max_count = 11;
 			break;
 		default:
 			break;
@@ -279,11 +279,11 @@ void P_Guardian::AnimationControl(float delta_second)
 
 	if (Anim_flame >= 0.1f)
 	{
-		Anim_count += con;
+		Anim_count++;
 
-		if (Anim_count <= 0 || Anim_count >= 2)
+		if (Anim_count == anim_max_count)
 		{
-			con *= -1;
+			Anim_count = 0;
 		}
 
 		Anim_flame = 0.0f;
@@ -292,19 +292,19 @@ void P_Guardian::AnimationControl(float delta_second)
 	switch (now_state)
 	{
 	case State::Idle:
-		image = animation[0];
+		image = animation[Anim_count];
 		break;
 	case State::Move:
 		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 10) * (Ingame->GetSunLevel() - 1));
-		image = animation[Anim_count];
+		image = animation[Anim_count + 10];
 		break;
 	case State::Attack:
-		image = animation[Anim_count];
-		if (Anim_count >= 2)
+		image = animation[Anim_count + 78];
+		if (Anim_count == anim_max_count - 1)
 		{
 			attack_flag = true;
-			now_state = State::Idle;
-
+			now_state = State::Move;
+			velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 		}
 		break;
 	case State::Damage:
@@ -316,8 +316,8 @@ void P_Guardian::AnimationControl(float delta_second)
 		image = animation[0];
 		break;
 	case State::Death:
-		image = animation[Anim_count];
-		if (Anim_count == 2)
+		image = animation[Anim_count + 104];
+		if (Anim_count == anim_max_count - 1)
 		{
 			Finalize();
 		}

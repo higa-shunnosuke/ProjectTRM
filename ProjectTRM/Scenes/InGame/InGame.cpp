@@ -9,6 +9,7 @@
 #include "../../Objects/Character/Player/Ranged/P_Ranged.h"
 #include "../../Objects/Character/Player/Tank/P_Tank.h"
 #include "../../Objects/Character/Player/Bonfire/Bonfire.h"
+#include "../../Objects/Character/Player/Guardian/P_Guardian.h"
 
 #include "../../Objects/Character/Enemy/Melee/E_Melee.h"
 #include "../../Objects/Character/Enemy/Tank/E_Tank.h"
@@ -52,9 +53,10 @@ void InGame::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	// コストUI
 	unit_ui[0] = rm->GetImages("Resource/Images/Unit/Tank/Tank_Cost.png")[0];
-	unit_ui[1] = rm->GetImages("Resource/Images/Unit/Melee/Melee_Cost.png")[0];
+	unit_ui[1] = rm->GetImages("Resource/Images/Unit/Melee/Melee_Cost_New.png")[0];
 	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Cost.png")[0];
-	unit_ui[3] = rm->GetImages("Resource/Images/BackGround/Sun.png")[0];
+	unit_ui[3] = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Cost.png")[0];
+	unit_ui[4] = rm->GetImages("Resource/Images/BackGround/Sun.png")[0];
 	// 背景
 	BackGroundImage[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
 	BackGroundImage[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
@@ -300,7 +302,7 @@ void InGame::Draw() const
 		const int button_height = 200;
 
 		// ボタンの数
-		const int button_count = 4;
+		const int button_count = 5;
 
 		// ボタンの総合幅を計算
 		int total_buttons_width = button_count * button_width;
@@ -330,7 +332,7 @@ void InGame::Draw() const
 				//キャラの描画範囲を制限
 				SetDrawArea(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h);
 
-				if (i == 3)
+				if (i == 4)
 				{
 					if (cost < Sun_Level * 100)
 						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
@@ -366,7 +368,7 @@ void InGame::Draw() const
 			else
 			{
 
-				if (i == 3)
+				if (i == 4)
 				{
 					if (cost < Sun_Level * 100 && Sun_Level < 9)
 						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
@@ -536,7 +538,7 @@ void InGame::UnitSelection()
 	if (input->GetKeyState(KEY_INPUT_RIGHT) == eInputState::Pressed ||
 		input->GetButtonState(XINPUT_BUTTON_DPAD_RIGHT) == eInputState::Pressed)
 	{
-		if (cursor < 3)
+		if (cursor < 4)
 		{
 			cursor++;
 		}
@@ -604,6 +606,19 @@ void InGame::UnitSelection()
 			}
 			break;
 		case 3:
+			if (summon_flag[cursor] == false)
+			{
+				if (cost - Melee_Cost >= 0)
+				{
+					// 近接を生成
+					GameObject* obj = object->CreateObject<P_Guardian>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
+					obj->SetInGamePoint(this);
+					cost -= Guardian_Cost;
+					//summon_flag[cursor] = true;
+					summon_time[cursor] = std::chrono::steady_clock::now();
+				}
+			}
+		case 4:
 			if (Sun_Level != 10)
 			{
 				if (cost >= Sun_Level * 100)
