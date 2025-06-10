@@ -28,7 +28,7 @@ void Boss::Initialize()
 	collision.object_type = eObjectType::Enemy;
 	collision.hit_object_type.push_back(eObjectType::Player);
 	collision.collision_size = Vector2D(180.0f, 180.0f);
-	collision.hitbox_size = Vector2D(250.0f, 300.0f);
+	collision.hitbox_size = Vector2D(200.0f, 300.0f);
 	z_layer = 2;
 
 	// ‰æ‘œ”½“]‚ ‚è

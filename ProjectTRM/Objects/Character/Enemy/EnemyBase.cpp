@@ -42,6 +42,7 @@ void EnemyBase::Update(float delta_second)
 	if (HP <= 0)
 	{
 		now_state = State::Death;
+		collision.object_type = eObjectType::None;
 	}
 
 	// Ž‘±ƒ_ƒ[ƒW‚ð—^‚¦‚é
