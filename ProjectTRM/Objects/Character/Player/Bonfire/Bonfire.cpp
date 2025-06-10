@@ -32,7 +32,7 @@ void Bonfire::Initialize()
 	light->AddLight(this);
 	collision.light_size = 2.0;
 
-	is_mobility = true;
+	is_mobility = false;
 	is_aggressive = true;
 
 	collision.is_blocking = true;

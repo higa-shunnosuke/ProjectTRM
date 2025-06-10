@@ -1,7 +1,6 @@
 #include "SceneManager.h"
 #include "SceneFactory.h"
 #include "../Utility/LightMapManager.h"
-#include <cmath>
 
 // コンストラクタ
 SceneManager::SceneManager() :

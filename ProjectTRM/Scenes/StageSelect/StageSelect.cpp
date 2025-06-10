@@ -1,28 +1,36 @@
 #include "StageSelect.h"
 
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ï¿½Rï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^
 StageSelect::StageSelect()
 {
 
 }
 
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ï¿½fï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^
 StageSelect::~StageSelect()
 {
 
 }
 
-// ‰Šú‰»ˆ—
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void StageSelect::Initialize()
 {
-	// eƒNƒ‰ƒX‚Ì‰Šú‰»ˆ—‚ğŒÄ‚Ño‚·
+	// ï¿½eï¿½Nï¿½ï¿½ï¿½Xï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚Ñoï¿½ï¿½
 	__super::Initialize();
 
-	// ‰æ‘œ‚Ì“Ç‚İ‚İ
+	// ï¿½æ‘œï¿½Ì“Ç‚İï¿½ï¿½ï¿½
 	ResourceManager* rm = ResourceManager::GetInstance();
 
 	DecisionSE = rm->GetSounds("Resource/Sounds/StageSelect/Decision.mp3");
 	CursorMoveSE= rm->GetSounds("Resource/Sounds/StageSelect/CursorMove.mp3");
+	Stage_Image[0] = rm->GetImages("Resource/Images/BackGround/BlueMoonUI.png")[0];
+	Stage_Image[1] = rm->GetImages("Resource/Images/BackGround/YelloMoonUI.png")[0];
+	Stage_Image[2] = rm->GetImages("Resource/Images/BackGround/RedMoonUI.png")[0];
+	BackGroued_Image = rm->GetImages("Resource/Images/BackGround/StageSelect.png")[0];
+
+		ChangeFontType(DX_FONTTYPE_ANTIALIASING_EDGE);
+	DecisionSE = rm->GetSounds("Resource/Sounds/StageSelect/ï¿½ï¿½ï¿½ï¿½.mp3");
+	CursorMoveSE= rm->GetSounds("Resource/Sounds/StageSelect/ï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½Ú“ï¿½.mp3");
 
 	Stage_Image[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
 	Stage_Image[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
@@ -33,47 +41,53 @@ void StageSelect::Initialize()
 	ChangeVolumeSoundMem(100, BGM);
 	if (PlaySoundMem(BGM, DX_PLAYTYPE_LOOP) == -1)
 	{
-		MessageBoxA(NULL, "BGM1‚ÌÄ¶‚É¸”s‚µ‚Ü‚µ‚½", "ƒGƒ‰[", MB_OK);
+		MessageBoxA(NULL, "BGM1ï¿½ÌÄï¿½ï¿½Éï¿½ï¿½sï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½", "ï¿½Gï¿½ï¿½ï¿½[", MB_OK);
 	}
 
 }
 
-// XVˆ—
+// ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 eSceneType StageSelect::Update(const float& delta_second)
 {
-	// “ü—Íî•ñ‚ğæ“¾
+	// ï¿½ï¿½ï¿½Íï¿½ï¿½ï¿½ï¿½æ“¾
 	InputManager* input = InputManager::GetInstance();
 
-	// ƒXƒe[ƒW‘I‘ğƒV[ƒ“‚É‘JˆÚ‚·‚é
+	switch (State)
+	{
+	case Stage::DEFAULT:
+	// ï¿½Xï¿½eï¿½[ï¿½Wï¿½Iï¿½ï¿½ï¿½Vï¿½[ï¿½ï¿½ï¿½É‘Jï¿½Ú‚ï¿½ï¿½ï¿½
 	if (input->GetKeyState(KEY_INPUT_RIGHT)		== eInputState::Pressed ||
 		input->GetButtonState(XINPUT_BUTTON_DPAD_RIGHT) == eInputState::Pressed)
 	{
 		SerectStage += 1;
-		if (SerectStage > 4)
+		if (SerectStage > ThardStage)
 		{
-			SerectStage = 4;
+			SerectStage = ThardStage;
 		}
 		else
 		{
-			PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
+			x = 200;
+			ChangeX = Set_StageX;
+			State = Stage::LMOVE;
 		}
 	}
-	// ƒXƒe[ƒW‘I‘ğƒV[ƒ“‚É‘JˆÚ‚·‚é
+	// ï¿½Xï¿½eï¿½[ï¿½Wï¿½Iï¿½ï¿½ï¿½Vï¿½[ï¿½ï¿½ï¿½É‘Jï¿½Ú‚ï¿½ï¿½ï¿½
 	else if (input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Pressed ||
 		input->GetButtonState(XINPUT_BUTTON_DPAD_LEFT) == eInputState::Pressed)
 	{
 		SerectStage -= 1;
-		if (SerectStage < 1)
+		if (SerectStage < FirstStage)
 		{
-			SerectStage = 1;
+			SerectStage = FirstStage;
 		}
 		else
 		{
-			PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
+			ChangeX = x;
+			x = -Set_StageX;
+			State = Stage::RMOVE;
 		}
 	}
-
-	// ƒCƒ“ƒQ[ƒ€ƒV[ƒ“‚É‘JˆÚ‚·‚é
+	// ï¿½Cï¿½ï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½Vï¿½[ï¿½ï¿½ï¿½É‘Jï¿½Ú‚ï¿½ï¿½ï¿½
 	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
 	{
 		SetStageNumber(SerectStage);
@@ -86,126 +100,158 @@ eSceneType StageSelect::Update(const float& delta_second)
 		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
 		return eSceneType::in_game;
 	}
+	break;
+	case Stage::LMOVE:
 
-	// eƒNƒ‰ƒX‚ÌXVˆ—‚ğŒÄ‚Ño‚·
+		x -= 1;
+		ChangeX -= 1;
+
+		if (ChangeX == 200)
+		{
+		x = 200;
+		ChangeX = Set_StageX;
+		State = Stage::DEFAULT;
+		}
+
+		break;
+	case Stage::RMOVE:
+
+		x += 1;
+		ChangeX += 1;
+
+		if (x == 200)
+		{
+			x = 200;
+			ChangeX = Set_StageX;
+			State = Stage::DEFAULT;
+		}
+		break;
+	case Stage::END:
+		break;
+	default:
+		break;
+	}
+
+	// ï¿½eï¿½Nï¿½ï¿½ï¿½Xï¿½ÌXï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚Ñoï¿½ï¿½
 	return __super::Update(delta_second);
 }
 
-// •`‰æˆ—
+// ï¿½`ï¿½æˆï¿½ï¿½
 void StageSelect::Draw() const
 {
-	/*
+
+	int Cw = ChangeX + 100;
+
+	switch (State)
 	{
-		int upnum1 = 0, upnum2 = 0, upnum3 = 0;
-
-
-		SetFontSize(60);
-		DrawFormatString(20, 40, 0xffffff, "Stage Select");
-		SetFontSize(32);
-		DrawFormatString(100, 400, 0xffffff, "A Button");
-		DrawFormatString(100, 450, 0x000000, "Stage:%d", SerectStage);
-
-
-		switch (SerectStage)
-		{
-		case 1:
-			upnum1 += 50;
-			DrawBox(149, 149, 401, 351, 0xffffff, 0);
-			break;
-		case 2:
-			upnum2 += 50;
-			DrawBox(399, 149, 651, 351, 0xffffff, 0);
-			break;
-		case 3:
-			upnum3 += 50;
-			DrawBox(649, 149, 901, 351, 0xffffff, 0);
-			break;
-		default:
-			break;
-		}
-
-		DrawBox(200 - upnum1, 200 - upnum1, 350 + upnum1, 300 + upnum1, 0x00ffff, 1);
-		DrawBox(450 - upnum2, 200 - upnum2, 600 + upnum2, 300 + upnum2, 0x00ffff, 1);
-		DrawBox(700 - upnum3, 200 - upnum3, 850 + upnum3, 300 + upnum3, 0x00ffff, 1);
-
-	}*/
-
-	// ƒ{ƒ^ƒ“ƒTƒCƒY
-	const int button_width = 200;
-	const int button_height = 200;
-
-	// ƒ{ƒ^ƒ“‚Ì”
-	const int button_count = 3;
-
-	// ƒ{ƒ^ƒ“‚Ì‘‡•‚ğŒvZ
-	int total_buttons_width = button_count * button_width;
-	// ŠÔŠu‚Ì‘‡•‚ğŒvZ
-	int total_spacing = D_WIN_MAX_X - total_buttons_width;
-	// ƒ{ƒ^ƒ“‚ÌŠÔŠu‚ÌŒvZ
-	int spacing = total_spacing / (button_count + 1);
-
-	for (int i = 0; i < button_count; ++i)
+	case DEFAULT:
 	{
-		//	‘I‘ğˆ‚ÌˆÊ’u
-		int x = spacing + i * (button_width + spacing);
-		int y = 120;
+		DrawExtendGraph((int)(0), (int)(0), (int)(1280), (int)(y + 620), BackGroued_Image, TRUE);
 
-		// Šg‘å—p•Ï”
-		int w = button_width;
-		int h = button_height;
+		DrawFormatString(x - 50, 50, 0xffffff, StageText[SerectStage - 1]);
 
-		if (i == SerectStage - 1)
+		// ï¿½æ‘œï¿½ğ’†Sï¿½É•`ï¿½ï¿½
+		DrawExtendGraph((int)(x), (int)(y), (int)(x + w), (int)(y + h), Stage_Image[SerectStage - 1], TRUE);
+
+		
+		DrawString(x, 350, StageFlabarText[SerectStage - 1], 0xffffff);
+		if (SerectStage != FirstStage)
 		{
-			// ‘I‘ğ’†‚Ì‚à‚Ì‚¾‚¯Šg‘åi1.2”{j
-			int w = (int)(button_width * 1.2);
-			int h = (int)(button_height * 1.2);
-
-			// ˜gi”wŒij‚ğ•`‰æ
-			DrawBox(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h, GetColor(255, 255, 255), TRUE);
-			//ƒLƒƒƒ‰‚Ì•`‰æ”ÍˆÍ‚ğ§ŒÀ
-			SetDrawArea(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h);
-			{
-				// ƒLƒƒƒ‰‰æ‘œ‚ğ’†S‚É•`‰æ
-				DrawExtendGraph(
-					(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
-					(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
-					Stage_Image[i], TRUE);
-			}
+			DrawString(Centher - 80, 650, StageSelectText[SerectStage - 1], 0xffffff);
 		}
 		else
 		{
-
-			// ˜gi”wŒij‚ğ•`‰æ
-			DrawBox(x, y, x + button_width, y + button_height, GetColor(100, 100, 100), TRUE);
-			//ƒLƒƒƒ‰‚Ì•`‰æ”ÍˆÍ‚ğ§ŒÀ
-			SetDrawArea(x, y, x + button_width, y + button_height);
-
-			// ƒLƒƒƒ‰‰æ‘œ‚ğ’†S‚É•`‰æ
-			DrawExtendGraph(
-				(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
-				(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
-				Stage_Image[i], TRUE);
+			DrawString(Centher, 650, StageSelectText[SerectStage - 1], 0xffffff);
 		}
-		// •`‰æ”ÍˆÍ‚ğŒ³‚É–ß‚·
-		SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
+		break;
 
 	}
-		// eƒNƒ‰ƒX‚Ì•`‰æˆ—‚ğŒÄ‚Ño‚·
-		__super::Draw();
-	
-}
+	//ï¿½ï¿½ï¿½Éiï¿½İ‚Ü‚ï¿½ï¿½B
+	case LMOVE:
+	{
 
-// I—¹ˆ—
+		DrawExtendGraph((int)(x-200), (int)(0), (int)(x + 1080), (int)(y + 620), BackGroued_Image, TRUE);
+		if (SerectStage != FinalStage)
+		{
+			DrawExtendGraph((int)(ChangeX - 200), (int)(0), (int)(ChangeX + 1080), (int)(y + 620), BackGroued_Image, TRUE);
+		}
+		else
+		{
+			DrawExtendGraph((int)(ChangeX - 200), (int)(0), (int)(ChangeX + 1080), (int)(y + 620), BackGroued_Image, TRUE);
+		}
+		// ï¿½æ‘œï¿½ğ’†Sï¿½É•`ï¿½ï¿½
+		DrawExtendGraph((int)(x), (int)(y), (int)(x + w), (int)(y + h), Stage_Image[SerectStage - 2], TRUE);
+		DrawExtendGraph((int)(ChangeX), (int)(y), (int)(ChangeX + w), (int)(y + h), Stage_Image[SerectStage-1], TRUE);
+
+		DrawFormatString(x - 50, 50, 0xffffff, StageText[SerectStage - 2]);
+		DrawFormatString(ChangeX - 50, 50, 0xffffff, StageText[SerectStage - 1]);
+
+		DrawString(x, 350, StageFlabarText[SerectStage - 2], 0xffffff);
+		DrawString(ChangeX, 350, StageFlabarText[SerectStage - 1], 0xffffff);
+		if (SerectStage != FirstStage)
+		{
+
+			DrawString(Centher + (x - 200), 650, StageSelectText[SerectStage - 2], 0xffffff);
+			DrawString(Centher + (ChangeX - 280), 650, StageSelectText[SerectStage - 1], 0xffffff);
+		}
+		else
+		{
+			//1ï¿½Xï¿½eï¿½[ï¿½Wï¿½Ú‚Å“ï¿½ï¿½Í‚ï¿½ï¿½Ä‚ï¿½ï¿½Ê‚ï¿½È‚ï¿½ï¿½Ì‚ÅAï¿½ï¿½ï¿½Lï¿½ÌƒGï¿½ï¿½ï¿½[ï¿½Í–ï¿½ï¿½ï¿½
+			DrawString(Centher + (x - 200), 650, StageSelectText[SerectStage - 2], 0xffffff);
+			DrawString(Centher + (ChangeX - 200), 650, StageSelectText[SerectStage - 1], 0xffffff);
+		}
+
+	}
+	break;
+
+	case Stage::RMOVE:
+	{
+		DrawExtendGraph((int)(x-200), (int)(0), (int)(x + 1080), (int)(y + 620), BackGroued_Image, TRUE);
+		DrawExtendGraph((int)(ChangeX-200), (int)(0), (int)(ChangeX + 1080), (int)(y + 620), BackGroued_Image, TRUE);
+
+		// ï¿½æ‘œï¿½ğ’†Sï¿½É•`ï¿½ï¿½
+		DrawExtendGraph((int)(ChangeX), (int)(y), (int)(ChangeX + w), (int)(y + h), Stage_Image[SerectStage], TRUE);
+		DrawExtendGraph((int)(x), (int)(y), (int)(x + w), (int)(y + h), Stage_Image[SerectStage - 1], TRUE);
+
+		DrawFormatString(ChangeX - 50, 50, 0xffffff, StageText[SerectStage]);
+		DrawFormatString(x - 50, 50, 0xffffff, StageText[SerectStage - 1]);
+
+		DrawString(ChangeX, 350, StageFlabarText[SerectStage], 0xffffff);
+		DrawString(x, 350, StageFlabarText[SerectStage - 1], 0xffffff);
+
+		if (SerectStage != FirstStage)
+		{
+
+			DrawString(Centher + (x - 200), 650, StageSelectText[SerectStage-1], 0xffffff);
+			DrawString(Centher + (ChangeX - 200), 650, StageSelectText[SerectStage], 0xffffff);
+		}
+		else
+		{
+			DrawString(Centher + (x - 200), 650, StageSelectText[SerectStage-1], 0xffffff);
+			DrawString(Centher + (ChangeX - 200), 650, StageSelectText[SerectStage], 0xffffff);
+		}
+
+
+		break;
+	}
+	case END:
+		break;
+	default:
+		break;
+	}
+}
+// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void StageSelect::Finalize()
 {
+	ChangeFontType(DX_FONTTYPE_NORMAL);
 
 	StopSoundMem(BGM);
 
-	// eƒNƒ‰ƒX‚ÌI—¹ˆ—‚ğŒÄ‚Ño‚·
+	// ï¿½eï¿½Nï¿½ï¿½ï¿½Xï¿½ÌIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚Ñoï¿½ï¿½
 	__super::Finalize();
 }
 
-// Œ»İ‚ÌƒV[ƒ“ƒ^ƒCƒvæ“¾ˆ—
+// ï¿½ï¿½ï¿½İ‚ÌƒVï¿½[ï¿½ï¿½ï¿½^ï¿½Cï¿½vï¿½æ“¾ï¿½ï¿½ï¿½ï¿½
 const eSceneType StageSelect::GetNowSceneType() const
 {
 	return eSceneType::stage_select;
