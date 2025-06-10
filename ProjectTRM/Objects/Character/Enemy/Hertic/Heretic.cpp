@@ -15,7 +15,7 @@
 #define COST_UPNUM 10
 
 
-#define ENEMY_TEST
+//#define ENEMY_TEST
 
 #include"../../../../Utility/Input/InputManager.h"
 
@@ -273,9 +273,6 @@ void Heretic::SetInGamePoint(InGame* point)
 
 void Heretic::ThinkingEnemy()
 {
-
-
-
 	int Pcount_sum = 0;
 	int Pcount_num = 0;
 	int Ecount_sum = 0;
@@ -414,7 +411,7 @@ void Heretic::ThinkingEnemy()
 
 auto now_time = std::chrono::steady_clock::now();
 
-if (now_time - rush_time > std::chrono::milliseconds(100))
+if (now_time - rush_time > std::chrono::milliseconds(1000))
 {
 	if (Time_rush)
 	{
@@ -429,7 +426,7 @@ if (now_time - rush_time > std::chrono::milliseconds(100))
 
 if (Time_rush != true)
 {
-	if (Pcount_sum > Ecount_sum + 500)
+	if (Pcount_num > 49)
 	{
 		//【仮】
 		//これがワイの…切り札や！！！！
