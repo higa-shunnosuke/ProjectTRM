@@ -21,12 +21,30 @@ void StageSelect::Initialize()
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 
+<<<<<<< HEAD
 	Stage_Image[0] = rm->GetImages("Resource/Images/BackGround/BlueMoonUI.png")[0];
 	Stage_Image[1] = rm->GetImages("Resource/Images/BackGround/YelloMoonUI.png")[0];
 	Stage_Image[2] = rm->GetImages("Resource/Images/BackGround/RedMoonUI.png")[0];
 	BackGroued_Image = rm->GetImages("Resource/Images/BackGround/StageSelect.png")[0];
 
 		ChangeFontType(DX_FONTTYPE_ANTIALIASING_EDGE);
+=======
+	DecisionSE = rm->GetSounds("Resource/Sounds/StageSelect/決定.mp3");
+	CursorMoveSE= rm->GetSounds("Resource/Sounds/StageSelect/カーソル移動.mp3");
+
+	Stage_Image[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
+	Stage_Image[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
+	Stage_Image[2] = rm->GetImages("Resource/Images/BackGround/RedMoon.png")[0];
+
+	BGM = rm->GetSounds("Resource/Sounds/StageSelect/StageSelect.mp3");
+
+	ChangeVolumeSoundMem(100, BGM);
+	if (PlaySoundMem(BGM, DX_PLAYTYPE_LOOP) == -1)
+	{
+		MessageBoxA(NULL, "BGM1の再生に失敗しました", "エラー", MB_OK);
+	}
+
+>>>>>>> 9064a4000690f7caab6471c1b805349486979fa1
 }
 
 // 更新処理
@@ -53,6 +71,10 @@ eSceneType StageSelect::Update(const float& delta_second)
 			ChangeX = Set_StageX;
 			State = Stage::LMOVE;
 		}
+		else
+		{
+			PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
+		}
 	}
 	// ステージ選択シーンに遷移する
 	else if (input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Pressed ||
@@ -69,16 +91,22 @@ eSceneType StageSelect::Update(const float& delta_second)
 			x = -Set_StageX;
 			State = Stage::RMOVE;
 		}
+		else
+		{
+			PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
+		}
 	}
 	// インゲームシーンに遷移する
 	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
 	{
 		SetStageNumber(SerectStage);
+		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
 		return eSceneType::in_game;
 	}
 	if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 	{
 		SetStageNumber(SerectStage);
+		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
 		return eSceneType::in_game;
 	}
 	break;
@@ -225,6 +253,8 @@ void StageSelect::Draw() const
 void StageSelect::Finalize()
 {
 	ChangeFontType(DX_FONTTYPE_NORMAL);
+
+	StopSoundMem(BGM);
 
 	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();

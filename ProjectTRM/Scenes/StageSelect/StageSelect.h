@@ -28,6 +28,7 @@ private:
 	int Stage_Image[3];
 	int BackGroued_Image;
 	int SerectStage = 1;
+<<<<<<< HEAD
 
 	int x = 200;
 	int y = 100;
@@ -41,6 +42,11 @@ private:
 
 	int ChangeX = Set_StageX;
 
+=======
+	int BGM;
+	int DecisionSE;
+	int CursorMoveSE;
+>>>>>>> 9064a4000690f7caab6471c1b805349486979fa1
 public:
 	// コンストラクタ
 	StageSelect();
