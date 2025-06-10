@@ -52,7 +52,7 @@ void InGame::Initialize()
 	// ‰æ‘œ‚Ì“Ç‚Ýž‚Ý
 	ResourceManager* rm = ResourceManager::GetInstance();
 	// ƒRƒXƒgUI
-	unit_ui[0] = rm->GetImages("Resource/Images/Unit/Tank/Tank_Cost.png")[0];
+	unit_ui[0] = rm->GetImages("Resource/Images/Unit/Tank/Tank_Cost_New.png")[0];
 	unit_ui[1] = rm->GetImages("Resource/Images/Unit/Melee/Melee_Cost_New.png")[0];
 	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Cost.png")[0];
 	unit_ui[3] = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Cost.png")[0];

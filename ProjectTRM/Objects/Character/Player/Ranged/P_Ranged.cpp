@@ -135,9 +135,12 @@ void P_Ranged::Draw(const Vector2D camera_pos) const
 
 	// 近接ユニットの描画
 		// オフセット値を基に画像の描画を行う
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(position.x, position.y, 1.4, 0.0, image, TRUE, flip_flag);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	if (Anim_count <= anim_max_count)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawRotaGraphF(position.x, position.y, 1.4, 0.0, image, TRUE, flip_flag);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
 
 	switch (now_state)
 	{
@@ -392,7 +395,7 @@ void P_Ranged::EffectControl(float delta_second)
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 30, 6, 5, 100, 100);
 			break;
 		case State::Death:
-			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ranged_Ghost.png", 1, 1, 1, 32, 32);
+			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50);
 			break;
 		default:
 			break;
@@ -452,7 +455,7 @@ void P_Ranged::SoundControl()
 		default:
 			break;
 		}
-		ChangeVolumeSoundMem(150, sounds);
+		ChangeVolumeSoundMem(90, sounds);
 	}
 }
 

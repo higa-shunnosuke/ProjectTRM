@@ -8,7 +8,9 @@ P_Projectile::P_Projectile() :
 	Damage(0),
     angle(0.0f),
     target_location(),
-    old_location()
+    old_location(),
+    end_loc(),
+    sounds()
 {
 
 }
@@ -183,7 +185,7 @@ void P_Projectile::SoundControl()
         default:
             break;
         }
-        ChangeVolumeSoundMem(150, sounds);
+        ChangeVolumeSoundMem(90, sounds);
     }
 }
 

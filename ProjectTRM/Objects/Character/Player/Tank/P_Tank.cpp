@@ -10,7 +10,13 @@ size_t P_Tank::GetCount()
 }
 
 // コンストラクタ
-P_Tank::P_Tank()
+P_Tank::P_Tank() :
+	effect_alpha(),
+	effect_image(),
+	light(nullptr),
+	object(nullptr),
+	sounds(),
+	anim_max_count()
 {
 	count++;
 }
@@ -26,8 +32,8 @@ void P_Tank::Initialize()
 {
 	// 画像等の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
-	animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32);
-	effect_image = rm->GetImages("Resource/Images/Effect/Unit/Tank_Ghost.png", 1, 1, 1, 32, 32)[0];
+	animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Unit_Walk.png", 9, 9, 1, 48, 32);
+	effect_image = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50)[0];
 	sounds = rm->GetSounds("Resource/Sounds/UnitSE/Tank/Tank_Attack.mp3");
 
 	light = LightMapManager::GetInstance();
@@ -122,7 +128,7 @@ void P_Tank::Update(float delta_second)
 
 	SoundControl();
 
-	if (Anim_count <= 2)
+	if (Anim_count <= anim_max_count)
 	{
 		AnimationControl(delta_second);
 	}
@@ -138,7 +144,7 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 
 	// 灯守の描画
 	// オフセット値を基に画像の描画を行う
-	if (Anim_count <= 2)
+	if (Anim_count <= anim_max_count - 1)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
@@ -256,13 +262,16 @@ void P_Tank::AnimationControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Idle:
-			animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 3, 3, 1, 32, 32);
+			animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Unit_Idle.png", 10, 10, 1, 48, 32);
+			anim_max_count = 10;
 			break;
 		case State::Move:
-			animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 3, 3, 1, 32, 32);
+			animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Unit_Walk.png", 9, 9, 1, 48, 32);
+			anim_max_count = 9;
 			break;
 		case State::Attack:
 			animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Attack.png", 4, 4, 1, 32, 32);
+			anim_max_count = 4;
 			if (Anim_count >= 2)
 			{
 				attack_flag = true;
@@ -273,7 +282,8 @@ void P_Tank::AnimationControl(float delta_second)
 			PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
 			break;
 		case State::Death:
-			animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Down.png", 3, 3, 1, 32, 32);
+			animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Unit_Down.png", 8, 8, 1, 48, 32);
+			anim_max_count = 8;
 			break;
 		default:
 			break;
@@ -285,11 +295,11 @@ void P_Tank::AnimationControl(float delta_second)
 
 	if (Anim_flame >= 0.1f)
 	{
-		Anim_count += con;
+		Anim_count++;
 
-		if (Anim_count <= 0 || Anim_count >= 2)
+		if (Anim_count == anim_max_count)
 		{
-			con *= -1;
+			Anim_count = 0;
 		}
 
 		Anim_flame = 0.0f;
@@ -298,11 +308,11 @@ void P_Tank::AnimationControl(float delta_second)
 	switch (now_state)
 	{
 	case State::Idle:
-		image = animation[0];
+		image = animation[Anim_count];
 		break;
 	case State::Move:
 		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
-		image = animation[1 + Anim_count];
+		image = animation[Anim_count];
 		break;
 	case State::Damage:
 		alpha += add;
@@ -310,15 +320,22 @@ void P_Tank::AnimationControl(float delta_second)
 		{
 			add = -add;
 		}
-		image = animation[0];
+		if (velocity.x < 0.0f)
+		{
+			image = animation[Anim_count];
+		}
+		else
+		{
+			image = animation[0];
+		}
 		break;
 	case State::Death:
 		image = animation[Anim_count];
-		if (Anim_count >= 2)
+		if (Anim_count == anim_max_count - 1)
 		{
 			object->CreateObject<Torch>(this->location);
 			location.y -= Anim_count * 10 + Anim_flame * 10;
-			Anim_count = 3;
+			Anim_count += 2;
 			//他のオブジェクトの邪魔をしないようにオブジェクトタイプの消去
 			collision.hit_object_type.clear();
 			collision.object_type = eObjectType::None;
@@ -346,7 +363,7 @@ void P_Tank::EffectControl(float delta_second)
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 30, 6, 5, 100, 100);
 			break;
 		case State::Death:
-			Effect = rm->GetImages("Resource/Images/Effect/Unit/Tank_Ghost.png", 1, 1, 1, 32, 32);
+			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50);
 			break;
 		default:
 			break;
@@ -408,6 +425,6 @@ void P_Tank::SoundControl()
 		default:
 			break;
 		}
-		ChangeVolumeSoundMem(150, sounds);
+		ChangeVolumeSoundMem(90, sounds);
 	}
 }

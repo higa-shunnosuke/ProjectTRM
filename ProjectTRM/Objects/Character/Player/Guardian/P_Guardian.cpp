@@ -11,7 +11,11 @@ size_t P_Guardian::GetCount()
 // コンストラクタ
 P_Guardian::P_Guardian() :
 	Damage(),
-	effect_image()
+	effect_image(),
+	object(nullptr),
+	anim_max_count(),
+	sounds(),
+	effect_alpha()
 {
 	count++;
 }
@@ -29,9 +33,9 @@ void P_Guardian::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	animation = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_All.png", 121, 11, 11, 96, 96);
 
-	LightMapManager* light = LightMapManager::GetInstance();
-	light->AddLight(this);
-	collision.light_size = 1.0;
+	//LightMapManager* light = LightMapManager::GetInstance();
+	//light->AddLight(this);
+	//collision.light_size = 1.0;
 
 	is_mobility = true;
 	is_aggressive = true;
@@ -138,9 +142,12 @@ void P_Guardian::Draw(const Vector2D camera_pos) const
 
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(position.x, position.y, 1.0, 0.0, image, TRUE, flip_flag);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	if (Anim_count <= anim_max_count)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawRotaGraphF(position.x, position.y, 1.0, 0.0, image, TRUE, flip_flag);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
 
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xffa000, TRUE);*/
@@ -161,8 +168,8 @@ void P_Guardian::Draw(const Vector2D camera_pos) const
 // 終了時処理
 void P_Guardian::Finalize()
 {
-	LightMapManager* light = LightMapManager::GetInstance();
-	light->DeleteLight(this);
+	//LightMapManager* light = LightMapManager::GetInstance();
+	//light->DeleteLight(this);
 	object->DestroyObject(this);
 }
 
@@ -319,7 +326,9 @@ void P_Guardian::AnimationControl(float delta_second)
 		image = animation[Anim_count + 104];
 		if (Anim_count == anim_max_count - 1)
 		{
-			Finalize();
+			Anim_count += 2;
+			collision.hit_object_type.clear();
+			collision.object_type = eObjectType::None;
 		}
 		break;
 	default:
@@ -330,19 +339,48 @@ void P_Guardian::AnimationControl(float delta_second)
 // エフェクト制御処理
 void P_Guardian::EffectControl(float delta_second)
 {
+	if (now_state != old_state)
+	{
+		ResourceManager* rm = ResourceManager::GetInstance();
+		switch (now_state)
+		{
+		case State::Death:
+			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50);
+			break;
+		default:
+			break;
+		}
+	}
 	switch (now_state)
 	{
-	case State::Idle:
-		break;
-	case State::Move:
-		break;
-	case State::Attack:
-		break;
-	case State::Damage:
-		break;
 	case State::Death:
+		effect_image = Effect[0];
+		effect_alpha += add;
+		//完全に透明になったらオブジェクト消去
+		if (effect_alpha <= 0)
+		{
+			effect_alpha = 0;
+			Finalize();
+		}
 		break;
-	default:
-		break;
+	}
+}
+
+//SEの制御処理
+void P_Guardian::SoundControl()
+{
+	if (now_state != old_state)
+	{
+		ResourceManager* rm = ResourceManager::GetInstance();
+		switch (now_state)
+		{
+
+		case State::Attack:
+			sounds = rm->GetSounds("Resource/Sounds/UnitSE/Tank/Tank_Hit.mp3");
+			break;
+		default:
+			break;
+		}
+		ChangeVolumeSoundMem(90, sounds);
 	}
 }
