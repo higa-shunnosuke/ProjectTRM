@@ -1,35 +1,19 @@
 #pragma once
 
-#include "../../Character.h"
-#include <chrono>
+#include "../EnemyBase.h"
 
 // 敵近接クラス
-class E_Melee :public Character
+class E_Melee :public EnemyBase
 {
 private:
 	static size_t count;	// 敵近接のカウンタ
-	int anim_max_count;		// アニメーション画像の枚数
-	float recovery_time;	// 硬直時間
-	float damage_rate;		// 持続ダメージの頻度
-	float anim_rate;		// アニメーションの早さ
-	float speed;			// 歩く速さ
-	bool old_light;			// 前回のライトフラグ
-
-	// エフェクト
-	int effect;
-	std::vector<int> effect_image;
-	float effect_flame;		// エフェクトアニメーションの早さ
-	float effect_count;		// エフェクトアニメーションのカウント
-
+	
 public:
 	/// <summary>
 	/// 敵近接のカウント取得処理
 	/// </summary>
 	/// <returns>敵近接の数</returns>
 	static size_t GetCount();
-
-private:
-	int Damage;	//ダメージ
 
 public:
 	//コンストラクタ
@@ -78,17 +62,8 @@ public:
 	/// ライト範囲通知処理
 	/// </summary>
 	virtual void OutLightRange() override;
-	/// <summary>
-	/// HP管理処理
-	/// </summary>
-	/// <param name="hit_object">ダメージ</param>
-	virtual void HPControl(int Damage) override;
 
 private:
-	/// <summary>
-	/// 攻撃処理
-	/// </summary>
-	virtual void Attack(GameObject* hit_object);
 	/// <summary>
 	/// 移動処理
 	/// </summary>

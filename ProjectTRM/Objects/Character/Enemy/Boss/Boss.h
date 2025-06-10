@@ -1,26 +1,13 @@
 #pragma once
 
-#include "../../Character.h"
+#include "../EnemyBase.h"
 
 // ゲームオブジェクト基底クラス
-class Boss :public Character
+class Boss :public EnemyBase
 {
 private:
 	static size_t count;
-	int anim_max_count;		// アニメーション画像の枚数
-	float recovery_time;	// 硬直時間
-	float damage_rate;		// 持続ダメージの頻度
-	float anim_rate;		// アニメーションの早さ
-	float speed;			// 歩く速さ
-	int Damage;				// ダメージ
-	bool old_light;			// 前回のライトフラグ
-
-	// エフェクト
-	int effect;
-	std::vector<int> effect_image;
-	float effect_flame;		// エフェクトアニメーションの早さ
-	int effect_count;		// エフェクトアニメーションのカウント
-
+	
 public:
 	//コンストラクタ
 	Boss();
@@ -69,18 +56,7 @@ public:
 	/// </summary>
 	virtual void OutLightRange() override;
 
-public:
-	/// <summary>
-	/// HP管理処理
-	/// </summary>
-	/// <param name="hit_object">ダメージ</param>
-	virtual void HPControl(int Damage);
-
 private:
-	/// <summary>
-	/// 攻撃処理
-	/// </summary>
-	virtual void Attack(GameObject* hit_object);
 	/// <summary>
 	/// 移動処理
 	/// </summary>

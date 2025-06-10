@@ -11,7 +11,8 @@ private:
 	float	Anim_flame;
 
 	int BackGroundImage;
-
+	int BGM;
+	int DecisionSE;
 public:
 	// コンストラクタ
 	Title();

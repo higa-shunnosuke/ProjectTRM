@@ -166,7 +166,6 @@
     <ClCompile Include="Utility\Input\InputManager.cpp" />
     <ClCompile Include="Utility\ProjectConfig.cpp" />
     <ClCompile Include="Utility\ResourceManager.cpp" />
-    <ClCompile Include="Utility\StageData.cpp" />
     <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -207,7 +206,6 @@
     <ClInclude Include="Utility\ProjectConfig.h" />
     <ClInclude Include="Utility\ResourceManager.h" />
     <ClInclude Include="Utility\Singleton.h" />
-    <ClInclude Include="Utility\StageData.h" />
     <ClInclude Include="Utility\Vector2D.h" />
   </ItemGroup>
   <ItemGroup>

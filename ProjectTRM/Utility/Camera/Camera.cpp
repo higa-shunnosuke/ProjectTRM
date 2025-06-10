@@ -5,7 +5,8 @@
 
 // コンストラクタ
 Camera::Camera():
-	location()
+	location(),
+	size()
 {
 
 }
@@ -19,9 +20,13 @@ Camera::~Camera()
 // 初期化処理
 void Camera::Initialize()
 {
+	// スクリーンの初期サイズを設定
+	this->size.x = D_WIN_MAX_X;
+	this->size.y = D_WIN_MAX_Y;
+
 	// カメラの初期座標を設定
-	this->location.x = BOX_SIZE * STAGE_SIZE_X - (D_WIN_MAX_X / 2);
-	this->location.y = D_WIN_MAX_Y / 2;
+	this->location.x = ProjectConfig::STAGE_WIDTH - (size.x / 2);
+	this->location.y = size.y / 2;
 }
 
 // 更新処理
@@ -53,8 +58,8 @@ void Camera::Update()
 
 	/// ステージ外にいかないようにする処理
 	float right,left;
-	right = BOX_SIZE * STAGE_SIZE_X - (D_WIN_MAX_X / 2);
-	left = D_WIN_MAX_X / 2;
+	right = ProjectConfig::STAGE_WIDTH - (size.x / 2);
+	left = size.x / 2;
 
 	//右端の制限
 	if (location.x > right)
@@ -78,4 +83,10 @@ Vector2D Camera::GetCameraPos()
 void Camera::SetCameraPos(Vector2D location)
 {
 	this->location = location;
+}
+
+// スクリーンサイズ取得処理
+Vector2D Camera::GetScreeenSize()
+{
+	return this->size;
 }

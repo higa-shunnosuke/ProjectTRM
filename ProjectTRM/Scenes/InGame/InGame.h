@@ -16,8 +16,7 @@
 enum class GameState
 {
 	PLAYING,
-	BOSS_DEAD,
-	CLEAR
+	BOSS_DEAD
 };
 
 
@@ -36,7 +35,6 @@ private:
 	int ClickUp;
 	int Cost_Max;
 	int Sun_Level;
-	float move_camera;
 	Vector2D old_camerapos;
 	int			cost;				// コスト
 	bool		summon_flag[3];		// 召喚フラグ

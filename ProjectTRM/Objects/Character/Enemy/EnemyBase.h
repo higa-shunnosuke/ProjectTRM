@@ -6,7 +6,6 @@
 class EnemyBase :public Character
 {
 protected:
-	static size_t count;	// カウンタ（各エネミーの数）
 	int anim_max_count;		// アニメーション画像の枚数
 	float anim_rate;		// アニメーションの早さ
 	float damage_rate;		// 持続ダメージの頻度
@@ -20,13 +19,6 @@ protected:
 	std::vector<int> effect_image;	// アニメーション画像
 	float effect_flame;				// アニメーションの早さ
 	int effect_count;				// アニメーションのカウント
-
-protected:
-	/// <summary>
-	/// 敵近接のカウント取得処理
-	/// </summary>
-	/// <returns>敵近接の数</returns>
-	static size_t GetCount();
 
 public:
 	//コンストラクタ
