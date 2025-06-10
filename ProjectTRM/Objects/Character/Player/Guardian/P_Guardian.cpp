@@ -139,7 +139,7 @@ void P_Guardian::Draw(const Vector2D camera_pos) const
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(position.x, position.y, 1.2, 0.0, image, TRUE, flip_flag);
+	DrawRotaGraphF(position.x, position.y, 1.0, 0.0, image, TRUE, flip_flag);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),

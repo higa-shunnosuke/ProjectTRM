@@ -57,7 +57,7 @@ void P_Melee::Initialize()
 	Damage = BASIC_POWER;
 
 	// HP‰Šú‰»
-	HP = 40;
+	HP = 30;
 
 	object = GameObjectManager::GetInstance();
 
