@@ -7,6 +7,7 @@ class Camera : public Singleton<Camera>
 {
 private:
 	Vector2D location;	// カメラ座標
+	Vector2D size;		// スクリーンサイズ
 
 public:
 	// コンストラクタ

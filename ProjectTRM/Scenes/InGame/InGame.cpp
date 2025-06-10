@@ -2,7 +2,6 @@
 #include "DxLib.h"
 #include <fstream>
 
-#include "../../Utility/StageData.h"
 #include "../../Utility/Camera/Camera.h"
 
 #include "../../Objects/Block/Ground.h"
@@ -52,15 +51,16 @@ void InGame::Initialize()
 
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
+	// コストUI
 	unit_ui[0] = rm->GetImages("Resource/Images/Unit/Tank/Tank_Cost.png")[0];
 	unit_ui[1] = rm->GetImages("Resource/Images/Unit/Melee/Melee_Cost.png")[0];
 	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Cost.png")[0];
 	unit_ui[3] = rm->GetImages("Resource/Images/BackGround/Sun.png")[0];
-
+	// 背景
 	BackGroundImage[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
 	BackGroundImage[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
 	BackGroundImage[2] = rm->GetImages("Resource/Images/BackGround/RedMoon.png")[0];
-
+	//太陽
 	std::string Imagestring, Imagepng, Number;;
 	Imagestring = "Resource/Images/BackGround/Sun";
 	Imagepng = ".png";
@@ -68,16 +68,18 @@ void InGame::Initialize()
 	for (int i = 0; i < 10; i++)
 	{
 		Number = std::to_string(i);
-		//太陽の画像
 		SunImages[i] = rm->GetImages(Imagestring + Number + Imagepng)[0];
 	}
 
-	cursor = 1;
+	// 音源の読み込み
+	// 決定
 	Click = rm->GetSounds("Resource/Sounds/InGame/Click.mp3");
 	ClickUp = rm->GetSounds("Resource/Sounds/InGame/ClickUp.mp3");
+	// BGM
 	bgmHandle[0] = rm->GetSounds("Resource/Sounds/Ingame/BGM/Stage1.mp3");
 	bgmHandle[1] = rm->GetSounds("Resource/Sounds/Ingame/BGM/Stage2.mp3");
 	bgmHandle[2] = rm->GetSounds("Resource/Sounds/Ingame/BGM/Stage3.mp3");
+	// 勝利
 	bgmHandle[3] = rm->GetSounds("Resource/Sounds/Result/Win_BGM.mp3");
 
 	// ライトマップの初期化
@@ -97,27 +99,22 @@ void InGame::Initialize()
 	// オブジェクトマネージャーのポインタ
 	GameObjectManager* object = GameObjectManager::GetInstance();
 
-
-	int locationy = 750;
-	int locationx = 1350;
-	for (int count = 0; count < 3; count++)
+	// 巫女生成
+	player = object->CreateObject<Oracle>(Vector2D(STAGE_WIDTH - 200, 630));
+	player->SetInGamePoint(this);
+	// 異端者生成
+	enemy = object->CreateObject<Heretic>(Vector2D(200, 630));
+	enemy->SetInGamePoint(this);
+	// 篝火生成
+	for (int i = 1; i < 3; i++)
 	{
-		for (int locationx = 1350; locationx > 0; locationx -= 60)
-		{
-			object->CreateObject<Ground>(Vector2D(locationx, locationy));
-		}
-		locationy -= 60;
+		object->CreateObject<Bonfire>(Vector2D(player->GetLocation().x - (250 * i), 630));
 	}
 
+	// BGM再生
 	switch (StageNumber)
 	{
 	case 1:
-		player = object->CreateObject<Oracle>(Vector2D(1000, 630));
-		player->SetInGamePoint(this);
-
-		enemy = object->CreateObject<Heretic>(Vector2D(100, 630));
-		enemy->SetInGamePoint(this);
-
 		// 音量設定
 		ChangeVolumeSoundMem(100, bgmHandle[0]);
 		// BGM再生
@@ -127,12 +124,6 @@ void InGame::Initialize()
 		}
 			break;
 	case 2:
-		player = object->CreateObject<Oracle>(Vector2D(1170, 630));
-		player->SetInGamePoint(this);
-
-		enemy = object->CreateObject<Heretic>(Vector2D(30, 630));
-		enemy->SetInGamePoint(this);
-
 		// 音量設定
 		ChangeVolumeSoundMem(100, bgmHandle[1]);
 		// BGM再生
@@ -142,12 +133,6 @@ void InGame::Initialize()
 		}
 			break;
 	default:
-		player = object->CreateObject<Oracle>(Vector2D(1170, 630));
-		player->SetInGamePoint(this);
-
-		enemy = object->CreateObject<Heretic>(Vector2D(30, 630));
-		enemy->SetInGamePoint(this);
-
 		// 音量設定
 		ChangeVolumeSoundMem(100, bgmHandle[2]);
 		// BGM再生
@@ -156,11 +141,6 @@ void InGame::Initialize()
 			MessageBoxA(NULL, "BGM3の再生に失敗しました", "エラー", MB_OK);
 		}
 		break;
-	}
-	
-	for (int i = 1; i < 3; i++)
-	{
-		object->CreateObject<Bonfire>(Vector2D(player->GetLocation().x - (250 * i), 630));
 	}
 
 	// カーソルの初期化
