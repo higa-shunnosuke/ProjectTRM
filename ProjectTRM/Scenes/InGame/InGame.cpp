@@ -85,30 +85,8 @@ void InGame::Initialize()
 	LightMapManager* light_map = LightMapManager::GetInstance();
 	light_map->Initialize();
 
-	// カメラ座標の初期化
-	Camera* camera = Camera::GetInstance();
-	camera->Initialize();
-
-	// ステージ読み込み
-	//LoadStage();
-
 	// 画像の読み込み
 	LoadImages();
-
-	// オブジェクトマネージャーのポインタ
-	GameObjectManager* object = GameObjectManager::GetInstance();
-
-	// 巫女生成
-	player = object->CreateObject<Oracle>(Vector2D(STAGE_WIDTH - 200, 630));
-	player->SetInGamePoint(this);
-	// 異端者生成
-	enemy = object->CreateObject<Heretic>(Vector2D(200, 630));
-	enemy->SetInGamePoint(this);
-	// 篝火生成
-	for (int i = 1; i < 3; i++)
-	{
-		object->CreateObject<Bonfire>(Vector2D(player->GetLocation().x - (250 * i), 630));
-	}
 
 	// BGM再生
 	switch (StageNumber)
@@ -121,7 +99,10 @@ void InGame::Initialize()
 		{
 			MessageBoxA(NULL, "BGM1の再生に失敗しました", "エラー", MB_OK);
 		}
-			break;
+		// ステージサイズ設定
+		ProjectConfig::STAGE_WIDTH = 1280;
+		ProjectConfig::STAGE_HEIGHT = 720;
+		break;
 	case 2:
 		// 音量設定
 		ChangeVolumeSoundMem(100, bgmHandle[1]);
@@ -130,7 +111,10 @@ void InGame::Initialize()
 		{
 			MessageBoxA(NULL, "BGM2の再生に失敗しました", "エラー", MB_OK);
 		}
-			break;
+		// ステージサイズ設定
+		ProjectConfig::STAGE_WIDTH = 2000;
+		ProjectConfig::STAGE_HEIGHT = 720;
+		break;
 	default:
 		// 音量設定
 		ChangeVolumeSoundMem(100, bgmHandle[2]);
@@ -139,8 +123,30 @@ void InGame::Initialize()
 		{
 			MessageBoxA(NULL, "BGM3の再生に失敗しました", "エラー", MB_OK);
 		}
+		// ステージサイズ設定
+		ProjectConfig::STAGE_WIDTH = 1000;
+		ProjectConfig::STAGE_HEIGHT = 720;
 		break;
 	}
+
+	// オブジェクトマネージャーのポインタ
+	GameObjectManager* object = GameObjectManager::GetInstance();
+	// カメラのポインタ
+	Camera* camera = Camera::GetInstance();
+
+	// 巫女生成
+	player = object->CreateObject<Oracle>(Vector2D(ProjectConfig::STAGE_WIDTH - 200, 630));
+	player->SetInGamePoint(this);
+	// 異端者生成
+	enemy = object->CreateObject<Heretic>(Vector2D(200, 630));
+	enemy->SetInGamePoint(this);
+	// 篝火生成
+	for (int i = 1; i < 3; i++)
+	{
+		object->CreateObject<Bonfire>(Vector2D(player->GetLocation().x - (250 * i), 630));
+	}
+	// カメラ生成
+	camera->Initialize();
 
 	// カーソルの初期化
 	cursor = 0;
@@ -274,7 +280,7 @@ void InGame::Draw() const
 	{
 	case GameState::PLAYING:
 	{
-		int offset = STAGE_WIDTH - camera->GetScreeenSize().x / 2 - camera->GetCameraPos().x;
+		int offset = ProjectConfig::STAGE_WIDTH - camera->GetScreeenSize().x / 2 - camera->GetCameraPos().x;
 		DrawGraph(D_WIN_MAX_X / 2 - 700 + offset, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
 
 		LightMapManager* light_map = LightMapManager::GetInstance();

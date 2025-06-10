@@ -25,7 +25,7 @@ void Camera::Initialize()
 	this->size.y = D_WIN_MAX_Y;
 
 	// カメラの初期座標を設定
-	this->location.x = STAGE_WIDTH - (size.x / 2);
+	this->location.x = ProjectConfig::STAGE_WIDTH - (size.x / 2);
 	this->location.y = size.y / 2;
 }
 
@@ -58,7 +58,7 @@ void Camera::Update()
 
 	/// ステージ外にいかないようにする処理
 	float right,left;
-	right = STAGE_WIDTH - (size.x / 2);
+	right = ProjectConfig::STAGE_WIDTH - (size.x / 2);
 	left = size.x / 2;
 
 	//右端の制限

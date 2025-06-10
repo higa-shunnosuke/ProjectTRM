@@ -4,6 +4,10 @@
 // デバックフラグの初期化
 bool ProjectConfig::DEBUG = false;
 
+// ステージサイズの初期化
+int ProjectConfig::STAGE_WIDTH = 1280;
+int ProjectConfig::STAGE_HEIGHT = 720;
+
 // エラー内容を出力する
 int ErrorThrow(std::string error_log)
 {
