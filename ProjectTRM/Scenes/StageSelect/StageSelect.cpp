@@ -21,10 +21,12 @@ void StageSelect::Initialize()
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 
-	Stage_Image[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
-	Stage_Image[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
-	Stage_Image[2] = rm->GetImages("Resource/Images/BackGround/RedMoon.png")[0];
+	Stage_Image[0] = rm->GetImages("Resource/Images/BackGround/BlueMoonUI.png")[0];
+	Stage_Image[1] = rm->GetImages("Resource/Images/BackGround/YelloMoonUI.png")[0];
+	Stage_Image[2] = rm->GetImages("Resource/Images/BackGround/RedMoonUI.png")[0];
+	BackGroued_Image = rm->GetImages("Resource/Images/BackGround/StageSelect.png")[0];
 
+		ChangeFontType(DX_FONTTYPE_ANTIALIASING_EDGE);
 }
 
 // 更新処理
@@ -33,14 +35,23 @@ eSceneType StageSelect::Update(const float& delta_second)
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
 
+	switch (State)
+	{
+	case Stage::DEFAULT:
 	// ステージ選択シーンに遷移する
 	if (input->GetKeyState(KEY_INPUT_RIGHT)		== eInputState::Pressed ||
 		input->GetButtonState(XINPUT_BUTTON_DPAD_RIGHT) == eInputState::Pressed)
 	{
 		SerectStage += 1;
-		if (SerectStage > 4)
+		if (SerectStage > ThardStage)
 		{
-			SerectStage = 4;
+			SerectStage = ThardStage;
+		}
+		else
+		{
+			x = 200;
+			ChangeX = Set_StageX;
+			State = Stage::LMOVE;
 		}
 	}
 	// ステージ選択シーンに遷移する
@@ -48,12 +59,17 @@ eSceneType StageSelect::Update(const float& delta_second)
 		input->GetButtonState(XINPUT_BUTTON_DPAD_LEFT) == eInputState::Pressed)
 	{
 		SerectStage -= 1;
-		if (SerectStage < 1)
+		if (SerectStage < FirstStage)
 		{
-			SerectStage = 1;
+			SerectStage = FirstStage;
+		}
+		else
+		{
+			ChangeX = x;
+			x = -Set_StageX;
+			State = Stage::RMOVE;
 		}
 	}
-
 	// インゲームシーンに遷移する
 	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
 	{
@@ -65,6 +81,37 @@ eSceneType StageSelect::Update(const float& delta_second)
 		SetStageNumber(SerectStage);
 		return eSceneType::in_game;
 	}
+	break;
+	case Stage::LMOVE:
+
+		x -= 1;
+		ChangeX -= 1;
+
+		if (ChangeX == 200)
+		{
+		x = 200;
+		ChangeX = Set_StageX;
+		State = Stage::DEFAULT;
+		}
+
+		break;
+	case Stage::RMOVE:
+
+		x += 1;
+		ChangeX += 1;
+
+		if (x == 200)
+		{
+			x = 200;
+			ChangeX = Set_StageX;
+			State = Stage::DEFAULT;
+		}
+		break;
+	case Stage::END:
+		break;
+	default:
+		break;
+	}
 
 	// 親クラスの更新処理を呼び出す
 	return __super::Update(delta_second);
@@ -73,110 +120,111 @@ eSceneType StageSelect::Update(const float& delta_second)
 // 描画処理
 void StageSelect::Draw() const
 {
-	/*
+
+	int Cw = ChangeX + 100;
+
+	switch (State)
 	{
-		int upnum1 = 0, upnum2 = 0, upnum3 = 0;
-
-
-		SetFontSize(60);
-		DrawFormatString(20, 40, 0xffffff, "Stage Select");
-		SetFontSize(32);
-		DrawFormatString(100, 400, 0xffffff, "A Button");
-		DrawFormatString(100, 450, 0x000000, "Stage:%d", SerectStage);
-
-
-		switch (SerectStage)
-		{
-		case 1:
-			upnum1 += 50;
-			DrawBox(149, 149, 401, 351, 0xffffff, 0);
-			break;
-		case 2:
-			upnum2 += 50;
-			DrawBox(399, 149, 651, 351, 0xffffff, 0);
-			break;
-		case 3:
-			upnum3 += 50;
-			DrawBox(649, 149, 901, 351, 0xffffff, 0);
-			break;
-		default:
-			break;
-		}
-
-		DrawBox(200 - upnum1, 200 - upnum1, 350 + upnum1, 300 + upnum1, 0x00ffff, 1);
-		DrawBox(450 - upnum2, 200 - upnum2, 600 + upnum2, 300 + upnum2, 0x00ffff, 1);
-		DrawBox(700 - upnum3, 200 - upnum3, 850 + upnum3, 300 + upnum3, 0x00ffff, 1);
-
-	}*/
-
-	// ボタンサイズ
-	const int button_width = 200;
-	const int button_height = 200;
-
-	// ボタンの数
-	const int button_count = 3;
-
-	// ボタンの総合幅を計算
-	int total_buttons_width = button_count * button_width;
-	// 間隔の総合幅を計算
-	int total_spacing = D_WIN_MAX_X - total_buttons_width;
-	// ボタンの間隔の計算
-	int spacing = total_spacing / (button_count + 1);
-
-	for (int i = 0; i < button_count; ++i)
+	case DEFAULT:
 	{
-		//	選択肢の位置
-		int x = spacing + i * (button_width + spacing);
-		int y = 120;
+		DrawExtendGraph((int)(0), (int)(0), (int)(1280), (int)(y + 620), BackGroued_Image, TRUE);
 
-		// 拡大用変数
-		int w = button_width;
-		int h = button_height;
+		DrawFormatString(x - 50, 50, 0xffffff, StageText[SerectStage - 1]);
 
-		if (i == SerectStage - 1)
+		// 画像を中心に描画
+		DrawExtendGraph((int)(x), (int)(y), (int)(x + w), (int)(y + h), Stage_Image[SerectStage - 1], TRUE);
+
+		
+		DrawString(x, 350, StageFlabarText[SerectStage - 1], 0xffffff);
+		if (SerectStage != FirstStage)
 		{
-			// 選択中のものだけ拡大（1.2倍）
-			int w = (int)(button_width * 1.2);
-			int h = (int)(button_height * 1.2);
-
-			// 枠（背景）を描画
-			DrawBox(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h, GetColor(255, 255, 255), TRUE);
-			//キャラの描画範囲を制限
-			SetDrawArea(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h);
-			{
-				// キャラ画像を中心に描画
-				DrawExtendGraph(
-					(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
-					(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
-					Stage_Image[i], TRUE);
-			}
+			DrawString(Centher - 80, 650, StageSelectText[SerectStage - 1], 0xffffff);
 		}
 		else
 		{
-
-			// 枠（背景）を描画
-			DrawBox(x, y, x + button_width, y + button_height, GetColor(100, 100, 100), TRUE);
-			//キャラの描画範囲を制限
-			SetDrawArea(x, y, x + button_width, y + button_height);
-
-			// キャラ画像を中心に描画
-			DrawExtendGraph(
-				(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
-				(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
-				Stage_Image[i], TRUE);
+			DrawString(Centher, 650, StageSelectText[SerectStage - 1], 0xffffff);
 		}
-		// 描画範囲を元に戻す
-		SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
+		break;
 
 	}
-		// 親クラスの描画処理を呼び出す
-		__super::Draw();
-	
-}
+	//左に進みます。
+	case LMOVE:
+	{
 
+		DrawExtendGraph((int)(x-200), (int)(0), (int)(x + 1080), (int)(y + 620), BackGroued_Image, TRUE);
+		if (SerectStage != FinalStage)
+		{
+			DrawExtendGraph((int)(ChangeX - 200), (int)(0), (int)(ChangeX + 1080), (int)(y + 620), BackGroued_Image, TRUE);
+		}
+		else
+		{
+			DrawExtendGraph((int)(ChangeX - 200), (int)(0), (int)(ChangeX + 1080), (int)(y + 620), BackGroued_Image, TRUE);
+		}
+		// 画像を中心に描画
+		DrawExtendGraph((int)(x), (int)(y), (int)(x + w), (int)(y + h), Stage_Image[SerectStage - 2], TRUE);
+		DrawExtendGraph((int)(ChangeX), (int)(y), (int)(ChangeX + w), (int)(y + h), Stage_Image[SerectStage-1], TRUE);
+
+		DrawFormatString(x - 50, 50, 0xffffff, StageText[SerectStage - 2]);
+		DrawFormatString(ChangeX - 50, 50, 0xffffff, StageText[SerectStage - 1]);
+
+		DrawString(x, 350, StageFlabarText[SerectStage - 2], 0xffffff);
+		DrawString(ChangeX, 350, StageFlabarText[SerectStage - 1], 0xffffff);
+		if (SerectStage != FirstStage)
+		{
+
+			DrawString(Centher + (x - 200), 650, StageSelectText[SerectStage - 2], 0xffffff);
+			DrawString(Centher + (ChangeX - 280), 650, StageSelectText[SerectStage - 1], 0xffffff);
+		}
+		else
+		{
+			//1ステージ目で入力しても通らないので、下記のエラーは無視
+			DrawString(Centher + (x - 200), 650, StageSelectText[SerectStage - 2], 0xffffff);
+			DrawString(Centher + (ChangeX - 200), 650, StageSelectText[SerectStage - 1], 0xffffff);
+		}
+
+	}
+	break;
+
+	case Stage::RMOVE:
+	{
+		DrawExtendGraph((int)(x-200), (int)(0), (int)(x + 1080), (int)(y + 620), BackGroued_Image, TRUE);
+		DrawExtendGraph((int)(ChangeX-200), (int)(0), (int)(ChangeX + 1080), (int)(y + 620), BackGroued_Image, TRUE);
+
+		// 画像を中心に描画
+		DrawExtendGraph((int)(ChangeX), (int)(y), (int)(ChangeX + w), (int)(y + h), Stage_Image[SerectStage], TRUE);
+		DrawExtendGraph((int)(x), (int)(y), (int)(x + w), (int)(y + h), Stage_Image[SerectStage - 1], TRUE);
+
+		DrawFormatString(ChangeX - 50, 50, 0xffffff, StageText[SerectStage]);
+		DrawFormatString(x - 50, 50, 0xffffff, StageText[SerectStage - 1]);
+
+		DrawString(ChangeX, 350, StageFlabarText[SerectStage], 0xffffff);
+		DrawString(x, 350, StageFlabarText[SerectStage - 1], 0xffffff);
+
+		if (SerectStage != FirstStage)
+		{
+
+			DrawString(Centher + (x - 200), 650, StageSelectText[SerectStage-1], 0xffffff);
+			DrawString(Centher + (ChangeX - 200), 650, StageSelectText[SerectStage], 0xffffff);
+		}
+		else
+		{
+			DrawString(Centher + (x - 200), 650, StageSelectText[SerectStage-1], 0xffffff);
+			DrawString(Centher + (ChangeX - 200), 650, StageSelectText[SerectStage], 0xffffff);
+		}
+
+
+		break;
+	}
+	case END:
+		break;
+	default:
+		break;
+	}
+}
 // 終了処理
 void StageSelect::Finalize()
 {
+	ChangeFontType(DX_FONTTYPE_NORMAL);
 
 	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();
