@@ -29,12 +29,6 @@ void StageSelect::Initialize()
 	BackGroued_Image = rm->GetImages("Resource/Images/BackGround/StageSelect.png")[0];
 
 		ChangeFontType(DX_FONTTYPE_ANTIALIASING_EDGE);
-	DecisionSE = rm->GetSounds("Resource/Sounds/StageSelect/����.mp3");
-	CursorMoveSE= rm->GetSounds("Resource/Sounds/StageSelect/�J�[�\���ړ�.mp3");
-
-	Stage_Image[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
-	Stage_Image[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
-	Stage_Image[2] = rm->GetImages("Resource/Images/BackGround/RedMoon.png")[0];
 
 	BGM = rm->GetSounds("Resource/Sounds/StageSelect/StageSelect.mp3");
 
