@@ -84,3 +84,9 @@ void Camera::SetCameraPos(Vector2D location)
 {
 	this->location = location;
 }
+
+// スクリーンサイズ取得処理
+Vector2D Camera::GetScreeenSize()
+{
+	return this->size;
+}

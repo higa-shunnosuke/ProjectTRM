@@ -29,7 +29,6 @@ InGame::InGame():
 	ClickUp(),
 	Cost_Max(),
 	SunImages(),
-	move_camera(),
 	sound(),
 	bgmHandle()
 {
@@ -155,6 +154,7 @@ void InGame::Initialize()
 // 更新処理
 eSceneType InGame::Update(const float& delta_second)
 {
+	// ユニットとエネミーのカウント処理
 	int Pcount_sum = 0;
 	int Ecount_sum = 0;
 
@@ -178,12 +178,14 @@ eSceneType InGame::Update(const float& delta_second)
 	}
 	max_enemy = Ecount_sum;
 
+	// Zキーでプレイヤーの勝利（デバック用）
 	if (CheckHitKey(KEY_INPUT_Z))
 	{
 		IsPlayerWin(false);
 		return eSceneType::result;
 	}
 
+	// 勝敗判定処理
 	if (enemy->GetHP() <= 0 || player->GetHP() <= 0)
 	{
 		if (player->GetHP() <= 0)
@@ -215,9 +217,6 @@ eSceneType InGame::Update(const float& delta_second)
 	switch (state)
 	{
 	case GameState::PLAYING:
-
-		move_camera = 0.0f;
-
 		// リザルトシーンに遷移する
 		if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
 		{
@@ -229,13 +228,6 @@ eSceneType InGame::Update(const float& delta_second)
 
 		// コスト管理処理
 		RegenerateCost();
-
-		if (old_camerapos.x != camera->GetCameraPos().x)
-		{
-			move_camera = old_camerapos.x - camera->GetCameraPos().x;
-			old_camerapos = camera->GetCameraPos();
-
-		}
 
 		// 親クラスの更新処理を呼び出す
 		return __super::Update(delta_second);
@@ -250,8 +242,6 @@ eSceneType InGame::Update(const float& delta_second)
 
 		__super::Update(delta_second);
 		break;
-	case GameState::CLEAR:
-		break;
 	default:
 		break;
 	}
@@ -262,6 +252,8 @@ void InGame::Draw() const
 {
 	// カメラの情報取得
 	Camera* camera = Camera::GetInstance();
+
+	// 背景画像のずれ
 	float ShowBackGround_Y = 0;
 	switch (StageNumber)
 	{
@@ -282,7 +274,8 @@ void InGame::Draw() const
 	{
 	case GameState::PLAYING:
 	{
-		DrawGraph(camera->GetCameraPos().x - 700.0f, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
+		int offset = STAGE_WIDTH - camera->GetScreeenSize().x / 2 - camera->GetCameraPos().x;
+		DrawGraph(D_WIN_MAX_X / 2 - 700 + offset, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
 
 		LightMapManager* light_map = LightMapManager::GetInstance();
 

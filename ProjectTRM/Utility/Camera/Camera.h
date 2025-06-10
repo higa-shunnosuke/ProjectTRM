@@ -37,5 +37,11 @@ public:
 	/// </summary>
 	/// <param name="location">指定座標</param>
 	void SetCameraPos(Vector2D location);
+
+	/// <summary>
+	/// スクリーンサイズ取得処理
+	/// </summary>
+	/// <returns>スクリーンサイズ</returns>
+	Vector2D GetScreeenSize();
 };
 
