@@ -15,7 +15,7 @@
 #define COST_UPNUM 10
 
 
-#define ENEMY_TEST
+//#define ENEMY_TEST
 
 #include"../../../../Utility/Input/InputManager.h"
 
@@ -239,9 +239,6 @@ void Heretic::Draw(const Vector2D camera_pos) const
 		{
 			DrawGraphF(position.x, position.y, EffectImage[Anim_count], true);
 		}
-
-
-
 
 		if (ProjectConfig::DEBUG)
 		{
@@ -538,7 +535,7 @@ void Heretic::SamonEnemy(int e_enem)
 		object->CreateObject<E_Ranged>(Vector2D(GetLocation().x, GetLocation().y + 30.0f));
 		break;
 	case Boss:
-		object->CreateObject<class Boss>(Vector2D(GetLocation().x, GetLocation().y - 30.0f));
+		object->CreateObject<class Boss>(Vector2D(GetLocation().x, GetLocation().y + 0.0f));
 		break;
 	default:
 		break;

@@ -139,7 +139,10 @@ void P_Projectile::OnAreaDetection(GameObject* hit_object)
 
     if (hit_collision.object_type == eObjectType::Enemy)
     {
-        PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
+        if (Ingame->GetNowState() == GameState::PLAYING)
+        {
+            PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
+        }
         hit_object->HPControl(Damage);
         Finalize();
     }
