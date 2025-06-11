@@ -21,6 +21,7 @@ private:
 	int anim_max_count;		// アニメーション画像の枚数
 	int sounds;
 	int effect_alpha;	//エフェクトの透明度調整用
+	int effect_max_count;
 
 public:
 	//コンストラクタ

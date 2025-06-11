@@ -15,7 +15,8 @@ P_Ranged::P_Ranged():
 	effect_alpha(),
 	anim_max_count(),
 	object(nullptr),
-	sounds()
+	sounds(),
+	effect_max_count()
 {
 	count++;
 }
@@ -47,10 +48,7 @@ void P_Ranged::Initialize()
 	attack_flag = false;
 	flip_flag = true;
 
-	now_state = State::Move;
-
-	//移動速度
-	velocity.x = BASIC_SPEED;
+	now_state = State::Summon;
 
 	// HP初期化
 	HP = 10;
@@ -91,7 +89,7 @@ void P_Ranged::Update(float delta_second)
 				now_state = State::Idle;
 				attack_flame -= delta_second * (1 + (Ingame->GetSunLevel() / 10));
 			}
-			if (attack_flame <= 0.0f)
+			if (attack_flame <= 0.0f && now_state != State::Summon)
 			{
 				attack_flag = false;
 				now_state = State::Move;
@@ -132,6 +130,12 @@ void P_Ranged::Draw(const Vector2D camera_pos) const
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
 	position.y += z_layer * 5;
+
+	//召喚陣描画
+	if (now_state == State::Summon)
+	{
+		DrawRotaGraphF(position.x, position.y + collision.collision_size.y / 3, 0.5, 0.0, effect_image, TRUE, flip_flag);
+	}
 
 	// 近接ユニットの描画
 		// オフセット値を基に画像の描画を行う
@@ -249,7 +253,7 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 void P_Ranged::NoHit()
 {
 	// 移動状態にする
-	if (now_state != State::Death && now_state != State::Damage)
+	if (now_state != State::Death && now_state != State::Summon)
 	{
 		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 	}
@@ -290,6 +294,7 @@ void P_Ranged::AnimationControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Idle:
+		case State::Summon:
 			anim_max_count = 4;
 			break;
 		case State::Move:
@@ -331,6 +336,7 @@ void P_Ranged::AnimationControl(float delta_second)
 	switch (now_state)
 	{
 	case State::Idle:
+	case State::Summon:
 		image = animation[Anim_count];
 		break;
 	case State::Move:
@@ -391,8 +397,13 @@ void P_Ranged::EffectControl(float delta_second)
 		Effect_flame = 0.0f;
 		switch (now_state)
 		{
+		case State::Summon:
+			Effect = rm->GetImages("Resource/Images/Effect/Magic_Remove.png", 10, 5, 2, 192, 192);
+			effect_max_count = 10;
+			break;
 		case State::Damage:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 30, 6, 5, 100, 100);
+			effect_max_count = 29;
 			break;
 		case State::Death:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50);
@@ -403,13 +414,10 @@ void P_Ranged::EffectControl(float delta_second)
 	}
 
 	Effect_flame += delta_second;
-	if (Effect_flame >= 0.05f)
+	if (Effect_flame >= 0.1f)
 	{
-		if (Effect_count < 29)
-		{
-			Effect_count++;
-		}
-		else
+		Effect_count++;
+		if (Effect_count > effect_max_count)
 		{
 			Effect_count = 0;
 		}
@@ -418,6 +426,13 @@ void P_Ranged::EffectControl(float delta_second)
 
 	switch (now_state)
 	{
+	case State::Summon:
+		effect_image = Effect[Effect_count];
+		if (Effect_count == effect_max_count)
+		{
+			now_state = State::Move;
+		}
+		break;
 	case State::Damage:
 		effect_image = Effect[Effect_count];
 		if (dmage_flame <= 0.0f)

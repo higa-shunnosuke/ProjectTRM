@@ -20,6 +20,7 @@ private:
 	int sounds;	//音
 	Vector2D target_loc;
 	int anim_max_count;		// アニメーション画像の枚数
+	int effect_max_count;
 
 public:
 	//コンストラクタ

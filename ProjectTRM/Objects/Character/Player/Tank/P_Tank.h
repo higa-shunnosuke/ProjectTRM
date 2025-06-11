@@ -22,6 +22,7 @@ private:
 	LightMapManager* light; //明り
 	GameObjectManager* object;
 	int anim_max_count;		// アニメーション画像の枚数
+	int effect_max_count;
 
 	//エフェクト類
 	int effect_image;

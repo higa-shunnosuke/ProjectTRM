@@ -13,6 +13,7 @@ protected:
 	float basic_power;	//基礎攻撃力
 	float basic_speed;	//基礎移動速度
 	LightMapManager* light; //明り
+	int anim_max_count;
 
 	//エフェクト類
 	int effect_image;

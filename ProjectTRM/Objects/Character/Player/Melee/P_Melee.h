@@ -23,6 +23,7 @@ private:
 	int effect_alpha;	//エフェクトの透明度調整用
 	int sounds;	//音
 	int anim_max_count;		// アニメーション画像の枚数
+	int effect_max_count;
 
 public:
 	//コンストラクタ

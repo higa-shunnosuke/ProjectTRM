@@ -15,7 +15,8 @@ P_Guardian::P_Guardian() :
 	object(nullptr),
 	anim_max_count(),
 	sounds(),
-	effect_alpha()
+	effect_alpha(),
+	effect_max_count()
 {
 	count++;
 }
@@ -50,16 +51,13 @@ void P_Guardian::Initialize()
 	attack_flag = false;
 	flip_flag = true;
 
-	now_state = State::Move;
-
-	// 右へ移動
-	velocity.x = BASIC_SPEED;
+	now_state = State::Summon;
 
 	//攻撃力
 	Damage = BASIC_POWER;
 
 	// HP初期化
-	HP = 60;
+	HP = 50;
 
 	object = GameObjectManager::GetInstance();
 
@@ -100,7 +98,7 @@ void P_Guardian::Update(float delta_second)
 				now_state = State::Idle;
 				attack_flame -= delta_second * (1 + (Ingame->GetSunLevel() / 10));
 			}
-			if (attack_flame <= 0.0f)
+			if (attack_flame <= 0.0f && now_state != State::Summon)
 			{
 				attack_flag = false;
 				now_state = State::Move;
@@ -139,6 +137,12 @@ void P_Guardian::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 	position.y += z_layer * 8;
+
+	//召喚陣描画
+	if (now_state == State::Summon)
+	{
+		DrawRotaGraphF(position.x, position.y + collision.collision_size.y / 3, 0.5, 0.0, effect_image, TRUE, flip_flag);
+	}
 
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う
@@ -209,7 +213,7 @@ void P_Guardian::OnAreaDetection(GameObject* hit_object)
 void P_Guardian::NoHit()
 {
 	// 移動状態にする
-	if (now_state != State::Death)
+	if (now_state != State::Death && now_state != State::Summon)
 	{
 		now_state = State::Move;
 	}
@@ -258,6 +262,7 @@ void P_Guardian::AnimationControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Idle:
+		case State::Summon:
 			anim_max_count = 9;
 			break;
 		case State::Move:
@@ -299,6 +304,7 @@ void P_Guardian::AnimationControl(float delta_second)
 	switch (now_state)
 	{
 	case State::Idle:
+	case State::Summon:
 		image = animation[Anim_count];
 		break;
 	case State::Move:
@@ -348,15 +354,39 @@ void P_Guardian::EffectControl(float delta_second)
 		ResourceManager* rm = ResourceManager::GetInstance();
 		switch (now_state)
 		{
+		case State::Summon:
+			Effect = rm->GetImages("Resource/Images/Effect/Magic_Remove.png", 10, 5, 2, 192, 192);
+			effect_max_count = 10;
+			break;
 		case State::Death:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50);
+			effect_max_count = 29;
 			break;
 		default:
 			break;
 		}
 	}
+
+	Effect_flame += delta_second;
+	if (Effect_flame >= 0.1f)
+	{
+		Effect_count++;
+		if (Effect_count > effect_max_count)
+		{
+			Effect_count = 0;
+		}
+		Effect_flame = 0;
+	}
+
 	switch (now_state)
 	{
+	case State::Summon:
+		effect_image = Effect[Effect_count];
+		if (Effect_count == effect_max_count)
+		{
+			now_state = State::Move;
+		}
+		break;
 	case State::Death:
 		effect_image = Effect[0];
 		effect_alpha += add;

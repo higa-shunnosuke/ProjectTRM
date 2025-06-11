@@ -111,7 +111,7 @@ void UnitBase::Update(float delta_second)
 
 	SoundControl();
 
-	if (Anim_count <= 2)
+	if (Anim_count <= anim_max_count)
 	{
 		AnimationControl(delta_second);
 	}
@@ -123,11 +123,12 @@ void UnitBase::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
+	//レイヤーをもとに座標をずらす
 	position.y += z_layer * 5;
 
 	// 灯守の描画
 	// オフセット値を基に画像の描画を行う
-	if (Anim_count <= 2)
+	if (Anim_count <= anim_max_count)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
@@ -255,17 +256,70 @@ void UnitBase::AnimationControl(float delta_second)
 
 	if (Anim_flame >= 0.1f)
 	{
-		Anim_count += con;
+		Anim_count++;
 
-		if (Anim_count <= 0 || Anim_count >= 2)
+		if (Anim_count == anim_max_count)
 		{
-			con *= -1;
+			Anim_count = 0;
 		}
 
 		Anim_flame = 0.0f;
 	}
 
+	switch (now_state)
+	{
+	case State::Idle:
+		image = animation[Anim_count];
+		break;
+	case State::Move:
+		velocity.x = basic_speed + ((basic_speed / 100) * (Ingame->GetSunLevel()));
+		image = animation[Anim_count];
+		break;
+	case State::Attack:
+		image = animation[Anim_count];
+		if (Anim_count == anim_max_count / 2)
+		{
+			PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
+		}
+		if (Anim_count == anim_max_count - 1)
+		{
+			attack_flag = true;
+			now_state = State::Move;
+			velocity.x = basic_speed + ((basic_speed / 100) * (Ingame->GetSunLevel()));
+		}
+		break;
+	case State::Damage:
+		alpha += add;
+		if (alpha <= 0 || alpha >= 255)
+		{
+			add = -add;
+		}
+		if (velocity.x < 0.0f)
+		{
+			image = animation[Anim_count];
+		}
+		else
+		{
+			image = animation[0];
+		}
+		break;
+	case State::Death:
+		image = animation[Anim_count];
+		if (Anim_count == anim_max_count - 1)
+		{
 
+			location.y -= Anim_count * 10 + Anim_flame * 10;
+			Anim_count += 2;
+			//他のオブジェクトの邪魔をしないようにオブジェクトタイプの消去
+			collision.hit_object_type.clear();
+			collision.object_type = eObjectType::None;
+			LightMapManager* light = LightMapManager::GetInstance();
+			light->DeleteLight(this);
+		}
+		break;
+	default:
+		break;
+	}
 }
 // エフェクト制御処理
 void UnitBase::EffectControl(float delta_second)

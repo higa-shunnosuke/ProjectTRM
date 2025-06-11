@@ -16,7 +16,8 @@ P_Tank::P_Tank() :
 	light(nullptr),
 	object(nullptr),
 	sounds(),
-	anim_max_count()
+	anim_max_count(),
+	effect_max_count()
 {
 	count++;
 }
@@ -57,13 +58,10 @@ void P_Tank::Initialize()
 	attack_flag = false;
 
 	//‰Šú‰»
-	now_state = State::Move;
+	now_state = State::Summon;
 
 
 	object = GameObjectManager::GetInstance();
-
-	//ˆÚ“®‘¬“x
-	velocity.x = BASIC_SPEED;
 
 	// HP‰Šú‰»
 	HP = 4;
@@ -100,11 +98,13 @@ void P_Tank::Update(float delta_second)
 			}
 			else
 			{
+				now_state = State::Idle;
 				attack_flame -= delta_second * (1 + (Ingame->GetSunLevel() / 10));
 			}
-			if (attack_flame <= 0.0f)
+			if (attack_flame <= 0.0f && now_state != State::Summon)
 			{
 				attack_flag = false;
+				now_state = State::Move;
 			}
 		}
 
@@ -141,6 +141,12 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 
 	position.y += z_layer * 5;
+
+	//¢Š«w•`‰æ
+	if (now_state == State::Summon)
+	{
+		DrawRotaGraphF(position.x + collision.collision_size.y / 3, position.y + collision.collision_size.y / 3, 0.5, 0.0, effect_image, TRUE, flip_flag);
+	}
 
 	// “”Žç‚Ì•`‰æ
 	// ƒIƒtƒZƒbƒg’l‚ðŠî‚É‰æ‘œ‚Ì•`‰æ‚ðs‚¤
@@ -219,7 +225,7 @@ void P_Tank::OnAreaDetection(GameObject* hit_object)
 void P_Tank::NoHit()
 {
 	// ˆÚ“®ó‘Ô‚É‚·‚é
-	if (now_state != State::Death)
+	if (now_state != State::Death && now_state != State::Summon)
 	{
 		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 		now_state = State::Move;
@@ -262,6 +268,7 @@ void P_Tank::AnimationControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Idle:
+		case State::Summon:
 			animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Unit_Idle.png", 10, 10, 1, 48, 32);
 			anim_max_count = 10;
 			break;
@@ -308,6 +315,7 @@ void P_Tank::AnimationControl(float delta_second)
 	switch (now_state)
 	{
 	case State::Idle:
+	case State::Summon:
 		image = animation[Anim_count];
 		break;
 	case State::Move:
@@ -359,8 +367,13 @@ void P_Tank::EffectControl(float delta_second)
 		Effect_flame = 0.0f;
 		switch (now_state)
 		{
+		case State::Summon:
+			Effect = rm->GetImages("Resource/Images/Effect/Magic_Remove.png", 10, 5, 2, 192, 192);
+			effect_max_count = 10;
+			break;
 		case State::Damage:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 30, 6, 5, 100, 100);
+			effect_max_count = 29;
 			break;
 		case State::Death:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50);
@@ -373,11 +386,8 @@ void P_Tank::EffectControl(float delta_second)
 	Effect_flame += delta_second;
 	if (Effect_flame >= 0.1f)
 	{
-		if (Effect_count < 29)
-		{
-			Effect_count++;
-		}
-		else
+		Effect_count++;
+		if (Effect_count > effect_max_count)
 		{
 			Effect_count = 0;
 		}
@@ -386,6 +396,13 @@ void P_Tank::EffectControl(float delta_second)
 
 	switch (now_state)
 	{
+	case State::Summon:
+		effect_image = Effect[Effect_count];
+		if (Effect_count == effect_max_count)
+		{
+			now_state = State::Move;
+		}
+		break;
 	case State::Damage:
 		effect_image = Effect[Effect_count];
 		if (dmage_flame <= 0.0f)

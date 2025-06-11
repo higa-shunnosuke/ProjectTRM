@@ -15,7 +15,8 @@ P_Melee::P_Melee() :
 	effect_alpha(),
 	anim_max_count(),
 	object(nullptr),
-	sounds()
+	sounds(),
+	effect_max_count()
 {
 	count++;
 }
@@ -32,7 +33,7 @@ void P_Melee::Initialize()
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 	animation = rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Walk.png", 10, 10, 1, 100, 55);
-	Effect = rm->GetImages("Resource/Images/Effect/Melee_Attack_Effect.png", 3, 3, 1, 32, 32);
+	Effect = rm->GetImages("Resource/Images/Effect/Magic_Remove.png", 10, 5, 2, 192, 192);
 	sounds = rm->GetSounds("Resource/Sounds/UnitSE/damage02.wav");
 
 	is_mobility = true;
@@ -48,10 +49,7 @@ void P_Melee::Initialize()
 	attack_flag = false;
 	flip_flag = true;
 
-	now_state = State::Move;
-
-	// 右へ移動
-	velocity.x = BASIC_SPEED;
+	now_state = State::Summon;
 
 	//攻撃力
 	Damage = BASIC_POWER;
@@ -69,9 +67,8 @@ void P_Melee::Initialize()
 // 更新処理
 void P_Melee::Update(float delta_second)
 {	
-
 	Damage = BASIC_POWER + (Ingame->GetSunLevel() / 5);
-
+	
 	if (ProjectConfig::DEBUG)
 	{
 		InputManager* input = InputManager::GetInstance();
@@ -98,7 +95,7 @@ void P_Melee::Update(float delta_second)
 				now_state = State::Idle;
 				attack_flame -= delta_second * (1 + (Ingame->GetSunLevel() / 10));
 			}
-			if (attack_flame <= 0.0f)
+			if (attack_flame <= 0.0f && now_state != State::Summon)
 			{
 				attack_flag = false;
 				now_state = State::Move;
@@ -137,6 +134,12 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 	position.y += z_layer * 5;
+
+	//召喚陣描画
+	if (now_state == State::Summon)
+	{
+		DrawRotaGraphF(position.x, position.y + collision.collision_size.y / 3, 0.5, 0.0, effect_image, TRUE, flip_flag);
+	}
 
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う
@@ -225,7 +228,7 @@ void P_Melee::OnAreaDetection(GameObject* hit_object)
 void P_Melee::NoHit()
 {
 	// 移動状態にする
-	if (now_state != State::Death)
+	if (now_state != State::Death && now_state != State::Summon)
 	{
 		now_state = State::Move;
 	}
@@ -273,6 +276,7 @@ void P_Melee::AnimationControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Idle:
+		case State::Summon:
 			animation = rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Idle.png", 8, 8, 1, 100, 55);
 			anim_max_count = 8;
 			break;
@@ -317,7 +321,8 @@ void P_Melee::AnimationControl(float delta_second)
 
 	switch (now_state)
 	{
-	case State::Idle:	
+	case State::Idle:
+	case State::Summon:
 		image = animation[Anim_count];
 		break;
 	case State::Move:
@@ -382,8 +387,13 @@ void P_Melee::EffectControl(float delta_second)
 		Effect_flame = 0.0f;
 		switch (now_state)
 		{
+		case State::Summon:
+			Effect = rm->GetImages("Resource/Images/Effect/Magic_Remove.png", 10, 5, 2, 192, 192);
+			effect_max_count = 10;
+			break;
 		case State::Damage:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 36, 6, 5, 100, 100);
+			effect_max_count = 29;
 			break;
 		case State::Death:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50);
@@ -396,11 +406,8 @@ void P_Melee::EffectControl(float delta_second)
 	Effect_flame += delta_second;
 	if (Effect_flame >= 0.1f)
 	{
-		if (Effect_count < 29)
-		{
-			Effect_count++;
-		}
-		else
+		Effect_count++;
+		if (Effect_count > effect_max_count)
 		{
 			Effect_count = 0;
 		}
@@ -409,9 +416,12 @@ void P_Melee::EffectControl(float delta_second)
 
 	switch (now_state)
 	{
-	case State::Idle:
-		break;
-	case State::Move:
+	case State::Summon:
+		effect_image = Effect[Effect_count];
+		if (Effect_count == effect_max_count)
+		{
+			now_state = State::Move;
+		}
 		break;
 	case State::Damage:
 		effect_image = Effect[Effect_count];

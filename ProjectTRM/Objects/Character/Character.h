@@ -11,7 +11,8 @@ enum State {
 	Move,
 	Attack,
 	Damage,
-	Death
+	Death,
+	Summon
 };
 
 #define MAX_ALPHA (255);
