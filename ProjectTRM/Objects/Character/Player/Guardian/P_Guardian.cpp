@@ -302,7 +302,7 @@ void P_Guardian::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		break;
 	case State::Move:
-		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 10) * (Ingame->GetSunLevel() - 1));
+		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel() - 1));
 		image = animation[Anim_count + 10];
 		break;
 	case State::Attack:
