@@ -276,17 +276,17 @@ void Heretic::ThinkingEnemy()
 	int Ecount_sum = 0;
 	int Ecount_num = 0;
 
-	int Ptank_count = (int)P_Guardian::GetCount() * Guardian_eva;
+	int Pguard_count = (int)P_Guardian::GetCount() * Guardian_eva;
 	int Ptank_count = (int)P_Tank::GetCount() * TANK_eva;
 	int Pmelee_count = (int)P_Melee::GetCount() * MELEE_eva;
 	int Prange_count = (int)P_Ranged::GetCount() * RANGE_eva;
-	Pcount_sum += (Ptank_count + Pmelee_count + Prange_count);
-	Pcount_num += (Ptank_count/TANK_eva + Pmelee_count/MELEE_eva + Prange_count/RANGE_eva);
+	Pcount_sum += (Ptank_count + Pmelee_count + Prange_count + Pguard_count);
+	Pcount_num += (Ptank_count/TANK_eva + Pmelee_count/MELEE_eva + Prange_count/RANGE_eva + Pguard_count/Guardian_eva);
 
 	int Etank_count = (int)E_Tank::GetCount() * TANK_eva;
 	int Emelee_count = (int)E_Melee::GetCount() * MELEE_eva;
 	int Erange_count = (int)E_Ranged::GetCount() * RANGE_eva;
-	int Erange_count = (int)Boss::GetCount() * RANGE_eva;
+	//int Erange_count = (int)Boss::GetCount() * RANGE_eva;
 	Ecount_sum += (Etank_count + Emelee_count + Erange_count);
 	Ecount_num += (Etank_count / TANK_eva + Emelee_count / MELEE_eva + Erange_count / RANGE_eva);
 

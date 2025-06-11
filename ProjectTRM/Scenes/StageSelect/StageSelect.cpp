@@ -36,7 +36,6 @@ void StageSelect::Initialize()
 	ChangeVolumeSoundMem(190, DecisionSE);
 	if (PlaySoundMem(BGM, DX_PLAYTYPE_LOOP) == -1)
 	{
-		MessageBoxA(NULL, "BGM1�̍Đ��Ɏ��s���܂���", "�G���[", MB_OK);
 	}
 
 }
