@@ -56,6 +56,9 @@ void E_Ranged::Initialize()
 
 	// スピードの初期化
 	speed = 70.0f;
+
+	// リカバリーの初期化
+	recovery_time = 5.0f;
 }
 
 // 更新処理
@@ -130,6 +133,13 @@ void E_Ranged::OutLightRange()
 	in_light = false;
 	Damage = 5;
 	speed = 70.0f;
+}
+
+// 攻撃処理
+void E_Ranged::Attack(GameObject* hit_object)
+{
+	GameObjectManager* object = GameObjectManager::GetInstance();
+	object->CreateObject<E_Projectile>(this->location)->SetTargetLocation(hit_object->GetLocation());
 }
 
 // 移動処理

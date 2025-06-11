@@ -54,6 +54,9 @@ void E_Melee::Initialize()
 
 	// スピードの初期化
 	speed = 80.0f;
+
+	// リカバリーの初期化
+	recovery_time = 1.5f;
 }
 
 // 更新処理

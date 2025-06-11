@@ -10,6 +10,7 @@ private:
 	Vector2D location;	// カメラ座標
 	Vector2D size;		// スクリーンサイズ
 	Oracle* oracle;		// 巫女のポインタ
+	bool tracking_flag;	// 追跡フラグ
 
 public:
 	// コンストラクタ

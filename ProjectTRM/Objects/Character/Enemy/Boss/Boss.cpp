@@ -45,6 +45,9 @@ void Boss::Initialize()
 
 	// スピードの初期化
 	speed = 20.0f;
+
+	// リカバリーの初期化
+	recovery_time = 6.0f;
 }
 
 // 更新処理

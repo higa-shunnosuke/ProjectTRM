@@ -9,7 +9,8 @@
 Camera::Camera():
 	location(),
 	size(),
-	oracle(nullptr)
+	oracle(nullptr),
+	tracking_flag(false)
 {
 
 }
@@ -38,15 +39,20 @@ void Camera::Update()
 	//追跡処理
 	InputManager* input = InputManager::GetInstance();
 
+	// 手動スクロール
 	if (input->GetLeftStick().x < 0.0f)
 	{
-		location.x += input->GetLeftStick().x * 1.5;
+		tracking_flag = false;
+		location.x += (float)input->GetLeftStick().x * 1.5;
 	}
 	else if (input->GetLeftStick().x > 0.0f)
 	{
-		location.x += input->GetLeftStick().x * 1.5;
+		tracking_flag = false;
+		location.x += (float)input->GetLeftStick().x * 1.5;
 	}
-	else
+
+	// 自動スクロール
+	if (tracking_flag == true)
 	{
 		// オブジェクトマネージャーの情報取得
 		GameObjectManager* object = GameObjectManager::GetInstance();
@@ -85,6 +91,21 @@ void Camera::Update()
 				location.x = front_line->GetLocation().x;
 			}
 		}
+	}
+	
+	// 最前線へ移動
+	if (input->GetButtonState(XINPUT_BUTTON_LEFT_SHOULDER) == eInputState::Pressed)
+	{
+		tracking_flag = true;
+	}
+
+	// 初期座標へ移動
+	if (input->GetButtonState(XINPUT_BUTTON_RIGHT_SHOULDER) == eInputState::Pressed)
+	{
+		tracking_flag = false;
+		// カメラの座標を初期化
+		this->location.x = ProjectConfig::STAGE_WIDTH - (size.x / 2);
+		this->location.y = size.y / 2;
 	}
 
 #ifdef DEBUG
