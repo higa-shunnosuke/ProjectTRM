@@ -1,24 +1,24 @@
 #include "StageSelect.h"
 
-// �R���X�g���N�^
+// コンストラクタ
 StageSelect::StageSelect()
 {
 
 }
 
-// �f�X�g���N�^
+// デストラクタ
 StageSelect::~StageSelect()
 {
 
 }
 
-// ����������
+// 初期化処理
 void StageSelect::Initialize()
 {
-	// �e�N���X�̏������������Ăяo��
+	// 親クラスの初期化処理を呼び出す
 	__super::Initialize();
 
-	// �摜�̓ǂݍ���
+	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 
 	DecisionSE = rm->GetSounds("Resource/Sounds/StageSelect/Decision.mp3");
@@ -33,7 +33,7 @@ void StageSelect::Initialize()
 	BGM = rm->GetSounds("Resource/Sounds/StageSelect/StageSelect.mp3");
 
 	ChangeVolumeSoundMem(100, BGM);
-	ChangeVolumeSoundMem(110, DecisionSE);
+	ChangeVolumeSoundMem(190, DecisionSE);
 	if (PlaySoundMem(BGM, DX_PLAYTYPE_LOOP) == -1)
 	{
 		MessageBoxA(NULL, "BGM1�̍Đ��Ɏ��s���܂���", "�G���[", MB_OK);
@@ -41,16 +41,16 @@ void StageSelect::Initialize()
 
 }
 
-// �X�V����
+// 更新処理
 eSceneType StageSelect::Update(const float& delta_second)
 {
-	// ���͏����擾
+	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
 
 	switch (State)
 	{
 	case Stage::DEFAULT:
-	// �X�e�[�W�I���V�[���ɑJ�ڂ���
+	// →を押したらステージを1つ右に移動させて画像を切り替える処理
 	if (input->GetKeyState(KEY_INPUT_RIGHT)		== eInputState::Pressed ||
 		input->GetButtonState(XINPUT_BUTTON_DPAD_RIGHT) == eInputState::Pressed)
 	{
@@ -61,12 +61,13 @@ eSceneType StageSelect::Update(const float& delta_second)
 		}
 		else
 		{
+			PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
 			x = 200;
 			ChangeX = Set_StageX;
 			State = Stage::LMOVE;
 		}
 	}
-	// �X�e�[�W�I���V�[���ɑJ�ڂ���
+	// ←を押したらステージを1つ右に移動させて画像を切り替える処理
 	else if (input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Pressed ||
 		input->GetButtonState(XINPUT_BUTTON_DPAD_LEFT) == eInputState::Pressed)
 	{
@@ -77,22 +78,23 @@ eSceneType StageSelect::Update(const float& delta_second)
 		}
 		else
 		{
+			PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
 			ChangeX = x;
 			x = -Set_StageX;
 			State = Stage::RMOVE;
 		}
 	}
-	// �C���Q�[���V�[���ɑJ�ڂ���
+	// インゲームに遷移する
 	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
 	{
-		SetStageNumber(SerectStage);
 		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
+		SetStageNumber(SerectStage);
 		return eSceneType::in_game;
 	}
 	if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 	{
-		SetStageNumber(SerectStage);
 		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
+		SetStageNumber(SerectStage);
 		return eSceneType::in_game;
 	}
 	break;
@@ -127,11 +129,11 @@ eSceneType StageSelect::Update(const float& delta_second)
 		break;
 	}
 
-	// �e�N���X�̍X�V�������Ăяo��
+	// 親クラスの更新処理を呼び出す
 	return __super::Update(delta_second);
 }
 
-// �`�揈��
+// 描画処理
 void StageSelect::Draw() const
 {
 
@@ -145,7 +147,7 @@ void StageSelect::Draw() const
 
 		DrawFormatString(x - 50, 50, 0xffffff, StageText[SerectStage - 1]);
 
-		// �摜�𒆐S�ɕ`��
+		// ステージ選択画面で選んだステージ画像の範囲を拡大して表示する処理
 		DrawExtendGraph((int)(x), (int)(y), (int)(x + w), (int)(y + h), Stage_Image[SerectStage - 1], TRUE);
 
 		
@@ -161,7 +163,7 @@ void StageSelect::Draw() const
 		break;
 
 	}
-	//���ɐi�݂܂��B
+	//ステージセレクト画面で右キー（→）を押して選択ステージが左にスライドして切り替わる
 	case LMOVE:
 	{
 
@@ -174,7 +176,7 @@ void StageSelect::Draw() const
 		{
 			DrawExtendGraph((int)(ChangeX - 200), (int)(0), (int)(ChangeX + 1080), (int)(y + 620), BackGroued_Image, TRUE);
 		}
-		// �摜�𒆐S�ɕ`��
+		// ステージ選択画面で選んだステージ画像の範囲を拡大して表示する処理
 		DrawExtendGraph((int)(x), (int)(y), (int)(x + w), (int)(y + h), Stage_Image[SerectStage - 2], TRUE);
 		DrawExtendGraph((int)(ChangeX), (int)(y), (int)(ChangeX + w), (int)(y + h), Stage_Image[SerectStage-1], TRUE);
 
@@ -191,20 +193,20 @@ void StageSelect::Draw() const
 		}
 		else
 		{
-			//1�X�e�[�W�ڂœ��͂��Ă��ʂ�Ȃ��̂ŁA���L�̃G���[�͖���
+			//ステージセレクト画面に対応する説明文を表示する
 			DrawString(Centher + (x - 200), 650, StageSelectText[SerectStage - 2], 0xffffff);
 			DrawString(Centher + (ChangeX - 200), 650, StageSelectText[SerectStage - 1], 0xffffff);
 		}
 
 	}
 	break;
-
+	//ステージセレクト画面で左キー（←）を押して選択ステージが右にスライドして切り替わる
 	case Stage::RMOVE:
 	{
 		DrawExtendGraph((int)(x-200), (int)(0), (int)(x + 1080), (int)(y + 620), BackGroued_Image, TRUE);
 		DrawExtendGraph((int)(ChangeX-200), (int)(0), (int)(ChangeX + 1080), (int)(y + 620), BackGroued_Image, TRUE);
 
-		// �摜�𒆐S�ɕ`��
+		// ステージ選択画面で選んだステージ画像の範囲を拡大して表示する処理
 		DrawExtendGraph((int)(ChangeX), (int)(y), (int)(ChangeX + w), (int)(y + h), Stage_Image[SerectStage], TRUE);
 		DrawExtendGraph((int)(x), (int)(y), (int)(x + w), (int)(y + h), Stage_Image[SerectStage - 1], TRUE);
 
@@ -235,18 +237,18 @@ void StageSelect::Draw() const
 		break;
 	}
 }
-// �I������
+// 終了処理
 void StageSelect::Finalize()
 {
 	ChangeFontType(DX_FONTTYPE_NORMAL);
 
 	StopSoundMem(BGM);
 
-	// �e�N���X�̏I�����������Ăяo��
+	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();
 }
 
-// ���݂̃V�[���^�C�v�擾����
+// 現在のシーンタイプ情報を取得する
 const eSceneType StageSelect::GetNowSceneType() const
 {
 	return eSceneType::stage_select;

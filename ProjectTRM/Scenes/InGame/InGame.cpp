@@ -516,7 +516,7 @@ void InGame::CreateEnemy(E_enemy e_enem)
 		object->CreateObject<E_Ranged>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
 		break;
 	case Boss:
-		object->CreateObject<class Boss>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y - 30.0f));
+		object->CreateObject<class Boss>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 0.0f));
 		break;
 	default:
 		break;
@@ -526,6 +526,15 @@ void InGame::CreateEnemy(E_enemy e_enem)
 const int InGame::GetSunLevel() const
 {
 	return Sun_Level;
+}
+
+/// <summary>
+/// 現在のステート取得処理
+/// </summary>
+/// <returns></returns>
+const GameState InGame::GetNowState() const
+{
+	return state;
 }
 
 //	ユニット召喚
