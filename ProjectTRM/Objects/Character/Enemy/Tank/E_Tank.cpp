@@ -54,6 +54,9 @@ void E_Tank::Initialize()
 
 	// スピードの初期化
 	speed = 50.0f;
+
+	// リカバリーの初期化
+	recovery_time = 3.0f;
 }
 
 // 更新処理

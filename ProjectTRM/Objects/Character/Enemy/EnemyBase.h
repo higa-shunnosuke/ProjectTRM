@@ -10,6 +10,7 @@ protected:
 	float anim_rate;		// アニメーションの早さ
 	float damage_rate;		// 持続ダメージの頻度
 	float recovery_time;	// 硬直時間
+	float recovery_flame;	// 硬直時間の計算
 	float speed;			// 歩く速さ
 	int Damage;				// ダメージ
 	bool old_light;			// 前回のライトフラグ

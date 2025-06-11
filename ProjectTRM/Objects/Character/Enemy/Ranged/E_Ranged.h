@@ -65,6 +65,10 @@ public:
 
 private:
 	/// <summary>
+	/// UŒ‚ˆ—
+	/// </summary>
+	virtual void Attack(GameObject* hit_object) override;
+	/// <summary>
 	/// ˆÚ“®ˆ—
 	/// </summary>
 	/// <param name="hit_object">1ƒtƒŒ[ƒ€‚ ‚½‚è‚ÌŠÔ</param>

@@ -164,7 +164,7 @@ float InputManager::TriggerNormalize(unsigned char value)
 /// <returns>入力値を正規化した値</returns>
 float InputManager::StickNormalize(short value)
 {
-	const short DEAD_ZONE = 3000;	// デッドゾーン
+	const short DEAD_ZONE = 1000;	// デッドゾーン
 	float result = 0.0f;
 
 	if (abs(value) < DEAD_ZONE)

@@ -5,6 +5,7 @@
 EnemyBase::EnemyBase() :
 	anim_max_count(),
 	recovery_time(),
+	recovery_flame(),
 	damage_rate(),
 	anim_rate(),
 	effect_flame(),
@@ -64,10 +65,10 @@ void EnemyBase::Update(float delta_second)
 	// ‘Ò‹@ˆ—
 	else if (now_state == State::Idle)
 	{
-		recovery_time += delta_second;
+		recovery_flame += delta_second;
 
 		// ‘Ò‹@ŽžŠÔ‚ªI‚í‚Á‚½‚çUŒ‚ó‘Ô‚É‚·‚é
-		if (recovery_time >= 2.0f)
+		if (recovery_flame >= recovery_time)
 		{
 			now_state = State::Move;
 		}
@@ -221,7 +222,7 @@ void EnemyBase::AnimationControl(float delta_second)
 		if (Anim_count == anim_max_count)
 		{
 			now_state = State::Idle;
-			recovery_time = 0;
+			recovery_flame = 0;
 		}
 		break;
 	case State::Death:
