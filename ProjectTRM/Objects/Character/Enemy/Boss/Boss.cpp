@@ -38,7 +38,7 @@ void Boss::Initialize()
 	now_state = State::Move;
 
 	//UŒ‚—Í
-	Damage = 5;
+	Damage = 6;
 
 	// HP‰Šú‰»
 	HP = 800;
@@ -120,7 +120,7 @@ void Boss::InLightRange()
 void Boss::OutLightRange()
 {
 	in_light = false;
-	Damage = 5;
+	Damage = 6;
 	speed = 20.0f;
 }
 

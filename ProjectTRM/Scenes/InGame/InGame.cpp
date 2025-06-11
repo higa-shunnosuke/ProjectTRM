@@ -238,22 +238,37 @@ eSceneType InGame::Update(const float& delta_second)
 		// コスト管理処理
 		RegenerateCost();
 
-		// 親クラスの更新処理を呼び出す
-		return __super::Update(delta_second);
 		break;
 	case GameState::BOSS_DEAD:
+		// オブジェクトマネージャーのポインタ
+		GameObjectManager* object = GameObjectManager::GetInstance();
+		// オブジェクトリストを取得
+		std::vector<GameObject*> objects_list = object->GetObjectsList();
+
+		// 敵削除
+		if (!objects_list.empty())
+		{
+			for (auto* obj : objects_list)
+			{
+				// ユニット以外は無視する
+				if (obj->GetCollision().object_type == eObjectType::Enemy &&
+					obj != enemy)
+				{
+					obj->Finalize();
+				}
+			}
+		}
 
 		camera->SetCameraPos(Vector2D(0, 0));
 		if (enemy->GetDead())
 		{
 			return eSceneType::result;
 		}
-
-		__super::Update(delta_second);
-		break;
-	default:
 		break;
 	}
+
+	// 親クラスの更新処理を呼び出す
+	__super::Update(delta_second);
 }
 
 // 描画処理
