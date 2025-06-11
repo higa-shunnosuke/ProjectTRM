@@ -57,7 +57,7 @@ void P_Melee::Initialize()
 	Damage = BASIC_POWER;
 
 	// HP初期化
-	HP = 40;
+	HP = 30;
 
 	object = GameObjectManager::GetInstance();
 
@@ -140,11 +140,12 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う
-
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(position.x, position.y, 1.5, 0.0, image, TRUE, flip_flag);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
+	if (Anim_count <= anim_max_count)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawRotaGraphF(position.x, position.y, 1.5, 0.0, image, TRUE, flip_flag);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
 	
 	switch (now_state)
 	{
@@ -246,7 +247,6 @@ void P_Melee::HPControl(int Damage)
 // 攻撃処理
 void P_Melee::Attack(GameObject* hit_object)
 {
-	PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
 	hit_object->HPControl(Damage);
 	attack_flame = 2.0f;
 }
@@ -284,7 +284,7 @@ void P_Melee::AnimationControl(float delta_second)
 			animation = rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Attack.png", 9, 9, 1, 100, 55);
 			anim_max_count = 9;
 			if (Anim_count == anim_max_count)
-			{
+			{				
 				attack_flag = true;
 				now_state = State::Idle;
 			}
@@ -326,6 +326,10 @@ void P_Melee::AnimationControl(float delta_second)
 		break;
 	case State::Attack:
 		image = animation[Anim_count];
+		if (Anim_count == anim_max_count / 2)
+		{
+			PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
+		}
 		if (Anim_count == anim_max_count - 1)
 		{
 			attack_flag = true;
@@ -341,7 +345,7 @@ void P_Melee::AnimationControl(float delta_second)
 		}
 		if (velocity.x < 0.0f)
 		{
-			image = animation[1 + Anim_count];
+			image = animation[Anim_count];
 		}
 		else
 		{
@@ -382,7 +386,7 @@ void P_Melee::EffectControl(float delta_second)
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 36, 6, 5, 100, 100);
 			break;
 		case State::Death:
-			Effect = rm->GetImages("Resource/Images/Effect/Unit/Melee_Ghost.png", 1, 1, 1, 32, 32);
+			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50);
 			break;
 		default:
 			break;
@@ -446,6 +450,6 @@ void P_Melee::SoundControl()
 		default:
 			break;
 		}
-		ChangeVolumeSoundMem(150, sounds);
+		ChangeVolumeSoundMem(90, sounds);
 	}
 }

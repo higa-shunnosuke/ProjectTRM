@@ -26,7 +26,7 @@ class InGame : public SceneBase
 private:
 
 	GameState state = GameState::PLAYING;
-	std::chrono::steady_clock::time_point	summon_time[3];		// 召喚開始時間
+	std::chrono::steady_clock::time_point	summon_time[4];		// 召喚開始時間
 	std::chrono::seconds					cooldown[3];		// 召喚クールダウン
 	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数
 	int SunImages[10];

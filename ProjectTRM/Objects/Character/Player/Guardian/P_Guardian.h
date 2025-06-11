@@ -3,7 +3,7 @@
 #include "../../../GameObjectManager.h"
 
 #define BASIC_POWER (20)
-#define BASIC_SPEED (-5.0f)
+#define BASIC_SPEED (-4.0f)
 
 class P_Guardian : public Character
 {
@@ -19,6 +19,8 @@ private:
 	int Damage;	//ダメージ
 	GameObjectManager* object;
 	int anim_max_count;		// アニメーション画像の枚数
+	int sounds;
+	int effect_alpha;	//エフェクトの透明度調整用
 
 public:
 	//コンストラクタ
@@ -89,5 +91,10 @@ private:
 	/// </summary>
 	/// <param name="hit_object">1フレームあたりの時間</param>
 	virtual void EffectControl(float delta_second);
+
+	/// <summary>
+	/// SE制御処理
+	/// </summary>
+	virtual void SoundControl();
 };
 

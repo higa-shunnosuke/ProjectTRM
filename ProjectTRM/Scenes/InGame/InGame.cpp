@@ -52,7 +52,7 @@ void InGame::Initialize()
 	// ‰æ‘œ‚Ì“Ç‚Ýž‚Ý
 	ResourceManager* rm = ResourceManager::GetInstance();
 	// ƒRƒXƒgUI
-	unit_ui[0] = rm->GetImages("Resource/Images/Unit/Tank/Tank_Cost.png")[0];
+	unit_ui[0] = rm->GetImages("Resource/Images/Unit/Tank/Tank_Cost_New.png")[0];
 	unit_ui[1] = rm->GetImages("Resource/Images/Unit/Melee/Melee_Cost_New.png")[0];
 	unit_ui[2] = rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Cost.png")[0];
 	unit_ui[3] = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Cost.png")[0];
@@ -167,7 +167,7 @@ eSceneType InGame::Update(const float& delta_second)
 	int Pcount_sum = 0;
 	int Ecount_sum = 0;
 
-	Pcount_sum = (int)P_Tank::GetCount() + (int)P_Melee::GetCount() + (int)P_Ranged::GetCount() ;
+	Pcount_sum = (int)P_Tank::GetCount() + (int)P_Melee::GetCount() + (int)P_Ranged::GetCount() + (int)P_Guardian::GetCount() ;
 	Ecount_sum = (int)E_Tank::GetCount() + (int)E_Melee::GetCount() + (int)E_Ranged::GetCount()	;
 
 	if (max_unit < Pcount_sum)
@@ -608,7 +608,7 @@ void InGame::UnitSelection()
 		case 3:
 			if (summon_flag[cursor] == false)
 			{
-				if (cost - Melee_Cost >= 0)
+				if (cost - Guardian_Cost >= 0)
 				{
 					// ‹ßÚ‚ð¶¬
 					GameObject* obj = object->CreateObject<P_Guardian>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
