@@ -326,7 +326,7 @@ void P_Melee::AnimationControl(float delta_second)
 		break;
 	case State::Attack:
 		image = animation[Anim_count];
-		if (Anim_count == anim_max_count / 2)
+		if (Anim_count == anim_max_count / 2 && Ingame->GetNowState() == GameState::PLAYING)
 		{
 			PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
 		}

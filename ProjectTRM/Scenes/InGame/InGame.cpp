@@ -528,6 +528,15 @@ const int InGame::GetSunLevel() const
 	return Sun_Level;
 }
 
+/// <summary>
+/// 現在のステート取得処理
+/// </summary>
+/// <returns></returns>
+const GameState InGame::GetNowState() const
+{
+	return state;
+}
+
 //	ユニット召喚
 void InGame::UnitSelection()
 {
