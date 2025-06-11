@@ -9,10 +9,11 @@
 
 #ifdef Enemy_Think_Standard//Šî–{“I‚È‹³–{
 
-#define TANK_eva	 10
-#define MELEE_eva	 30
-#define RANGE_eva	 20
-#define BOSS_eva	 50
+#define Guardian_eva	50
+#define TANK_eva		10
+#define MELEE_eva		30
+#define RANGE_eva		20
+#define BOSS_eva		50
 
 #define TANK_cost	 10
 #define MELEE_cost	 30

@@ -18,6 +18,7 @@
 #define ENEMY_TEST
 
 #include"../../../../Utility/Input/InputManager.h"
+#include "../../Player/Guardian/P_Guardian.h"
 
 
 //#define Enemy_Plan_Evaluation // 戦場評価型
@@ -278,6 +279,7 @@ void Heretic::ThinkingEnemy()
 	int Ecount_sum = 0;
 	int Ecount_num = 0;
 
+	int Ptank_count = (int)P_Guardian::GetCount() * Guardian_eva;
 	int Ptank_count = (int)P_Tank::GetCount() * TANK_eva;
 	int Pmelee_count = (int)P_Melee::GetCount() * MELEE_eva;
 	int Prange_count = (int)P_Ranged::GetCount() * RANGE_eva;
@@ -287,6 +289,7 @@ void Heretic::ThinkingEnemy()
 	int Etank_count = (int)E_Tank::GetCount() * TANK_eva;
 	int Emelee_count = (int)E_Melee::GetCount() * MELEE_eva;
 	int Erange_count = (int)E_Ranged::GetCount() * RANGE_eva;
+	int Erange_count = (int)Boss::GetCount() * RANGE_eva;
 	Ecount_sum += (Etank_count + Emelee_count + Erange_count);
 	Ecount_num += (Etank_count / TANK_eva + Emelee_count / MELEE_eva + Erange_count / RANGE_eva);
 
@@ -426,7 +429,7 @@ if (now_time - rush_time > std::chrono::milliseconds(1000))
 
 if (Time_rush != true)
 {
-	if (Pcount_num > 49)
+	if (Pcount_num > 20)
 	{
 		//【仮】
 		//これがワイの…切り札や！！！！
