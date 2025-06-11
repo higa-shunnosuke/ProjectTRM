@@ -462,7 +462,10 @@ void P_Ranged::SoundControl()
 // UŒ‚ˆ—
 void P_Ranged::Attack(GameObject* hit_object)
 {
-	PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
+	if (Ingame->GetNowState() == GameState::PLAYING)
+	{
+		PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
+	}
 	P_Projectile* obj = object->CreateObject<P_Projectile>(this->location);
 	obj->SetTargetLocation(hit_object->GetLocation());
 	obj->SetInGamePoint(Ingame);

@@ -90,6 +90,12 @@ public:
 	/// <returns></returns>
 	const int GetSunLevel() const;
 
+	/// <summary>
+	/// 現在のステート取得処理
+	/// </summary>
+	/// <returns></returns>
+	const GameState GetNowState() const;
+
 private:
 	/// <summary>
 	/// ステージの生成処理

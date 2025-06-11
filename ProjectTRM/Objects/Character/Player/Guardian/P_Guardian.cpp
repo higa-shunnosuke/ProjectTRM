@@ -302,11 +302,15 @@ void P_Guardian::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		break;
 	case State::Move:
-		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 10) * (Ingame->GetSunLevel() - 1));
+		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel() - 1));
 		image = animation[Anim_count + 10];
 		break;
 	case State::Attack:
 		image = animation[Anim_count + 78];
+		if (Anim_count == anim_max_count / 2 && Ingame->GetNowState() == GameState::PLAYING)
+		{
+			PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
+		}
 		if (Anim_count == anim_max_count - 1)
 		{
 			attack_flag = true;
