@@ -56,6 +56,11 @@ eSceneType Title::Update(const float& delta_second)
 		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
 		return eSceneType::stage_select;
 	}
+	if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+	{
+		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
+		return eSceneType::end;
+	}
 	if (input->GetButtonState(XINPUT_BUTTON_B) == eInputState::Pressed)
 	{
 		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);

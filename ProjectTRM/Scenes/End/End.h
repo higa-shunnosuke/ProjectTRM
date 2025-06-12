@@ -1,16 +1,18 @@
 #pragma once
 
 #include "..//SceneBase.h"
+#include <chrono>
 
 // タイトルシーン
 class End : public SceneBase
 {
 private:
 
-
 public:
 	// コンストラクタ
 	End();
+	int x = D_WIN_MAX_X;
+	std::chrono::steady_clock::time_point	prev_time;			// 加算用変数
 	// デストラクタ
 	virtual ~End();
 
