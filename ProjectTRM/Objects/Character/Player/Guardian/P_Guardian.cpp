@@ -194,7 +194,7 @@ void P_Guardian::OnAreaDetection(GameObject* hit_object)
 		if (hit_col.object_type == eObjectType::Enemy)
 		{
 			velocity.x = 0.0f;
-			if (attack_flag == false)
+			if (attack_flag == false && now_state != State::Summon)
 			{
 				now_state = State::Attack;
 			}
@@ -381,11 +381,12 @@ void P_Guardian::EffectControl(float delta_second)
 	switch (now_state)
 	{
 	case State::Summon:
-		effect_image = Effect[Effect_count];
 		if (Effect_count == effect_max_count)
 		{
 			now_state = State::Move;
+			break;
 		}
+		effect_image = Effect[Effect_count];
 		break;
 	case State::Death:
 		effect_image = Effect[0];
