@@ -18,12 +18,13 @@ public:
 private:
 	std::vector<int> Effect;//エフェクト画像格納用
 	int effect_image; //エフェクト画像描画用
-	int Damage;	//ダメージ
+	int Damage;	//攻撃力
 	GameObjectManager* object;
 	int effect_alpha;	//エフェクトの透明度調整用
 	int sounds;	//音
 	int anim_max_count;		// アニメーション画像の枚数
-	int effect_max_count;
+	int effect_max_count;	//エフェクト画像の枚数
+	int reduction_amount;	//HP減少量
 
 public:
 	//コンストラクタ

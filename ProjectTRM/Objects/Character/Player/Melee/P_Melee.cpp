@@ -16,7 +16,8 @@ P_Melee::P_Melee() :
 	anim_max_count(),
 	object(nullptr),
 	sounds(),
-	effect_max_count()
+	effect_max_count(),
+	reduction_amount()
 {
 	count++;
 }
@@ -209,7 +210,7 @@ void P_Melee::OnAreaDetection(GameObject* hit_object)
 		if (hit_col.object_type == eObjectType::Enemy)
 		{
 			velocity.x = 0.0f;
-			if (attack_flag == false)
+			if (attack_flag == false && now_state!=State::Summon)
 			{
 				now_state = State::Attack;
 			}
@@ -241,6 +242,7 @@ void P_Melee::HPControl(int Damage)
 	if (now_state != State::Attack && now_state != State::Death)
 	{
 		//PlaySoundMem(sounds, DX_PLAYTYPE_BACK, true);
+		reduction_amount = Damage;
 		now_state = State::Damage;
 		__super::HPControl(Damage);
 		dmage_flame = 1.0f;
@@ -417,11 +419,12 @@ void P_Melee::EffectControl(float delta_second)
 	switch (now_state)
 	{
 	case State::Summon:
-		effect_image = Effect[Effect_count];
 		if (Effect_count == effect_max_count)
 		{
 			now_state = State::Move;
+			break;
 		}
+		effect_image = Effect[Effect_count];
 		break;
 	case State::Damage:
 		effect_image = Effect[Effect_count];

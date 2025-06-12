@@ -216,7 +216,10 @@ void P_Tank::OnAreaDetection(GameObject* hit_object)
 		if (hit_col.object_type == eObjectType::Enemy)
 		{
 			velocity.x = 0.0f;
-			now_state = State::Idle;
+			if (now_state != State::Summon)
+			{
+				now_state = State::Idle;
+			}
 		}
 	}
 }
@@ -397,11 +400,12 @@ void P_Tank::EffectControl(float delta_second)
 	switch (now_state)
 	{
 	case State::Summon:
-		effect_image = Effect[Effect_count];
 		if (Effect_count == effect_max_count)
 		{
 			now_state = State::Move;
+			break;
 		}
+		effect_image = Effect[Effect_count];
 		break;
 	case State::Damage:
 		effect_image = Effect[Effect_count];

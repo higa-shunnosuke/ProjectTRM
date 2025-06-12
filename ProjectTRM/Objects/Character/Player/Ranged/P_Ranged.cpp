@@ -191,10 +191,7 @@ void P_Ranged::OnHitCollision(GameObject* hit_object)
 // 攻撃範囲通知処理
 void P_Ranged::OnAreaDetection(GameObject* hit_object)
 {
-	if (target_loc.x == 0.0f || target_loc.x < hit_object->GetLocation().x - this->GetLocation().x)
-	{
-		target_loc.x = hit_object->GetLocation().x - this->GetLocation().x;
-	}
+
 	target_loc.y = hit_object->GetLocation().y;
 	//現在のステータスが死亡状態かどうか
 	if (now_state != State::Death)
@@ -207,7 +204,7 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 			{
 				
 				velocity.x = 0.0f;
-				if (attack_flag == false)
+				if (attack_flag == false && now_state != State::Summon)
 				{
 					now_state = State::Attack;
 				}
@@ -221,7 +218,7 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 			}
 			else
 			{
-				if (target_loc.x <= hit_object->GetLocation().x - this->GetLocation().x)
+				if (target_loc.x <= hit_object->GetLocation().x)
 				{
 
 					//２つのオブジェクトの距離を取得
@@ -427,11 +424,12 @@ void P_Ranged::EffectControl(float delta_second)
 	switch (now_state)
 	{
 	case State::Summon:
-		effect_image = Effect[Effect_count];
 		if (Effect_count == effect_max_count)
 		{
 			now_state = State::Move;
+			break;
 		}
+		effect_image = Effect[Effect_count];
 		break;
 	case State::Damage:
 		effect_image = Effect[Effect_count];
