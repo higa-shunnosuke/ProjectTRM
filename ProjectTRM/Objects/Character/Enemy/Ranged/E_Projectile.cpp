@@ -38,7 +38,7 @@ void E_Projectile::Initialize()
 
     lane = rand() % 3 + 1;
 
-    Damage = 6;
+    Damage = 5;
 
 }
 

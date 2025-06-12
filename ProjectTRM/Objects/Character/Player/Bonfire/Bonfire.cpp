@@ -33,7 +33,7 @@ void Bonfire::Initialize()
 	collision.light_size = 2.0;
 
 	is_mobility = false;
-	is_aggressive = true;
+	is_aggressive = false;
 
 	collision.is_blocking = true;
 	collision.object_type = eObjectType::Player;

@@ -6,7 +6,7 @@
 class EnemyBase :public Character
 {
 protected:
-	int anim_max_count;		// アニメーション画像の枚数
+	int anim_max_count;		// アニメーション画像配列の要素数
 	float anim_rate;		// アニメーションの早さ
 	float damage_rate;		// 持続ダメージの頻度
 	float recovery_time;	// 硬直時間

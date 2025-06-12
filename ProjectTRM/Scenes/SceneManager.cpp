@@ -71,7 +71,9 @@ void SceneManager::Update(float delta_second)
 		}
 	}
 
-	bool is_hit = false;	// 攻撃フラグ
+	// 最短距離を初期化
+	float shortest_distance = ProjectConfig::STAGE_WIDTH;
+	GameObject* target = nullptr;
 
 	// 攻撃判定確認処理
 	for (int i = 0; i < objects_list.size(); i++)
@@ -91,17 +93,34 @@ void SceneManager::Update(float delta_second)
 					continue;
 				}
 
-				// 攻撃判定確認処理
-				if (CheckHitBox(objects_list[i], objects_list[j]) == true)
+				// 当たり判定情報を取得
+				Collision tc = objects_list[i]->GetCollision();
+				Collision pc = objects_list[j]->GetCollision();
+
+				// 攻撃判定が有効な時にしか計算しない
+				if (tc.IsCheckHitTarget(pc.object_type) || pc.IsCheckHitTarget(tc.object_type))
 				{
-					is_hit = true;
-					break;
+					// ユニット同士の距離を計算
+					Vector2D diff = objects_list[i]->GetLocation() - objects_list[j]->GetLocation();
+					float distance = sqrtf(diff.x * diff.x + diff.y * diff.y);
+
+					// 最長距離を更新
+					if (distance < shortest_distance)
+					{
+						shortest_distance = distance;
+						target = objects_list[j];
+					}
+				}
+				else
+				{
+					continue;
 				}
 			}
 
-			// 攻撃対象がいないことを通知する
-			if (is_hit != true)
+			// 攻撃判定確認処理
+			if (CheckHitBox(objects_list[i], target) == false)
 			{
+				// 攻撃対象がいないことを通知する
 				objects_list[i]->NoHit();
 			}
 		}
@@ -325,6 +344,7 @@ bool SceneManager::CheckHitBox(GameObject* target, GameObject* partner)
 	}
 	else
 	{
+		// 当たっていない
 		return false;
 	}
 }
