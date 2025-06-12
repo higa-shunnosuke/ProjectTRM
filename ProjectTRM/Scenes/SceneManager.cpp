@@ -71,57 +71,59 @@ void SceneManager::Update(float delta_second)
 		}
 	}
 
-	// 最短距離を初期化
-	float shortest_distance = ProjectConfig::STAGE_WIDTH;
-	GameObject* target = nullptr;
-
 	// 攻撃判定確認処理
-	for (int i = 0; i < objects_list.size(); i++)
+	for (GameObject* target : objects_list)
 	{
 		// 攻撃性がないオブジェクトの場合攻撃判定確認処理はしない
-		if (objects_list[i]->GetAggressive() == false)
+		if (target->GetAggressive() == false)
 		{
 			continue;
 		}
 		else
 		{
-			for (int j = 0; j < objects_list.size(); j++)
+			// 最短距離をステージサイズで初期化
+			float shortest_distance = ProjectConfig::STAGE_WIDTH;
+			// 攻撃対象
+			GameObject* partner = nullptr;
+
+			// 候補から攻撃対象を確定する
+			for (GameObject* potential_partner : objects_list)
 			{
 				// 自分同士の当たり判定確認処理はしない
-				if (i == j)
+				if (target == potential_partner)
 				{
 					continue;
 				}
 
 				// 当たり判定情報を取得
-				Collision tc = objects_list[i]->GetCollision();
-				Collision pc = objects_list[j]->GetCollision();
+				Collision tc = target->GetCollision();
+				Collision pc = potential_partner->GetCollision();
 
-				// 攻撃判定が有効な時にしか計算しない
-				if (tc.IsCheckHitTarget(pc.object_type) || pc.IsCheckHitTarget(tc.object_type))
+				// 攻撃判定が有効か
+				if (tc.IsCheckHitTarget(pc.object_type))
 				{
 					// ユニット同士の距離を計算
-					Vector2D diff = objects_list[i]->GetLocation() - objects_list[j]->GetLocation();
-					float distance = sqrtf(diff.x * diff.x + diff.y * diff.y);
+					float distance = fabsf(target->GetLocation().x - potential_partner->GetLocation().x);
 
 					// 最長距離を更新
 					if (distance < shortest_distance)
 					{
 						shortest_distance = distance;
-						target = objects_list[j];
+						partner = potential_partner;
 					}
 				}
 				else
 				{
+					// 判定が有効でなければ無視する
 					continue;
 				}
 			}
 
 			// 攻撃判定確認処理
-			if (CheckHitBox(objects_list[i], target) == false)
+			if (CheckHitBox(target, partner) == false)
 			{
 				// 攻撃対象がいないことを通知する
-				objects_list[i]->NoHit();
+				target->NoHit();
 			}
 		}
 	}
@@ -318,29 +320,20 @@ bool SceneManager::CheckHitBox(GameObject* target, GameObject* partner)
 	Collision tc = target->GetCollision();
 	Collision pc = partner->GetCollision();
 
-	// 攻撃判定が有効か確認する
-	if (tc.IsCheckHitTarget(pc.object_type) || pc.IsCheckHitTarget(tc.object_type))
-	{
-		//２つのオブジェクトの距離を取得
-		Vector2D diff = target->GetLocation() - partner->GetLocation();
+	//２つのオブジェクトの距離を取得
+	Vector2D diff = target->GetLocation() - partner->GetLocation();
 
-		//２つのオブジェクトの当たり判定の大きさを取得
-		Vector2D box_size;
-		box_size.x = tc.hitbox_size.x;
-		box_size.y = (tc.hitbox_size.y + pc.collision_size.y) / 2.0f;
-		
-		// 矩形同士の当たり判定
-		if ((fabsf(diff.x) <= box_size.x) && (fabsf(diff.y) <= box_size.y))
-		{
-			// 当たっていることを通知する
-			target->OnAreaDetection(partner);
-			return true;
-		}
-		else
-		{
-			// 当たっていない
-			return false;
-		}
+	//２つのオブジェクトの当たり判定の大きさを取得
+	Vector2D box_size;
+	box_size.x = tc.hitbox_size.x;
+	box_size.y = (tc.hitbox_size.y + pc.collision_size.y) / 2.0f;
+
+	// 矩形同士の当たり判定
+	if ((fabsf(diff.x) <= box_size.x) && (fabsf(diff.y) <= box_size.y))
+	{
+		// 当たっていることを通知する
+		target->OnAreaDetection(partner);
+		return true;
 	}
 	else
 	{

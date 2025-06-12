@@ -248,10 +248,11 @@ eSceneType InGame::Update(const float& delta_second)
 		// 敵削除
 		if (!objects_list.empty())
 		{
-			for (auto* obj : objects_list)
+			for (GameObject* obj : objects_list)
 			{
-				// ユニット以外は無視する
+				// エネミー以外は無視する
 				if (obj->GetCollision().object_type == eObjectType::Enemy &&
+				// 異端者も無視する
 					obj != enemy)
 				{
 					obj->Finalize();

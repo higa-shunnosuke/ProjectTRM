@@ -65,7 +65,7 @@ void Camera::Update()
 
 		if (!objects_list.empty() && oracle != nullptr)
 		{
-			for (auto* obj : objects_list)
+			for (GameObject* obj : objects_list)
 			{
 				// ユニット以外は無視する
 				if (obj->GetCollision().object_type != eObjectType::Player ||
