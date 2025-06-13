@@ -78,11 +78,6 @@ void EnemyBase::Update(float delta_second)
 	if (in_light == true && damage_rate >= 1.0f)
 	{
 		HP -= 1.0f;
-		// エフェクトが終わっていたら開始する
-		if (effect_count[1] == 0)
-		{
-			effect_count[1] = 1;
-		}
 		damage_rate = 0.0f;
 	}
 	else
@@ -203,6 +198,12 @@ void EnemyBase::OutLightRange()
 // HP管理処理
 void EnemyBase::HPControl(int Damage)
 {
+	// エフェクトが終わっていたら開始する
+	if (effect_count[1] == 0)
+	{
+		effect_count[1] = 1;
+	}
+
 	// ダメージ軽減
 	if (!in_light)
 	{
