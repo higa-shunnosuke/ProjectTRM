@@ -317,14 +317,14 @@ void Result::Draw() const
 			DrawCircle(480, 516, 10, 0xffffff);
 			if (show != true)
 			{
-				DrawString(500, 500, ": ReStart", 0xffffff);
+				DrawString(500, 500, ": Restart", 0xffffff);
 			}
 			DrawString(500, 550, ": Title", 0xffffff);
 		}
 		break;
 		default:
 		{
-			DrawString(500, 500, ": ReStart", 0xffffff);
+			DrawString(500, 500, ": Restart", 0xffffff);
 			DrawString(500, 550, ": Title", 0xffffff);
 		}
 		break;

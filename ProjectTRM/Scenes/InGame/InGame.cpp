@@ -516,18 +516,18 @@ void InGame::Draw() const
 		// コスト表示
 		if (Sun_Level == 10)
 		{
-				DrawFormatString(1100, 680, 0xffffff, "%d/∞", cost);
+				DrawFormatString(1000, 680, 0xffffff, "Cost:%d/∞", cost);
 		}
 		else
 		{
 
 			if (cost < Sun_Level * 100)
 			{
-				DrawFormatString(1100, 680, 0xffffff, "%d/%d", cost, Sun_Level * 100);
+				DrawFormatString(1000, 680, 0xffffff, "Cost:%d/%d", cost, Sun_Level * 100);
 			}
 			else
 			{
-				DrawFormatString(1100, 680, 0xffff00, "%d/%d", cost, Sun_Level * 100);
+				DrawFormatString(1000, 680, 0xffff00, "Cost:%d/%d", cost, Sun_Level * 100);
 			}
 		}
 
