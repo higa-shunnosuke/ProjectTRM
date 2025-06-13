@@ -32,7 +32,7 @@ private:
 	int x = 200;
 	int y = 100;
 	const TCHAR* StageText[3] = { "Stage 1 : 始まりの森","Stage 2 :　未開の遺跡","Stage 3 :　灯りの橋", };
-	const TCHAR* StageFlabarText[3] = { "始まりの森\n闇の軍勢の斥候が襲い掛かる・・・" , "前人未到の遺跡\n古代より闇の本隊が迫る!" , "最終決戦の橋\n奴らは全力を出してくるぞ！備えろ！" };
+	const TCHAR* StageFlabarText[3] = { "始まりの森\n闇の軍勢の斥候が襲い掛かる・・・\n※チュートリアル面(初めての人はここからがおススメ)" , "前人未到の遺跡\n古代より闇の本隊が迫る!" , "最終決戦の橋\n奴らは全力を出してくるぞ！備えろ！" };
 	const TCHAR* StageSelectText[3] = {"1  ->" , "<-  2  ->" , "<-  3"};
 	
 	int w = x + 100;

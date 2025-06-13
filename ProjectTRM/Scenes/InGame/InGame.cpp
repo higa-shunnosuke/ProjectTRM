@@ -74,7 +74,7 @@ void InGame::Initialize()
 
 	Sun_Images = rm->GetImages(Imagestring + Imagepng)[0];
 
-	//Text_BackGround = rm->GetImages("Resource/Images/BackGround/Text.png")[0];
+	Text_BackGround = rm->GetImages("Resource/Images/BackGround/Text.png")[0];
 
 
 	// ‰¹Œ¹‚Ì“Ç‚İ‚İ
@@ -348,6 +348,7 @@ void InGame::Draw() const
 				int w = (int)(button_width * 1.2);
 				int h = (int)(button_height * 1.2);
 
+
 				switch (i)
 				{
 				case 0:
@@ -408,6 +409,19 @@ void InGame::Draw() const
 						Sun_Images, TRUE);
 
 					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+
+					// •`‰æ”ÍˆÍ‚ğŒ³‚É–ß‚·
+					SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
+					if (StageNumber == 1)
+					{
+						DrawExtendGraph(
+							(int)x-330, (int)y + h,
+							(int)x + 300, (int)y + h + 120,
+							Text_BackGround, TRUE);
+
+						DrawFormatString(x - 300, y + h + 40, 0x000000, "M‹Â“x cost:Œ»İ‚ÌÅ‘å’l‚·‚×‚Ä\nƒRƒXƒg‚ÌãŒÀ‚Æ‰ñ•œ‘¬“x‚ªã‚ª‚é");
+					}
+
 				}
 				else
 				{
@@ -419,6 +433,45 @@ void InGame::Draw() const
 
 					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 
+					// •`‰æ”ÍˆÍ‚ğŒ³‚É–ß‚·
+					SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
+
+
+					if (StageNumber == 1)
+					{
+
+						DrawExtendGraph(
+							(int)x, (int)y + h,
+							(int)x + 380, (int)y + h + 120,
+							Text_BackGround, TRUE);
+
+						switch (i)
+						{
+							case 0:
+							{
+								DrawFormatString(x + 30, y + h + 40, 0x000000, "“”ç cost:20\n—Bˆê“”‚è‚ğ‚Â");
+							}
+							break;
+							case 1:
+							{
+								DrawFormatString(x + 30, y + h + 40, 0x000000, "•ºm cost:50\n‘Oü‚ğç‚é");
+							}
+							break;
+							case 2:
+							{
+								DrawFormatString(x + 30, y + h + 40, 0x000000, "‹|•º cost:100\n‰“‹——£‚©‚çUŒ‚‚·‚é");
+							}
+							break;
+							case 3:
+							{
+								DrawFormatString(x + 30, y + h + 40, 0x000000, "‹Rm cost:500\n•ºm‚ÌãˆÊŒİŠ·");
+							}
+							break;
+
+						}
+					}
+
+					//DrawGraph(x, y, Text_BackGround, 1);
 				}
 			}
 			else
@@ -504,6 +557,8 @@ void InGame::Draw() const
 						unit_ui[i], TRUE);
 
 					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+
+
 
 				}
 			}
