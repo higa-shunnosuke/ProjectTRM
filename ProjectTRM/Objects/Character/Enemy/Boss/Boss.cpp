@@ -182,7 +182,7 @@ void Boss::AnimationControl(float delta_second)
 			animation = rm->GetImages("Resource/Images/Enemy/Boss/Boss_Death.png", 10, 10, 1, 140, 93);
 			image = animation[Anim_count];
 			anim_max_count = 9;
-			anim_rate = 0.3f;
+			anim_rate = 0.2f;
 			break;
 		}
 	}
