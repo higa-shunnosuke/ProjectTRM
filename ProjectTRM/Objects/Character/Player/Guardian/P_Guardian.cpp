@@ -34,6 +34,7 @@ void P_Guardian::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	animation = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_All.png", 121, 11, 11, 96, 96);
 	text = rm->GetImages("Resource/Images/BackGround/numbers.png", 10, 5, 2, 32, 32);
+	minus = rm->GetImages("Resource/Images/BackGround/minus.png")[0];
 
 	//LightMapManager* light = LightMapManager::GetInstance();
 	//light->AddLight(this);
@@ -158,6 +159,7 @@ void P_Guardian::Draw(const Vector2D camera_pos) const
 	if (!reduction_amount.empty() && now_state != State::Death)
 	{
 		for (int i = reduction_amount.size() - 1; i >= 0; --i) {
+			DrawRotaGraphF(position.x - 20.0f, (position.y - 100.0f) + damage_time[i] * 100, 0.7, 0.0, minus, TRUE);
 			DrawRotaGraphF(position.x, (position.y - 100.0f) + damage_time[i] * 100, 1.0, 0.0, text[reduction_amount[i]], TRUE);
 		}
 	}

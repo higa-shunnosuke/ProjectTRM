@@ -37,6 +37,7 @@ void P_Tank::Initialize()
 	effect_image = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50)[0];
 	sounds = rm->GetSounds("Resource/Sounds/UnitSE/Tank/Tank_Attack.mp3");
 	text = rm->GetImages("Resource/Images/BackGround/numbers.png", 10, 5, 2, 32, 32);
+	minus = rm->GetImages("Resource/Images/BackGround/minus.png")[0];
 
 	light = LightMapManager::GetInstance();
 	light->AddLight(this);
@@ -162,6 +163,7 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 	if (!reduction_amount.empty() && now_state != State::Death)
 	{
 		for (int i = reduction_amount.size() - 1; i >= 0; --i) {
+			DrawRotaGraphF(position.x - 20.0f, (position.y - 100.0f) + damage_time[i] * 100, 0.7, 0.0, minus, TRUE);
 			DrawRotaGraphF(position.x, (position.y - 100.0f) + damage_time[i] * 100, 1.0, 0.0, text[reduction_amount[i]], TRUE);
 		}
 	}
