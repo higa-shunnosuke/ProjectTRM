@@ -36,7 +36,6 @@ protected:
 	int     con;
 	float   attack_flame = 0.0f;
 	bool	attack_flag;
-	float   dmage_flame = 0.0f;
 
 	int alpha;
 	int add;

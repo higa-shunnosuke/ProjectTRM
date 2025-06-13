@@ -36,6 +36,7 @@ void P_Tank::Initialize()
 	animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Unit_Walk.png", 9, 9, 1, 48, 32);
 	effect_image = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50)[0];
 	sounds = rm->GetSounds("Resource/Sounds/UnitSE/Tank/Tank_Attack.mp3");
+	text = rm->GetImages("Resource/Images/BackGround/numbers.png", 10, 5, 2, 32, 32);
 
 	light = LightMapManager::GetInstance();
 	light->AddLight(this);
@@ -108,13 +109,14 @@ void P_Tank::Update(float delta_second)
 			}
 		}
 
-		dmage_flame -= delta_second;
-
-		if (dmage_flame <= 0.0f)
+		if (!reduction_amount.empty())
 		{
-			dmage_flame = 0.0f;
-			alpha = MAX_ALPHA;
-			add = -ALPHA_ADD;
+			for (int i = reduction_amount.size() - 1; i >= 0; --i) {
+				if (damage_time[i] <= 0.0f) {
+					reduction_amount.erase(reduction_amount.begin() + i);
+					damage_time.erase(damage_time.begin() + i); // damage_time も合わせて消す
+				}
+			}
 		}
 
 		if (HP <= 0)
@@ -157,12 +159,16 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
+	if (!reduction_amount.empty() && now_state != State::Death)
+	{
+		for (int i = reduction_amount.size() - 1; i >= 0; --i) {
+			DrawRotaGraphF(position.x, (position.y - 100.0f) + damage_time[i] * 100, 1.0, 0.0, text[reduction_amount[i]], TRUE);
+		}
+	}
+
 	//ステートによってエフェクトの描画を行う
 	switch (now_state)
 	{
-	case State::Damage:
-		DrawRotaGraphF(position.x, position.y, 1.0, 0.0, effect_image, TRUE, flip_flag);
-		break;
 	case State::Death:
 		position.y -= Effect_count * 10 + Effect_flame * 10;
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, effect_alpha);
@@ -239,13 +245,13 @@ void P_Tank::NoHit()
 void P_Tank::HPControl(int Damage)
 {
 	// 攻撃状態でなければダメージ状態にする
-	if (now_state != State::Attack)
+	if (now_state != State::Attack && now_state != State::Death)
 	{
-		now_state = State::Damage;
-		dmage_flame = 1.0f;
+		//PlaySoundMem(sounds, DX_PLAYTYPE_BACK, true);
+		reduction_amount.push_back(Damage);
+		__super::HPControl(Damage);
+		damage_time.push_back(0.5f);
 	}
-
-	__super::HPControl(Damage);
 }
 
 
@@ -325,21 +331,6 @@ void P_Tank::AnimationControl(float delta_second)
 		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 		image = animation[Anim_count];
 		break;
-	case State::Damage:
-		alpha += add;
-		if (alpha <= 0 || alpha >= 255)
-		{
-			add = -add;
-		}
-		if (velocity.x < 0.0f)
-		{
-			image = animation[Anim_count];
-		}
-		else
-		{
-			image = animation[0];
-		}
-		break;
 	case State::Death:
 		image = animation[Anim_count];
 		if (Anim_count == anim_max_count - 1)
@@ -374,10 +365,6 @@ void P_Tank::EffectControl(float delta_second)
 			Effect = rm->GetImages("Resource/Images/Effect/Magic_Remove.png", 10, 5, 2, 192, 192);
 			effect_max_count = 10;
 			break;
-		case State::Damage:
-			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 30, 6, 5, 100, 100);
-			effect_max_count = 29;
-			break;
 		case State::Death:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50);
 			break;
@@ -396,6 +383,13 @@ void P_Tank::EffectControl(float delta_second)
 		}
 		Effect_flame = 0;
 	}
+	if (!damage_time.empty())
+	{
+		for (int i = 0; i < damage_time.size(); i++)
+		{
+			damage_time[i] -= delta_second;
+		}
+	}
 
 	switch (now_state)
 	{
@@ -406,13 +400,6 @@ void P_Tank::EffectControl(float delta_second)
 			break;
 		}
 		effect_image = Effect[Effect_count];
-		break;
-	case State::Damage:
-		effect_image = Effect[Effect_count];
-		if (dmage_flame <= 0.0f)
-		{
-			now_state = State::Idle;
-		}
 		break;
 	case State::Death:
 		effect_image = Effect[0];
@@ -441,8 +428,6 @@ void P_Tank::SoundControl()
 		case State::Attack:
 			sounds = rm->GetSounds("Resource/Sounds/UnitSE/Tank/Tank_Attack.mp3");
 			break;
-		case State::Damage:
-			sounds = rm->GetSounds("Resource/Sounds/UnitSE/damage02.wav");
 		default:
 			break;
 		}

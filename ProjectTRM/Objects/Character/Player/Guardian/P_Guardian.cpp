@@ -33,6 +33,7 @@ void P_Guardian::Initialize()
 	// ‰æ‘œ‚Ì“Ç‚Ýž‚Ý
 	ResourceManager* rm = ResourceManager::GetInstance();
 	animation = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_All.png", 121, 11, 11, 96, 96);
+	text = rm->GetImages("Resource/Images/BackGround/numbers.png", 10, 5, 2, 32, 32);
 
 	//LightMapManager* light = LightMapManager::GetInstance();
 	//light->AddLight(this);
@@ -105,13 +106,14 @@ void P_Guardian::Update(float delta_second)
 			}
 		}
 
-		dmage_flame -= delta_second;
-
-		if (dmage_flame <= 0.0f)
+		if (!reduction_amount.empty())
 		{
-			dmage_flame = 0.0f;
-			alpha = MAX_ALPHA;
-			add = -ALPHA_ADD;
+			for (int i = reduction_amount.size() - 1; i >= 0; --i) {
+				if (damage_time[i] <= 0.0f) {
+					reduction_amount.erase(reduction_amount.begin() + i);
+					damage_time.erase(damage_time.begin() + i); // damage_time ‚à‡‚í‚¹‚ÄÁ‚·
+				}
+			}
 		}
 
 		if (HP <= 0)
@@ -151,6 +153,13 @@ void P_Guardian::Draw(const Vector2D camera_pos) const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 		DrawRotaGraphF(position.x, position.y, 1.0, 0.0, image, TRUE, flip_flag);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+
+	if (!reduction_amount.empty() && now_state != State::Death)
+	{
+		for (int i = reduction_amount.size() - 1; i >= 0; --i) {
+			DrawRotaGraphF(position.x, (position.y - 100.0f) + damage_time[i] * 100, 1.0, 0.0, text[reduction_amount[i]], TRUE);
+		}
 	}
 
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
@@ -223,13 +232,13 @@ void P_Guardian::NoHit()
 void P_Guardian::HPControl(int Damage)
 {
 	// UŒ‚ó‘Ô‚Å‚È‚¯‚ê‚Îƒ_ƒ[ƒWó‘Ô‚É‚·‚é
-	if (now_state != State::Attack)
+	if (now_state != State::Attack && now_state != State::Death)
 	{
-		now_state = State::Damage;
-		dmage_flame = 1.0f;
+		//PlaySoundMem(sounds, DX_PLAYTYPE_BACK, true);
+		reduction_amount.push_back(Damage);
+		__super::HPControl(Damage);
+		damage_time.push_back(0.5f);
 	}
-
-	__super::HPControl(Damage);
 }
 
 
@@ -275,8 +284,6 @@ void P_Guardian::AnimationControl(float delta_second)
 				attack_flag = true;
 				now_state = State::Idle;
 			}
-			break;
-		case State::Damage:
 			break;
 		case State::Death:
 			anim_max_count = 11;
@@ -324,14 +331,6 @@ void P_Guardian::AnimationControl(float delta_second)
 			velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
 		}
 		break;
-	case State::Damage:
-		alpha += add;
-		if (alpha <= 0 || alpha >= 255)
-		{
-			add = -add;
-		}
-		image = animation[0];
-		break;
 	case State::Death:
 		image = animation[Anim_count + 104];
 		if (Anim_count == anim_max_count - 1)
@@ -376,6 +375,13 @@ void P_Guardian::EffectControl(float delta_second)
 			Effect_count = 0;
 		}
 		Effect_flame = 0;
+	}
+	if (!damage_time.empty())
+	{
+		for (int i = 0; i < damage_time.size(); i++)
+		{
+			damage_time[i] -= delta_second;
+		}
 	}
 
 	switch (now_state)

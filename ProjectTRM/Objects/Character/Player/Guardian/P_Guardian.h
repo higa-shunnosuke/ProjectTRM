@@ -22,6 +22,9 @@ private:
 	int sounds;
 	int effect_alpha;	//エフェクトの透明度調整用
 	int effect_max_count;
+	std::vector<int> text;
+	std::vector<int> reduction_amount;	//HP減少量
+	std::vector<float> damage_time; //ダメージの表記時間
 
 public:
 	//コンストラクタ
