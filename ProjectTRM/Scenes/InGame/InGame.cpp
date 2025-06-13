@@ -66,11 +66,16 @@ void InGame::Initialize()
 	Imagestring = "Resource/Images/BackGround/Sun";
 	Imagepng = ".png";
 
-	for (int i = 0; i < 10; i++)
-	{
-		Number = std::to_string(i);
-		SunImages[i] = rm->GetImages(Imagestring + Number + Imagepng)[0];
-	}
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	Number = std::to_string(i);
+	//	SunImages[i] = rm->GetImages(Imagestring + Number + Imagepng)[0];
+	//}
+
+	Sun_Images = rm->GetImages(Imagestring + Imagepng)[0];
+
+	//Text_BackGround = rm->GetImages("Resource/Images/BackGround/Text.png")[0];
+
 
 	// 音源の読み込み
 	// 決定
@@ -343,34 +348,66 @@ void InGame::Draw() const
 				int w = (int)(button_width * 1.2);
 				int h = (int)(button_height * 1.2);
 
+				switch (i)
+				{
+				case 0:
+				{
+					if (cost < 20)
+					{
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+					}
+
+				}
+				break;
+				case 1:
+				{
+					if (cost < 50)
+					{
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+					}
+					break;
+				}
+				case 2:
+				{
+					if (cost < 100)
+					{
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+					}
+					break;
+				}
+				case 3:
+				{
+					if (cost < 500)
+					{
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+					}
+					break;
+				}
+				case 4:
+					if (cost < Sun_Level * 100)
+					{
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+					}
+
+				default:
+					break;
+				}
+
 				// 枠（背景）を描画
 				DrawBox(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h, GetColor(255, 255, 255), TRUE);
 				//キャラの描画範囲を制限
 				SetDrawArea(x - (w - button_width) / 2, y - (h - button_height) / 2, x + w, y + h);
-
+				
+				
 				if (i == 4)
 				{
-					if (cost < Sun_Level * 100)
-						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-
-					for (int i = 0; i < 10; i++)
-					{
-						if (Sun_Level - 1 >= i)
-						{
-							// キャラ画像を中心に描画
-							DrawExtendGraph(
-								(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
-								(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
-								SunImages[i], TRUE);
-						}
-						else
-						{
-							break;
-						}
-					}
+					// キャラ画像を中心に描画
+					DrawExtendGraph(
+						(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
+						(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
+						Sun_Images, TRUE);
 
 					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
-
 				}
 				else
 				{
@@ -379,10 +416,58 @@ void InGame::Draw() const
 						(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
 						(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
 						unit_ui[i], TRUE);
+
+					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+
 				}
 			}
 			else
 			{
+
+				switch (i)
+				{
+				case 0:
+				{
+					if (cost < 20)
+					{
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+					}
+
+				}
+				break;
+				case 1:
+				{
+					if (cost < 50)
+					{
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+					}
+					break;
+				}
+				case 2:
+				{
+					if (cost < 100)
+					{
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+					}
+					break;
+				}
+				case 3:
+				{
+					if (cost < 500)
+					{
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+					}
+					break;
+				}
+				case 4:
+					if (cost < Sun_Level * 100)
+					{
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+					}
+
+				default:
+					break;
+				}
 
 				if (i == 4)
 				{
@@ -395,23 +480,11 @@ void InGame::Draw() const
 					SetDrawArea(x, y, x + button_width, y + button_height);
 
 
-					for (int i = 0; i < 10; i++)
-					{
-						if (Sun_Level - 1 >= i)
-						{
-							// キャラ画像を中心に描画
-							DrawExtendGraph(
-								(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
-								(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
-								SunImages[i], TRUE);
-
-						}
-						else
-						{
-							break;
-						}
-					}
-		
+					// キャラ画像を中心に描画
+					DrawExtendGraph(
+						(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
+						(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
+						Sun_Images, TRUE);
 
 					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 
@@ -429,6 +502,9 @@ void InGame::Draw() const
 						(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
 						(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
 						unit_ui[i], TRUE);
+
+					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+
 				}
 			}
 
@@ -438,13 +514,21 @@ void InGame::Draw() const
 
 		DrawFormatString(1000, 30, 0x00ffff, "Level:%d/10", Sun_Level);
 		// コスト表示
-		if (cost < Sun_Level * 100)
+		if (Sun_Level == 10)
 		{
-			DrawFormatString(1100, 0, 0xffffff, "%d/%d", cost, Sun_Level * 100);
+				DrawFormatString(1100, 680, 0xffffff, "%d/∞", cost);
 		}
 		else
 		{
-			DrawFormatString(1100, 0, 0xffff00, "%d/%d", cost, Sun_Level * 100);
+
+			if (cost < Sun_Level * 100)
+			{
+				DrawFormatString(1100, 680, 0xffffff, "%d/%d", cost, Sun_Level * 100);
+			}
+			else
+			{
+				DrawFormatString(1100, 680, 0xffff00, "%d/%d", cost, Sun_Level * 100);
+			}
 		}
 
 
@@ -553,6 +637,16 @@ const GameState InGame::GetNowState() const
 	return state;
 }
 
+//void InGame::FirstStage()
+//{
+//
+//	if (cursor == 0)
+//	{
+//
+//	}
+//
+//}
+
 //	ユニット召喚
 void InGame::UnitSelection()
 {
@@ -643,6 +737,7 @@ void InGame::UnitSelection()
 					summon_time[cursor] = std::chrono::steady_clock::now();
 				}
 			}
+			break;
 		case 4:
 			if (Sun_Level != 10)
 			{
@@ -663,16 +758,22 @@ void InGame::RegenerateCost()
 {
 	auto now_time = std::chrono::steady_clock::now();
 
-	if (cost < Sun_Level * 100)
+	if (cost < Sun_Level * 100 || Sun_Level == 10)
 	{
 		if (now_time - prev_time > std::chrono::milliseconds(500))
 		{
 			cost += Cost_UpNum + ((Sun_Level) * 5);
-
-			if (cost >= Sun_Level * 100)
+			if (Sun_Level == 10)
 			{
-				PlaySoundMem(Click, DX_PLAYTYPE_BACK);
-				cost = Sun_Level * 100;
+				cost += 200;
+			}
+			else
+			{
+				if (cost >= Sun_Level * 100)
+				{
+					PlaySoundMem(Click, DX_PLAYTYPE_BACK);
+					cost = Sun_Level * 100;
+				}
 			}
 			prev_time = std::chrono::steady_clock::now();
 		}
@@ -692,6 +793,7 @@ const void InGame::LoadImages() const
 	//画像読込み
 	// 単品
 	rm->GetImages("Resource/Images/Unit/Ranged/Arrow.png", 1, 1, 1, 32, 32);
+
 
 	//歩行アニメーション
 	rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
@@ -716,5 +818,7 @@ const void InGame::LoadImages() const
 	rm->GetImages("Resource/Images/Unit/Tank/Tank_Down.png", 3, 3, 1, 32, 32);
 	rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Down.png", 3, 3, 1, 32, 32);
 	rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Down.png", 3, 3, 1, 1024, 1024);
+
+
 
 }

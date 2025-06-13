@@ -243,8 +243,8 @@ void Heretic::Draw(const Vector2D camera_pos) const
 
 		if (ProjectConfig::DEBUG)
 		{
-			DrawFormatString(120, 700, 0xFFFFFF, "EC:%d", Cost);
-			DrawFormatString(120, 650, 0xFFFFFF, "time:%d", rush_time);
+			DrawFormatString(500, 20, 0xFFFFFF, "EC:%d", Cost);
+			DrawFormatString(600, 20, 0xFFFFFF, "time:%d", RushTimer);
 			// 中心を表示
 			DrawCircle((int)position.x, (int)position.y, 2, 0xff0000, TRUE);
 			// 当たり判定表示
@@ -281,14 +281,14 @@ void Heretic::ThinkingEnemy()
 	int Pmelee_count = (int)P_Melee::GetCount() * MELEE_eva;
 	int Prange_count = (int)P_Ranged::GetCount() * RANGE_eva;
 	Pcount_sum += (Ptank_count + Pmelee_count + Prange_count + Pguard_count);
-	Pcount_num += (Ptank_count/TANK_eva + Pmelee_count/MELEE_eva + Prange_count/RANGE_eva + Pguard_count/Guardian_eva);
+	Pcount_num += (Ptank_count / TANK_eva + Pmelee_count / MELEE_eva + Prange_count / RANGE_eva + Pguard_count / Guardian_eva);
 
 	int Etank_count = (int)E_Tank::GetCount() * TANK_eva;
 	int Emelee_count = (int)E_Melee::GetCount() * MELEE_eva;
 	int Erange_count = (int)E_Ranged::GetCount() * RANGE_eva;
-	//int Erange_count = (int)Boss::GetCount() * RANGE_eva;
-	Ecount_sum += (Etank_count + Emelee_count + Erange_count);
-	Ecount_num += (Etank_count / TANK_eva + Emelee_count / MELEE_eva + Erange_count / RANGE_eva);
+	int Eboss_count = (int)Boss::GetCount() * BOSS_eva;
+	Ecount_sum += (Etank_count + Emelee_count + Erange_count + Eboss_count);
+	Ecount_num += (Etank_count / TANK_eva + Emelee_count / MELEE_eva + Erange_count / RANGE_eva + Eboss_count / BOSS_eva);
 
 #ifdef Enemy_Plan_Evaluation
 
@@ -302,7 +302,7 @@ void Heretic::ThinkingEnemy()
 	switch (Ingame->StageNumber)
 	{
 	case 2:
-	//スタンダード型
+		//スタンダード型
 	{
 		//・生成するでな
 		//タンクは5体をキープ
@@ -310,11 +310,11 @@ void Heretic::ThinkingEnemy()
 		//上記を満たして後衛
 
 		//うわ！負けそうやん！！こうなったら…！！
-		if (Pcount_sum > Ecount_sum  && HP != 500)
+		if (Pcount_sum > Ecount_sum && HP != 500)
 		{
 			//【仮】
 			//これがワイの…切り札や！！！！
-   			Cost -= BOSS_cost;
+			Cost -= BOSS_cost;
 			SamonEnemy(E_enemy::Boss);
 			summon_flag = true;
 		}
@@ -359,7 +359,7 @@ void Heretic::ThinkingEnemy()
 		//このワイと…拮抗やと!!やりおる……(開始時点)
 		else
 		{
-			Cost -= (TANK_cost-5);//←少しだけ軽減して生産して、次につなげる
+			Cost -= (TANK_cost - 5);//←少しだけ軽減して生産して、次につなげる
 			SamonEnemy(E_enemy::Tank);
 			summon_flag = true;
 		}
@@ -409,80 +409,173 @@ void Heretic::ThinkingEnemy()
 	}
 #else
 
-auto now_time = std::chrono::steady_clock::now();
+	auto now_time = std::chrono::steady_clock::now();
 
-if (now_time - rush_time > std::chrono::milliseconds(1000))
-{
+
 	if (Time_rush)
 	{
-		Time_rush = false;
+		RushTimer = 5000 - Ecount_num;
 	}
 	else
 	{
-		Time_rush = true;
+		RushTimer = 3000 + Ecount_num;
 	}
-	rush_time = std::chrono::steady_clock::now();
-}
 
-if (Time_rush != true)
-{
-	if (Pcount_num > 20)
+	if (now_time - rush_time > std::chrono::milliseconds(RushTimer))
 	{
-		//【仮】
-		//これがワイの…切り札や！！！！
-		Cost -= BOSS_cost;
-		SamonEnemy(E_enemy::Boss);
-		summon_flag = true;
-	}
-	else
-	{
-		//前衛5体で後衛を出す
-		if ((Etank_count / TANK_eva) <= 1)
+		if (Time_rush)
 		{
-			Cost -= (TANK_cost - 5);
-			SamonEnemy(E_enemy::Tank);
-			summon_flag = true;
-		}
-		else if ((Emelee_count / MELEE_eva) <= 1)
-		{
-			Cost -= (MELEE_cost - 10);
-			SamonEnemy(E_enemy::Melee);
-			summon_flag = true;
+			Time_rush = false;
 		}
 		else
 		{
-			Cost -= (RANGE_cost - 30);
-			SamonEnemy(E_enemy::Range);
-			summon_flag = true;
+			Time_rush = true;
+		}
+		rush_time = std::chrono::steady_clock::now();
+	}
+
+	switch (Ingame->StageNumber)
+	{
+	case 2:
+	{
+
+		if (Time_rush != true)
+		{
+			if (Pcount_num > 20 && Eboss_count < 2)
+			{
+				//【仮】
+				//これがワイの…切り札や！！！！
+				Cost -= BOSS_cost;
+				SamonEnemy(E_enemy::Boss);
+				summon_flag = true;
+			}
+			else
+			{
+				//前衛5体で後衛を出す
+				if ((Etank_count / TANK_eva) <= 1)
+				{
+					Cost -= (TANK_cost - 5);
+					SamonEnemy(E_enemy::Tank);
+					summon_flag = true;
+				}
+				else if ((Emelee_count / MELEE_eva) <= 1)
+				{
+					Cost -= (MELEE_cost - 10);
+					SamonEnemy(E_enemy::Melee);
+					summon_flag = true;
+				}
+				else
+				{
+					Cost -= (RANGE_cost - 30);
+					SamonEnemy(E_enemy::Range);
+					summon_flag = true;
+				}
+			}
+		}
+		else
+		{
+			if (Pcount_num > 20 && Eboss_count < 2)
+			{
+				//【仮】
+				//これがワイの…切り札や！！！！
+				Cost -= Ecount_num;
+				SamonEnemy(E_enemy::Boss);
+				summon_flag = true;
+			}
+
+			//前衛5体で後衛を出す
+			if ((Etank_count / TANK_eva) <= 5)
+			{
+				Cost -= Ecount_num;
+				SamonEnemy(E_enemy::Tank);
+				summon_flag = true;
+			}
+			else if ((Emelee_count / MELEE_eva) <= 3)
+			{
+				Cost -= Ecount_num;
+				SamonEnemy(E_enemy::Melee);
+				summon_flag = true;
+			}
+			else
+			{
+				Cost -= Ecount_num;
+				SamonEnemy(E_enemy::Range);
+				summon_flag = true;
+			}
+		}
+
+	}
+	break;
+	case 3:
+	{
+		if (Time_rush != true)
+		{
+			if (Pcount_num > 20 && Eboss_count/ BOSS_eva < 3)
+			{
+				//【仮】
+				//これがワイの…切り札や！！！！
+				Cost -= BOSS_cost - 100;
+				SamonEnemy(E_enemy::Boss);
+				summon_flag = true;
+			}
+			else
+			{
+				//前衛5体で後衛を出す
+				if ((Etank_count / TANK_eva) <= 1)
+				{
+					Cost -= (TANK_cost - 5);
+					SamonEnemy(E_enemy::Tank);
+					summon_flag = true;
+				}
+				else if ((Emelee_count / MELEE_eva) <= 1)
+				{
+					Cost -= (MELEE_cost - 10);
+					SamonEnemy(E_enemy::Melee);
+					summon_flag = true;
+				}
+				else
+				{
+					Cost -= (RANGE_cost - 25);
+					SamonEnemy(E_enemy::Range);
+					summon_flag = true;
+				}
+			}
+		}
+		else
+		{
+			if (Pcount_num > 20 && Eboss_count / BOSS_eva < 2)
+			{
+				//【仮】
+				//これがワイの…切り札や！！！！
+				Cost -= Ecount_num - 5;
+				SamonEnemy(E_enemy::Boss);
+				summon_flag = true;
+			}
+			//前衛5体で後衛を出す
+			else if ((Etank_count / TANK_eva) <= 5)
+			{
+				Cost -= Ecount_num - 10;
+				SamonEnemy(E_enemy::Tank);
+				summon_flag = true;
+			}
+			else if ((Emelee_count / MELEE_eva) <= 1)
+			{
+				Cost -= Ecount_num - 5;
+				SamonEnemy(E_enemy::Melee);
+				summon_flag = true;
+			}
+			else
+			{
+				Cost -= Ecount_num - 5;
+				SamonEnemy(E_enemy::Range);
+				summon_flag = true;
+			}
 		}
 	}
-}
-else
-{
-	//前衛5体で後衛を出す
-	if ((Etank_count / TANK_eva) <= 5)
-	{
-		Cost -= Ecount_num;
-		SamonEnemy(E_enemy::Tank);
-		summon_flag = true;
-		}
-	else if ((Emelee_count / MELEE_eva) <= 3)
-	{
-		Cost -= Ecount_num;
-		SamonEnemy(E_enemy::Melee);
-		summon_flag = true;
-	}
-	else
-	{
-		Cost -= Ecount_num;
-		SamonEnemy(E_enemy::Range);
-		summon_flag = true;
-	}
-}
+	break;
 
 #endif // Enemy_Plan_Evaluation
-
-	
+	}
 }
 
 void Heretic::FirstStageEnemy()

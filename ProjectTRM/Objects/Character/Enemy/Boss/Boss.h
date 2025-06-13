@@ -9,6 +9,11 @@ private:
 	static size_t count;
 	
 public:
+	/// <summary>
+	/// 敵ボスのカウント取得処理
+	/// </summary>
+	/// <returns>敵近接の数</returns>
+	static size_t GetCount();
 	//コンストラクタ
 	Boss();
 	//デストラクタ

@@ -56,6 +56,7 @@ private:
 	bool	summon_effect;	//召喚フラグ
 	std::vector<GameObject*> ObjectList;
 
+	int RushTimer;
 	short int old_EnemySum;
 
 	class	InGame* Ingame;	//InGameのポインター

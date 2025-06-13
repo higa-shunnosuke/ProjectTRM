@@ -45,7 +45,7 @@ void E_Ranged::Initialize()
 	Damage = 5.0f;
 
 	// HP初期化
-	HP = 20;
+	HP = 50;
 
 	// スピードの初期化
 	speed = 70.0f;

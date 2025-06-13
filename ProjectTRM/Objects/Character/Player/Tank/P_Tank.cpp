@@ -65,7 +65,7 @@ void P_Tank::Initialize()
 	object = GameObjectManager::GetInstance();
 
 	// HP‰Šú‰»
-	HP = 4;
+	HP = 40;
 
 	alpha = MAX_ALPHA;
 	effect_alpha = MAX_ALPHA;

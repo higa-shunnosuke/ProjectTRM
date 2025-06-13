@@ -40,10 +40,10 @@ void E_Tank::Initialize()
 	now_state = State::Move;
 
 	//攻撃力初期化
-	Damage = 2.0f;
+	Damage = 4.0f;
 
 	// HP初期化
-	HP = 100;
+	HP = 250;
 
 	// スピードの初期化
 	speed = 50.0f;

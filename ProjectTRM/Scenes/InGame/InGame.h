@@ -24,12 +24,15 @@ enum class GameState
 class InGame : public SceneBase
 {
 private:
+	int Text_BackGround;
+	std::string Tutorial_Text[4] = { "攻撃×体力×\n唯一灯りを持っているキャラ","攻撃〇体力〇\n信仰のレベルに応じて強くなる！","攻撃〇体力〇\n遠距離から攻撃する！敵が見えないと攻撃ができない!!","攻撃◎体力◎\n高性能なキャラクター!!"};
 
 	GameState state = GameState::PLAYING;
 	std::chrono::steady_clock::time_point	summon_time[4];		// 召喚開始時間
 	std::chrono::seconds					cooldown[3];		// 召喚クールダウン
 	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数
 	int SunImages[10];
+	int Sun_Images;
 	int BackGroundImage[3];
 	int sound;
 	int Click;
@@ -97,6 +100,9 @@ public:
 	const GameState GetNowState() const;
 
 private:
+
+	//void FirstStage();
+
 	/// <summary>
 	/// ステージの生成処理
 	/// </summary>

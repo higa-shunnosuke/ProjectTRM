@@ -58,7 +58,7 @@ void P_Guardian::Initialize()
 	Damage = BASIC_POWER;
 
 	// HP‰Šú‰»
-	HP = 50;
+	HP = 300;
 
 	object = GameObjectManager::GetInstance();
 

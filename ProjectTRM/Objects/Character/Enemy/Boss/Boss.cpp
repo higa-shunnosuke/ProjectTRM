@@ -1,16 +1,25 @@
 #include "Boss.h"
 #include "../../../GameObjectManager.h"
 
+// 敵近接のカウンタを初期化
+size_t Boss::count = 0;
+
+// 敵遠距離の数取得処理
+size_t Boss::GetCount()
+{
+	return count;
+}
+
 // コンストラクタ
 Boss::Boss()
 {
-
+	count++;
 }
 
 // デストラクタ
 Boss::~Boss()
 {
-
+	count--;
 }
 
 // 初期化処理
