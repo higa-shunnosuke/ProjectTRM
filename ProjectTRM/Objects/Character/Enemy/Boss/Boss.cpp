@@ -20,13 +20,9 @@ void Boss::Initialize()
 	__super::Initialize();
 
 	// フラグ設定
-	is_mobility = true;
-	is_aggressive = true;
+	is_AoE = true;
 
 	// コリジョン設定
-	collision.is_blocking = true;
-	collision.object_type = eObjectType::Enemy;
-	collision.hit_object_type.push_back(eObjectType::Player);
 	collision.collision_size = Vector2D(180.0f, 180.0f);
 	collision.hitbox_size = Vector2D(200.0f, 300.0f);
 	z_layer = 2;
@@ -38,7 +34,7 @@ void Boss::Initialize()
 	now_state = State::Move;
 
 	//攻撃力
-	Damage = 6;
+	Damage = 6.0f;
 
 	// HP初期化
 	HP = 800;
@@ -112,7 +108,7 @@ void Boss::NoHit()
 void Boss::InLightRange()
 {
 	in_light = true;
-	Damage = 3;
+	Damage = 3.0f;
 	speed = 10.0f;
 }
 
@@ -120,7 +116,7 @@ void Boss::InLightRange()
 void Boss::OutLightRange()
 {
 	in_light = false;
-	Damage = 6;
+	Damage = 6.0f;
 	speed = 20.0f;
 }
 

@@ -27,15 +27,11 @@ void E_Melee::Initialize()
 {
 	// 親クラスの初期化
 	__super::Initialize();
-	
+
 	// フラグ設定
-	is_mobility = true;
-	is_aggressive = true;
+	is_AoE = true;
 
 	// コリジョン設定
-	collision.is_blocking = true;
-	collision.object_type = eObjectType::Enemy;
-	collision.hit_object_type.push_back(eObjectType::Player);
 	collision.collision_size = Vector2D(50.0f, 100.0f);
 	collision.hitbox_size = Vector2D(90.0f, 120.0f);
 	z_layer = 2;
@@ -47,7 +43,7 @@ void E_Melee::Initialize()
 	now_state = State::Move;
 
 	//攻撃力
-	Damage = 4;
+	Damage = 4.0f;
 
 	// HP初期化
 	HP = 20;
@@ -121,7 +117,7 @@ void E_Melee::NoHit()
 void E_Melee::InLightRange()
 {
 	in_light = true;
-	Damage = 2;
+	Damage = 2.0f;
 	speed = 40.0f;
 }
 
@@ -129,7 +125,7 @@ void E_Melee::InLightRange()
 void E_Melee::OutLightRange()
 {
 	in_light = false;
-	Damage = 4;
+	Damage = 4.0f;
 	speed = 80.0f;
 }
 

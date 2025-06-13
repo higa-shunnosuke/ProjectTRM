@@ -16,6 +16,7 @@ protected:
 	float			HP;				// キャラクターのHP
 	bool			is_mobility;	// 可動性
 	bool			is_aggressive;	// 攻撃性
+	bool			is_AoE;			// 範囲攻撃か
 	bool			in_light;		// ライトの範囲内にいるか
 
 	class	InGame* Ingame;	//InGameのポインター
@@ -105,6 +106,12 @@ public:
 	/// </summary>
 	/// <returns>可動性情報</returns>
 	const bool GetAggressive() const;
+
+	/// <summary>
+	/// 範囲攻撃フラグ取得処理
+	/// </summary>
+	/// <returns></returns>
+	const bool GetAoE() const;
 
 	/// <summary>
 	/// HP管理処理

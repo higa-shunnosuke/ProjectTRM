@@ -81,49 +81,87 @@ void SceneManager::Update(float delta_second)
 		}
 		else
 		{
-			// 最短距離をステージサイズで初期化
-			float shortest_distance = ProjectConfig::STAGE_WIDTH;
-			// 攻撃対象
-			GameObject* partner = nullptr;
-
-			// 候補から攻撃対象を確定する
-			for (GameObject* potential_partner : objects_list)
+			// 範囲攻撃
+			if (target->GetAoE() == true)
 			{
-				// 自分同士の当たり判定確認処理はしない
-				if (target == potential_partner)
+				// 攻撃対象がいるか
+				bool is_hit = false;
+
+				for (GameObject* partner : objects_list)
 				{
-					continue;
-				}
-
-				// 当たり判定情報を取得
-				Collision tc = target->GetCollision();
-				Collision pc = potential_partner->GetCollision();
-
-				// 攻撃判定が有効か
-				if (tc.IsCheckHitTarget(pc.object_type))
-				{
-					// ユニット同士の距離を計算
-					float distance = fabsf(target->GetLocation().x - potential_partner->GetLocation().x);
-
-					// 最長距離を更新
-					if (distance < shortest_distance)
+					if (target == partner)
 					{
-						shortest_distance = distance;
-						partner = potential_partner;
+						continue;
+					}
+
+					// 当たり判定情報を取得
+					Collision tc = target->GetCollision();
+					Collision pc = partner->GetCollision();
+
+					// 攻撃判定が有効か
+					if (tc.IsCheckHitTarget(pc.object_type))
+					{
+						// 攻撃判定確認処理
+						if (CheckHitBox(target, partner) == true)
+						{
+							is_hit = true;
+						}
 					}
 				}
-				else
+
+				if (is_hit == false)
 				{
-					// 判定が有効でなければ無視する
-					continue;
+					// 攻撃対象がいないことを通知する
+					target->NoHit();
 				}
 			}
-
-			// 攻撃判定確認処理
-			if (CheckHitBox(target, partner) == false)
+			// 単体攻撃
+			else
 			{
-				// 攻撃対象がいないことを通知する
-				target->NoHit();
+				// 最短距離をステージサイズで初期化
+				float shortest_distance = ProjectConfig::STAGE_WIDTH;
+				// 攻撃対象
+				GameObject* partner = nullptr;
+
+				// 候補から攻撃対象を確定する
+				for (GameObject* potential_partner : objects_list)
+				{
+					// 自分同士の当たり判定確認処理はしない
+					if (target == potential_partner)
+					{
+						continue;
+					}
+
+					// 当たり判定情報を取得
+					Collision tc = target->GetCollision();
+					Collision pc = potential_partner->GetCollision();
+
+					// 攻撃判定が有効か
+					if (tc.IsCheckHitTarget(pc.object_type))
+					{
+						// ユニット同士の距離を計算
+						float distance = fabsf(target->GetLocation().x - potential_partner->GetLocation().x);
+
+						// 最長距離を更新
+						if (distance < shortest_distance)
+						{
+							shortest_distance = distance;
+							partner = potential_partner;
+						}
+					}
+					else
+					{
+						// 判定が有効でなければ無視する
+						continue;
+					}
+				}
+
+				// 攻撃判定確認処理
+				if (CheckHitBox(target, partner) == false)
+				{
+					// 攻撃対象がいないことを通知する
+					target->NoHit();
+				}
 			}
 		}
 	}

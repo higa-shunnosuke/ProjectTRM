@@ -112,6 +112,12 @@ const bool GameObject::GetAggressive() const
 	return is_aggressive;
 }
 
+// ”ÍˆÍUŒ‚ƒtƒ‰ƒOæ“¾ˆ—
+const bool GameObject::GetAoE() const
+{
+	return is_AoE;
+}
+
 // HPŠÇ—ˆ—
 void GameObject::HPControl(int Damage)
 {

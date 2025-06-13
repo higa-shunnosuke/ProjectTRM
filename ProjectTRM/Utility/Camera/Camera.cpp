@@ -108,7 +108,6 @@ void Camera::Update()
 		this->location.y = size.y / 2;
 	}
 
-#ifdef DEBUG
 	//キーボード操作
 	if (input->GetKeyState(KEY_INPUT_D) == eInputState::Hold)
 	{
@@ -118,7 +117,6 @@ void Camera::Update()
 	{
 		location.x -= 2.0f;
 	}
-#endif
 
 	/// ステージ外にいかないようにする処理
 	float right,left;

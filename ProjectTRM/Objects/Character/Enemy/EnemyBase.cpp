@@ -34,6 +34,16 @@ void EnemyBase::Initialize()
 
 	alpha = 200;
 	add = -ALPHA_ADD;
+
+	// フラグ設定
+	is_mobility = true;
+	is_aggressive = true;
+	is_AoE = false;
+
+	// コリジョン設定
+	collision.is_blocking = true;
+	collision.object_type = eObjectType::Enemy;
+	collision.hit_object_type.push_back(eObjectType::Player);
 }
 
 // 更新処理
@@ -224,6 +234,9 @@ void EnemyBase::AnimationControl(float delta_second)
 			now_state = State::Idle;
 			recovery_flame = 0;
 		}
+		break;
+	case State::Damage:
+		image = animation[Anim_count];
 		break;
 	case State::Death:
 		image = animation[Anim_count];
