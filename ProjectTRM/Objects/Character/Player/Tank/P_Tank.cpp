@@ -238,7 +238,7 @@ void P_Tank::NoHit()
 	// ˆÚ“®ó‘Ô‚É‚·‚é
 	if (now_state != State::Death && now_state != State::Summon)
 	{
-		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
+		velocity.x = BASIC_Tank_SPEED + ((BASIC_Tank_SPEED / 100) * (Ingame->GetSunLevel()));
 		now_state = State::Move;
 	}
 }
@@ -330,7 +330,7 @@ void P_Tank::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		break;
 	case State::Move:
-		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
+		velocity.x = BASIC_Tank_SPEED + ((BASIC_Tank_SPEED / 100) * (Ingame->GetSunLevel()));
 		image = animation[Anim_count];
 		break;
 	case State::Death:

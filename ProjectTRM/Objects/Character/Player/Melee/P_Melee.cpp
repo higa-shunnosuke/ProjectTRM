@@ -57,7 +57,7 @@ void P_Melee::Initialize()
 	now_state = State::Summon;
 
 	//UŒ‚—Í
-	Damage = BASIC_POWER;
+	Damage = BASIC_Melee_POWER;
 
 	// HP‰Šú‰»
 	HP = 30;
@@ -72,7 +72,7 @@ void P_Melee::Initialize()
 // XVˆ—
 void P_Melee::Update(float delta_second)
 {	
-	Damage = BASIC_POWER + (Ingame->GetSunLevel() / 5);
+	Damage = BASIC_Melee_POWER + (Ingame->GetSunLevel() / 5);
 	
 	if (ProjectConfig::DEBUG)
 	{
@@ -335,7 +335,7 @@ void P_Melee::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		break;
 	case State::Move:
-		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
+		velocity.x = BASIC_Melee_SPEED + ((BASIC_Melee_SPEED / 100) * (Ingame->GetSunLevel()));
 		image = animation[Anim_count];
 		break;
 	case State::Attack:

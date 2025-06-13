@@ -56,7 +56,7 @@ void P_Guardian::Initialize()
 	now_state = State::Summon;
 
 	//UŒ‚—Í
-	Damage = BASIC_POWER;
+	Damage = BASIC_Guardian_POWER;
 
 	// HP‰Šú‰»
 	HP = 300;
@@ -72,7 +72,7 @@ void P_Guardian::Initialize()
 void P_Guardian::Update(float delta_second)
 {
 
-	Damage = BASIC_POWER + (Ingame->GetSunLevel() / 5);
+	Damage = BASIC_Guardian_POWER + (Ingame->GetSunLevel() / 5);
 
 	if (ProjectConfig::DEBUG)
 	{
@@ -317,7 +317,7 @@ void P_Guardian::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		break;
 	case State::Move:
-		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel() - 1));
+		velocity.x = BASIC_Guardian_SPEED + ((BASIC_Guardian_SPEED / 100) * (Ingame->GetSunLevel() - 1));
 		image = animation[Anim_count + 10];
 		break;
 	case State::Attack:
@@ -330,7 +330,7 @@ void P_Guardian::AnimationControl(float delta_second)
 		{
 			attack_flag = true;
 			now_state = State::Move;
-			velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
+			velocity.x = BASIC_Guardian_SPEED + ((BASIC_Guardian_SPEED / 100) * (Ingame->GetSunLevel()));
 		}
 		break;
 	case State::Death:
