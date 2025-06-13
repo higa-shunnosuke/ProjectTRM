@@ -91,14 +91,6 @@ void UnitBase::Update(float delta_second)
 			}
 		}
 
-		dmage_flame -= delta_second;
-
-		if (dmage_flame <= 0.0f)
-		{
-			dmage_flame = 0.0f;
-			alpha = MAX_ALPHA;
-			add = -ALPHA_ADD;
-		}
 
 		if (HP <= 0)
 		{
@@ -226,7 +218,6 @@ void UnitBase::HPControl(int Damage)
 	if (now_state != State::Attack)
 	{
 		now_state = State::Damage;
-		dmage_flame = 1.0f;
 	}
 
 	__super::HPControl(Damage);

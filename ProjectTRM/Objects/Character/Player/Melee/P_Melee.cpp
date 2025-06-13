@@ -1,6 +1,7 @@
 #include "P_Melee.h"
 #include "../../../../Utility/LightMapManager.h"
 #include "../../../../Scenes/InGame/InGame.h"
+#include <iostream >
 
 size_t P_Melee:: count = 0;
 size_t P_Melee::GetCount()
@@ -17,7 +18,8 @@ P_Melee::P_Melee() :
 	object(nullptr),
 	sounds(),
 	effect_max_count(),
-	reduction_amount()
+	reduction_amount(),
+	text()
 {
 	count++;
 }
@@ -36,6 +38,7 @@ void P_Melee::Initialize()
 	animation = rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Walk.png", 10, 10, 1, 100, 55);
 	Effect = rm->GetImages("Resource/Images/Effect/Magic_Remove.png", 10, 5, 2, 192, 192);
 	sounds = rm->GetSounds("Resource/Sounds/UnitSE/damage02.wav");
+	text = rm->GetImages("Resource/Images/BackGround/numbers.png", 10, 5, 2, 32, 32);
 
 	is_mobility = true;
 	is_aggressive = true;
@@ -93,7 +96,6 @@ void P_Melee::Update(float delta_second)
 			}
 			else
 			{
-				now_state = State::Idle;
 				attack_flame -= delta_second * (1 + (Ingame->GetSunLevel() / 10));
 			}
 			if (attack_flame <= 0.0f && now_state != State::Summon)
@@ -103,14 +105,16 @@ void P_Melee::Update(float delta_second)
 			}
 		}
 
-		dmage_flame -= delta_second;
-
-		if (dmage_flame <= 0.0f)
+		if (!reduction_amount.empty())
 		{
-			dmage_flame = 0.0f;
-			alpha = MAX_ALPHA;
-			add = -ALPHA_ADD;
+			for (int i = reduction_amount.size() - 1; i >= 0; --i) {
+				if (damage_time[i] <= 0.0f) {
+					reduction_amount.erase(reduction_amount.begin() + i);
+					damage_time.erase(damage_time.begin() + i); // damage_time ‚à‡‚í‚¹‚ÄÁ‚·
+				}
+			}
 		}
+
 
 		if (HP <= 0)
 		{
@@ -151,11 +155,15 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 	
+	if (!reduction_amount.empty() && now_state != State::Death)
+	{
+		for (int i = reduction_amount.size() - 1; i >= 0; --i) {
+			DrawRotaGraphF(position.x, (position.y - 100.0f) + damage_time[i] * 100 , 1.0, 0.0, text[reduction_amount[i]], TRUE);
+		}
+	}
+
 	switch (now_state)
 	{
-	case State::Damage:
-		DrawRotaGraphF(position.x, position.y, 1.0, 0.0, effect_image, TRUE, flip_flag);
-		break;
 	case State::Death:
 		position.y -= Effect_count * 10 + Effect_flame * 10;
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, effect_alpha);
@@ -242,10 +250,9 @@ void P_Melee::HPControl(int Damage)
 	if (now_state != State::Attack && now_state != State::Death)
 	{
 		//PlaySoundMem(sounds, DX_PLAYTYPE_BACK, true);
-		reduction_amount = Damage;
-		now_state = State::Damage;
+		reduction_amount.push_back(Damage);
 		__super::HPControl(Damage);
-		dmage_flame = 1.0f;
+		damage_time.push_back(0.5f);
 	}
 }
 
@@ -295,8 +302,6 @@ void P_Melee::AnimationControl(float delta_second)
 				now_state = State::Idle;
 			}
 			break;
-		case State::Damage:
-			break;
 		case State::Death:
 			animation = rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Death.png", 9, 9, 1, 100, 55);
 			anim_max_count = 9;
@@ -340,23 +345,7 @@ void P_Melee::AnimationControl(float delta_second)
 		if (Anim_count == anim_max_count - 1)
 		{
 			attack_flag = true;
-			now_state = State::Move;
-			velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
-		}
-		break;
-	case State::Damage:
-		alpha += add;
-		if (alpha <= 0 || alpha >= 255)
-		{
-			add = -add;
-		}
-		if (velocity.x < 0.0f)
-		{
-			image = animation[Anim_count];
-		}
-		else
-		{
-			image = animation[0];
+			now_state = State::Idle;
 		}
 		break;
 	case State::Death:
@@ -385,17 +374,11 @@ void P_Melee::EffectControl(float delta_second)
 
 	if (now_state != old_state)
 	{
-		Effect_count = 0;
-		Effect_flame = 0.0f;
 		switch (now_state)
 		{
 		case State::Summon:
 			Effect = rm->GetImages("Resource/Images/Effect/Magic_Remove.png", 10, 5, 2, 192, 192);
 			effect_max_count = 10;
-			break;
-		case State::Damage:
-			Effect = rm->GetImages("Resource/Images/Effect/Unit/Unit_Damage.png", 36, 6, 5, 100, 100);
-			effect_max_count = 29;
 			break;
 		case State::Death:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50);
@@ -415,6 +398,13 @@ void P_Melee::EffectControl(float delta_second)
 		}
 		Effect_flame = 0;
 	}
+	if (!damage_time.empty())
+	{
+		for (int i = 0; i < damage_time.size(); i++)
+		{
+			damage_time[i] -= delta_second;
+		}
+	}
 
 	switch (now_state)
 	{
@@ -425,13 +415,6 @@ void P_Melee::EffectControl(float delta_second)
 			break;
 		}
 		effect_image = Effect[Effect_count];
-		break;
-	case State::Damage:
-		effect_image = Effect[Effect_count];
-		if (dmage_flame <= 0.0f)
-		{
-			now_state = State::Move;
-		}
 		break;
 	case State::Death: 
 		effect_image = Effect[0];
@@ -446,6 +429,7 @@ void P_Melee::EffectControl(float delta_second)
 	default:
 		break;
 	}
+
 }
 
 //SE‚Ì§Œäˆ—
