@@ -78,11 +78,19 @@ void E_Melee::Draw(const Vector2D camera_pos) const
 	DrawRotaGraphF(position.x + offset.x, position.y + offset.y,
 		2.0, 0.0, image, TRUE, flip_flag);
 
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(position.x, position.y - 70.0f,
-		3.0, 0.0, effect, TRUE, flip_flag);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	if (now_state != State::Death)
+	{
+		// エフェクト１の描画
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawRotaGraphF(position.x, position.y - 70.0f,
+			3.0, 0.0, effect[0], TRUE, flip_flag);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
+		// エフェクト２の描画
+		DrawRotaGraphF(position.x, position.y + 5.0f,
+			0.7, 0.0, effect[1], TRUE, flip_flag);
+	}
+	
 	// 親クラスの描画
 	__super::Draw(camera_pos);
 }

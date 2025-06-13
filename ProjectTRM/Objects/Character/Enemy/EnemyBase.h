@@ -16,10 +16,14 @@ protected:
 	bool old_light;			// 前回のライトフラグ
 
 	// エフェクト
-	int effect;						// 描画用変数
-	std::vector<int> effect_image;	// アニメーション画像
-	float effect_flame;				// アニメーションの早さ
-	int effect_count;				// アニメーションのカウント
+	int effect[2];								// 描画用変数
+	std::vector<int> effect_image[2];			// アニメーション画像
+	float effect_flame[2];						// アニメーションの早さ
+	int effect_count[2];						// アニメーションのカウント
+	int effect_max_count[2];					// アニメーション画像配列の要素数
+
+	// サウンド
+	int SE[3];		// 再生用変数
 
 public:
 	//コンストラクタ
