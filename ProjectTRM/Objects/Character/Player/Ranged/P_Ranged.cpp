@@ -244,7 +244,7 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 					}
 					else
 					{
-						velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
+						velocity.x = BASIC_Ranged_SPEED + ((BASIC_Ranged_SPEED / 100) * (Ingame->GetSunLevel()));
 						now_state = State::Move;
 						target_loc = 0.0f;
 					}
@@ -260,7 +260,7 @@ void P_Ranged::NoHit()
 	// ˆÚ“®ó‘Ô‚É‚·‚é
 	if (now_state != State::Death && now_state != State::Summon)
 	{
-		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
+		velocity.x = BASIC_Ranged_SPEED + ((BASIC_Ranged_SPEED / 100) * (Ingame->GetSunLevel()));
 	}
 }
 
@@ -343,7 +343,7 @@ void P_Ranged::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		break;
 	case State::Move:
-		velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
+		velocity.x = BASIC_Ranged_SPEED + ((BASIC_Ranged_SPEED / 100) * (Ingame->GetSunLevel()));
 		image = animation[Anim_count + 23];
 		break;
 	case State::Attack:
@@ -352,7 +352,7 @@ void P_Ranged::AnimationControl(float delta_second)
 		{
 			attack_flag = true;
 			now_state = State::Move;
-			velocity.x = BASIC_SPEED + ((BASIC_SPEED / 100) * (Ingame->GetSunLevel()));
+			velocity.x = BASIC_Ranged_SPEED + ((BASIC_Ranged_SPEED / 100) * (Ingame->GetSunLevel()));
 		}
 		break;
 	case State::Death:
