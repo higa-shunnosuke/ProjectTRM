@@ -39,6 +39,7 @@ void P_Melee::Initialize()
 	Effect = rm->GetImages("Resource/Images/Effect/Magic_Remove.png", 10, 5, 2, 192, 192);
 	sounds = rm->GetSounds("Resource/Sounds/UnitSE/damage02.wav");
 	text = rm->GetImages("Resource/Images/BackGround/numbers.png", 10, 5, 2, 32, 32);
+	minus = rm->GetImages("Resource/Images/BackGround/minus.png")[0];
 
 	is_mobility = true;
 	is_aggressive = true;
@@ -158,6 +159,7 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 	if (!reduction_amount.empty() && now_state != State::Death)
 	{
 		for (int i = reduction_amount.size() - 1; i >= 0; --i) {
+			DrawRotaGraphF(position.x - 20.0f, (position.y - 100.0f) + damage_time[i] * 100, 0.7, 0.0, minus, TRUE);
 			DrawRotaGraphF(position.x, (position.y - 100.0f) + damage_time[i] * 100 , 1.0, 0.0, text[reduction_amount[i]], TRUE);
 		}
 	}

@@ -35,6 +35,7 @@ void P_Ranged::Initialize()
 	animation = rm->GetImages("Resource/Images/Unit/Ranged/Archer_All.png", 55, 11, 5, 64, 64);
 	effect_image = rm->GetImages("Resource/Images/Effect/Unit/Ranged_Ghost.png", 1, 1, 1, 32, 32)[0];
 	text = rm->GetImages("Resource/Images/BackGround/numbers.png", 10, 5, 2, 32, 32);
+	minus = rm->GetImages("Resource/Images/BackGround/minus.png")[0];
 
 	is_mobility = true;
 	is_aggressive = true;
@@ -151,6 +152,7 @@ void P_Ranged::Draw(const Vector2D camera_pos) const
 	if (!reduction_amount.empty() && now_state != State::Death)
 	{
 		for (int i = reduction_amount.size() - 1; i >= 0; --i) {
+			DrawRotaGraphF(position.x - 20.0f, (position.y - 100.0f) + damage_time[i] * 100, 0.7, 0.0, minus, TRUE);
 			DrawRotaGraphF(position.x, (position.y - 100.0f) + damage_time[i] * 100, 1.0, 0.0, text[reduction_amount[i]], TRUE);
 		}
 	}
