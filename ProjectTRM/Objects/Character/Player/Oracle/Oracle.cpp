@@ -6,7 +6,11 @@
 // コンストラクタ
 Oracle::Oracle() :
 	summon_flag(),
-	player()
+	player(),
+	old_sun_level(),
+	now_sun_level(),
+	power_up(false),
+	effect_image()
 {
 
 }
@@ -22,7 +26,7 @@ void Oracle::Initialize()
 {
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
-	EffectImage = rm->GetImages("Resource/Images/Effect/EnemyPawn.png", 117, 13, 9, 64, 64);
+	EffectImage = rm->GetImages("Resource/Images/Effect/Unit/sprite-sheet.png", 15, 5, 3, 128, 128);
 	image = rm->GetImages("Resource/Images/Unit/Oracle/Oracle01.png",1,1,1,2048,2048)[0];
 
 	is_mobility = false;
@@ -36,6 +40,8 @@ void Oracle::Initialize()
 	z_layer = 1;
 
 	summon_flag = false;
+
+	old_sun_level = 1;
 
 	// HP初期化
 	HP = 100;
@@ -53,6 +59,14 @@ void Oracle::Update(float delta_second)
 			HPControl(1);
 		}
 	}
+
+	if (Ingame->GetSunLevel() != old_sun_level)
+	{
+		power_up = !power_up;
+		old_sun_level = Ingame->GetSunLevel();
+	}
+
+	EffectControl(delta_second);
 
 	/*if (summon_flag == true)
 	{
@@ -89,6 +103,10 @@ void Oracle::Draw(const Vector2D camera_pos) const
 
 
 	DrawRotaGraphF(position.x-5.0f, position.y+1.0f, 0.06, 0.0, image, TRUE, flip_flag);
+	if (power_up)
+	{
+		DrawRotaGraph(position.x, position.y + 2.0f, 1.0, 0.0, effect_image, TRUE);
+	}
 
 
 
@@ -161,5 +179,19 @@ void Oracle::AnimationControl(float delta_second)
 // エフェクト制御処理
 void Oracle::EffectControl(float delta_second)
 {
-
+	if (power_up)
+	{
+		Effect_flame += delta_second;
+		if (Effect_flame >= 0.1f)
+		{
+			Effect_count++;
+			if (Effect_count > 11)
+			{
+				Effect_count = 0;
+				power_up = !power_up;
+			}
+			Effect_flame = 0;
+		}
+		effect_image = EffectImage[Effect_count];
+	}
 }

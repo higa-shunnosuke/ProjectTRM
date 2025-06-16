@@ -10,6 +10,10 @@ private:
 	Oracle* player;			// ›Ş—‚Ìƒ|ƒCƒ“ƒ^
 	int max_Hp = 100;
 	std::vector<int>EffectImage;
+	int old_sun_level;
+	int now_sun_level;
+	bool power_up;
+	int effect_image;
 
 
 public:
