@@ -96,6 +96,10 @@ eSceneType StageSelect::Update(const float& delta_second)
 		SetStageNumber(SerectStage);
 		return eSceneType::in_game;
 	}
+	if (input->GetButtonState(XINPUT_BUTTON_B) == eInputState::Pressed)
+	{
+		return eSceneType::title;
+	}
 	break;
 	case Stage::LMOVE:
 
