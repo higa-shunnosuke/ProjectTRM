@@ -12,7 +12,9 @@ protected:
 	float recovery_time;	// 硬直時間
 	float recovery_flame;	// 硬直時間の計算
 	float speed;			// 歩く速さ
-	float Damage;				// ダメージ
+	float Damage;			// ダメージ
+	int on_hit;				// ダメージを送る瞬間のアニメ画像の要素数
+	bool is_attack;			// 攻撃フラグ
 	bool old_light;			// 前回のライトフラグ
 
 	// エフェクト

@@ -175,6 +175,7 @@ void Boss::AnimationControl(float delta_second)
 			image = animation[Anim_count];
 			anim_max_count = 9;
 			anim_rate = 0.15f;
+			on_hit = 4;
 			break;
 		case State::Damage:
 			break;

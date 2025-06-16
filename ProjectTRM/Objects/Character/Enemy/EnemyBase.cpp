@@ -15,6 +15,8 @@ EnemyBase::EnemyBase() :
 	SE(),
 	speed(),
 	Damage(),
+	on_hit(),
+	is_attack(false),
 	old_light(false)
 {
 	
@@ -168,10 +170,15 @@ void EnemyBase::OnAreaDetection(GameObject* hit_object)
 		// UŒ‚ó‘Ô‚È‚çUŒ‚‚·‚é
 		else if (now_state == State::Attack)
 		{
-			if (Anim_count == anim_max_count)
+			if (Anim_count == on_hit)
 			{
-				// UŒ‚ˆ—
-				Attack(hit_object);
+				if (is_attack == false)
+				{
+					// UŒ‚ˆ—
+					Attack(hit_object);
+
+					is_attack = true;
+				}
 			}
 		}
 	}
@@ -259,6 +266,7 @@ void EnemyBase::AnimationControl(float delta_second)
 		if (Anim_count == anim_max_count)
 		{
 			now_state = State::Idle;
+			is_attack = false;
 			recovery_flame = 0;
 		}
 		break;
