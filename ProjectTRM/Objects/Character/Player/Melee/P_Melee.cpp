@@ -342,11 +342,11 @@ void P_Melee::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		if (Anim_count == anim_max_count / 2 && Ingame->GetNowState() == GameState::PLAYING)
 		{
+			attack_flag = true;
 			PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
 		}
 		if (Anim_count == anim_max_count - 1)
 		{
-			attack_flag = true;
 			now_state = State::Idle;
 		}
 		break;
