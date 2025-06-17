@@ -20,13 +20,23 @@ void Result::Initialize()
 
 	ResourceManager* rm = ResourceManager::GetInstance();
 
+	decisionWaitFrame = 0;
+	isDecision = false;
+
 	CursorMoveSE = rm->GetSounds("Resource/Sounds/Result/CursorMove.mp3");
 	DecisionSE = rm->GetSounds("Resource/Sounds/Result/Decision.mp3");
+	ChangeVolumeSoundMem(200, DecisionSE);
+	/*PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);*/
 
 	bgmHandle[0] = rm->GetSounds("Resource/Sounds/Result/Lost.mp3");
 	bgmHandle[1] = rm->GetSounds("Resource/Sounds/Result/Loose_BGM.mp3");
 	bgmHandle[2] = rm->GetSounds("Resource/Sounds/Result/Win_BGM.mp3");
-	bgmHandle[3] = rm->GetSounds("Resource/Sounds/Result/Wining.mp3");
+	bgmHandle[3] = rm->GetSounds("Resource/Sounds/Result/WINSE.mp3");
+
+	/*if (PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK) == -1)
+	{
+		MessageBoxA(NULL, "決定SEの再生に失敗しました", "エラー", MB_OK);
+	}*/
 
 	if (win_flg)
 	{
@@ -62,8 +72,6 @@ void Result::Initialize()
 			}
 		}
 	}
-
-
 }
 
 // 更新処理
@@ -92,12 +100,15 @@ eSceneType Result::Update(const float& delta_second)
  			if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
 			{
 				PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
-				 return eSceneType::title;
+				isDecision = true;
+				nextScene = eSceneType::title;
 			}
 			else if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 			{
 				PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
-				 return eSceneType::title;
+				isDecision = true;
+				nextScene = eSceneType::title;
+				 /*return eSceneType::title;*/
 			}
 		}
 		break;
@@ -107,19 +118,27 @@ eSceneType Result::Update(const float& delta_second)
 			if (input->GetKeyState(KEY_INPUT_DOWN) == eInputState::Pressed)
 			{
 				cursor--;
+				PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
 			}
 			else if (input->GetButtonState(XINPUT_BUTTON_DPAD_DOWN) == eInputState::Pressed)
 			{
 				cursor--;
+				PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
 			}
 			// タイトルシーンに遷移する
 			if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
 			{
-				return eSceneType::stage_select;
+				PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
+				isDecision = true;
+				nextScene = eSceneType::stage_select;
+				/*return eSceneType::stage_select;*/
 			}
 			else if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 			{
-				return eSceneType::stage_select;
+				PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
+				isDecision = true;
+				nextScene = eSceneType::stage_select;
+				/*return eSceneType::stage_select;*/
 			}
 		}
 		break;
@@ -162,11 +181,17 @@ eSceneType Result::Update(const float& delta_second)
 			// ステージ選択シーンに遷移する
 			if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
 			{
-				return eSceneType::title;
+				PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
+				isDecision = true;
+				nextScene = eSceneType::title;
+				/*return eSceneType::title;*/
 			}
 			else if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 			{
-				return eSceneType::title;
+				PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
+				isDecision = true;
+				nextScene = eSceneType::title;
+				/*return eSceneType::title;*/
 			}
 		}
 		break;
@@ -186,11 +211,17 @@ eSceneType Result::Update(const float& delta_second)
 			// タイトルシーンに遷移する
 			if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
 			{
-				return eSceneType::in_game;
+				PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
+				isDecision = true;
+				nextScene = eSceneType::in_game;
+				/*return eSceneType::in_game;*/
 			}
 			else if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 			{
-				return eSceneType::in_game;
+				PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
+				isDecision = true;
+				nextScene = eSceneType::in_game;
+				/*return eSceneType::in_game;*/
 			}
 		}
 		break;
@@ -248,6 +279,14 @@ eSceneType Result::Update(const float& delta_second)
 		}
 	}
 	
+	if (isDecision)
+	{
+		decisionWaitFrame++;
+		if (decisionWaitFrame >= 1)
+		{
+			return nextScene;
+		}
+	}
 
 	// 親クラスの更新処理を呼び出す
 	return __super::Update(delta_second);
@@ -350,7 +389,7 @@ void Result::Finalize()
 	}
 	
 	StopSoundMem(CursorMoveSE);
-	StopSoundMem(DecisionSE);	
+	StopSoundMem(DecisionSE);
 
 	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();

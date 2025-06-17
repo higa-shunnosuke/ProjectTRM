@@ -36,6 +36,7 @@ void StageSelect::Initialize()
 	ChangeVolumeSoundMem(190, DecisionSE);
 	if (PlaySoundMem(BGM, DX_PLAYTYPE_LOOP) == -1)
 	{
+		MessageBoxA(NULL, "BGM1の読み込みに失敗しました", "エラー", MB_OK);
 	}
 
 }

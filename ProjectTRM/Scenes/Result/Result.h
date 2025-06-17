@@ -15,6 +15,10 @@ private:
 	int bgmHandle[4];				// BGM
 	int CursorMoveSE;
 	int DecisionSE;
+	bool isDecision = false;
+	eSceneType nextScene=eSceneType::result;
+	int decisionWaitFrame = 0;
+
 public:
 	// コンストラクタ
 	Result();
