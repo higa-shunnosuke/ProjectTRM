@@ -145,8 +145,6 @@ void P_Melee::HPControl(float Damage)
 	}
 }
 
-}
-
 // ˆÚ“®ˆ—
 void P_Melee::Movement(float delta_second)
 {
