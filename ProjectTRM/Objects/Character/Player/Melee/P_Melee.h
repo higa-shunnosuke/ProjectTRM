@@ -50,16 +50,6 @@ public:
 	/// </summary>
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
 	virtual void OnAreaDetection(GameObject* hit_object) override;
-	/// <summary>
-	/// 攻撃範囲通知処理
-	/// </summary>
-	virtual void NoHit() override;
-
-	/// <summary>
-	/// HP管理処理
-	/// </summary>
-	/// <param name="hit_object">ダメージ</param>
-	virtual void HPControl(float Damage) override;
 
 private:
 	/// <summary>

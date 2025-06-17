@@ -122,29 +122,6 @@ void P_Melee::OnAreaDetection(GameObject* hit_object)
 
 }
 
-// 攻撃範囲通知処理
-void P_Melee::NoHit()
-{
-	// 移動状態にする
-	if (now_state != State::Death && now_state != State::Summon)
-	{
-		now_state = State::Move;
-	}
-}
-
-// HP管理処理
-void P_Melee::HPControl(float Damage)
-{
-	// 攻撃状態でなければダメージ状態にする
-	if (now_state != State::Attack && now_state != State::Death)
-	{
-		//PlaySoundMem(sounds, DX_PLAYTYPE_BACK, true);
-		reduction_amount.push_back(Damage);
-		__super::HPControl(Damage);
-		damage_time.push_back(0.5f);
-	}
-}
-
 // 移動処理
 void P_Melee::Movement(float delta_second)
 {
