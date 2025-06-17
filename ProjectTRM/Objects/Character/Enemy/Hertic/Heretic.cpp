@@ -30,6 +30,8 @@
 
 // コンストラクタ
 Heretic::Heretic() :
+	EffectCount(), 
+	anime_time(),
 	summon_flag(),
 	CountFlame(0.0f),
 	CountTime(0),
@@ -54,8 +56,9 @@ void Heretic::Initialize()
 	// 画像の読み込み	
 	ResourceManager* rm = ResourceManager::GetInstance();
 
-	EffectImage = rm->GetImages("Resource/Images/Effect/EnemyPawn.png", 13, 13, 1, 64, 64);
-	image = rm->GetImages("Resource/Images/Enemy/Heretic/Heretic_Stand.png")[0];
+	animation = rm->GetImages("Resource/Images/Enemy/Heretic/Idle.png", 8, 8, 1, 250, 250);
+	EffectImage = rm->GetImages("Resource/Images/Effect/Gravity-Sheet.png", 20, 4, 5, 96, 80);
+	image = animation[0];
 	DeadImage[0] = rm->GetImages("Resource/Images/Enemy/Heretic/NotDead.png")[0];
 	DeadImage[1] = rm->GetImages("Resource/Images/Enemy/Heretic/ImDead.png")[0];
 	SoptLight = rm->GetImages("Resource/Images/Enemy/Heretic/SpotLight.png")[0];
@@ -162,19 +165,32 @@ void Heretic::Update(float delta_second)
 
 		if (summon_effect)
 		{
-			if (now_time - efect_time > std::chrono::milliseconds(100))
+			if (now_time - efect_time > std::chrono::milliseconds(50))
 			{
-				Anim_count++;
+				EffectCount++;
 				efect_time = std::chrono::steady_clock::now();
 
-				if (Anim_count >= 13)
+				if (EffectCount >= 20)
 				{
-					Anim_count = 0;
+					EffectCount = 0;
 					summon_effect = false;
 				}
 			}
 
 		}
+
+		if (now_time - anime_time > std::chrono::milliseconds(100))
+		{
+			Anim_count++;
+			anime_time = std::chrono::steady_clock::now();
+
+			if (Anim_count >= 8)
+			{
+				Anim_count = 0;
+			}
+		}
+
+		image = animation[Anim_count];
 
 		break;
 	}
@@ -228,7 +244,8 @@ void Heretic::Draw(const Vector2D camera_pos) const
 		DrawFormatString(0, 10, 0xFFFFFF, "4:Boss");
 #endif // ENEMY_TEST
 
-		DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, image, true);
+		DrawRotaGraphF(position.x - 0.0f, position.y - 20.0f,
+			2.0, 0.0, image, TRUE, flip_flag);
 
 		// 異端者の描画
 		//DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
@@ -238,7 +255,7 @@ void Heretic::Draw(const Vector2D camera_pos) const
 
 		if (summon_effect)
 		{
-			DrawGraphF(position.x, position.y, EffectImage[Anim_count], true);
+			DrawGraphF(position.x + 10.0f, position.y - 30.0f, EffectImage[EffectCount], true);
 		}
 
 		if (ProjectConfig::DEBUG)
