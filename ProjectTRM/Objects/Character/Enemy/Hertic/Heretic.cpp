@@ -70,7 +70,7 @@ void Heretic::Initialize()
 	z_layer = 1;
 
 	// HP‰Šú‰»
-	HP = 500;
+	HP = 500.0f;
 }
 
 // XVˆ—
@@ -593,7 +593,7 @@ void Heretic::OnHitCollision(GameObject* hit_object)
 }
 
 // HPŠÇ—ˆ—
-void Heretic::HPControl(int Damage)
+void Heretic::HPControl(float Damage)
 {
 	__super::HPControl(Damage);
 
