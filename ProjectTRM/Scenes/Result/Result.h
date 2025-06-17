@@ -18,7 +18,7 @@ private:
 	bool isDecision = false;
 	eSceneType nextScene=eSceneType::result;
 	int decisionWaitFrame = 0;
-
+	int CountdownSE;
 public:
 	// コンストラクタ
 	Result();

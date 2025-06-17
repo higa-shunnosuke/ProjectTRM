@@ -33,6 +33,13 @@ void Result::Initialize()
 	bgmHandle[2] = rm->GetSounds("Resource/Sounds/Result/Win_BGM.mp3");
 	bgmHandle[3] = rm->GetSounds("Resource/Sounds/Result/WINSE.mp3");
 
+	CountdownSE = rm->GetSounds("Resource/Sounds/Result/CountDown.mp3");
+	if (CountdownSE == -1)
+	{
+		MessageBoxA(NULL, "カウントダウンSEの読み込みに失敗しました。", "エラー", MB_OK);
+	}
+	ChangeVolumeSoundMem(180, CountdownSE);
+
 	/*if (PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK) == -1)
 	{
 		MessageBoxA(NULL, "決定SEの再生に失敗しました", "エラー", MB_OK);
@@ -249,6 +256,11 @@ eSceneType Result::Update(const float& delta_second)
 		if (now_time - prev_time > std::chrono::milliseconds(1000))
 		{
 			count--;
+			//カウントが減った時にSEを再生
+			if (count > 0)
+			{
+				PlaySoundMem(CountdownSE, DX_PLAYTYPE_BACK);
+			}
 			prev_time = std::chrono::steady_clock::now();
 		}
 		else if (count == 0)
@@ -388,8 +400,7 @@ void Result::Finalize()
 		StopSoundMem(bgmHandle[1]);
 	}
 	
-	StopSoundMem(CursorMoveSE);
-	StopSoundMem(DecisionSE);
+	/*StopSoundMem(CountdownSE);*/
 
 	// 親クラスの終了時処理を呼び出す
 	__super::Finalize();
