@@ -2,15 +2,11 @@
 
 #include "../../Character.h"
 
-#define GRAVITY (9.8f)
-#define INITIAL_SPEED (100.0f)
-
 // ゲームオブジェクト基底クラス
 class E_Projectile :public Character
 {
 private:
-	int Damage;	//ダメージ
-	int lane;
+	float Damage;	//ダメージ
 	Vector2D target_location;
 	Vector2D old_location;
 	float angle;
@@ -72,5 +68,10 @@ private:
 
 public:
 	void SetTargetLocation(Vector2D location);
+	/// <summary>
+	/// ダメージ設定処理
+	/// </summary>
+	/// <param name="Damage"></param>
+	void SetDamage(float Damage);
 
 };
