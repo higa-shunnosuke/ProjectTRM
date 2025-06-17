@@ -265,7 +265,7 @@ void P_Ranged::NoHit()
 }
 
 // HPŠÇ—ˆ—
-void P_Ranged::HPControl(int Damage)
+void P_Ranged::HPControl(float Damage)
 {
 	// UŒ‚ó‘Ô‚Å‚È‚¯‚ê‚Îƒ_ƒ[ƒWó‘Ô‚É‚·‚é
 	if (now_state != State::Attack && now_state != State::Death)

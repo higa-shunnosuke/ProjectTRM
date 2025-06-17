@@ -146,7 +146,7 @@ void P_Projectile::OnAreaDetection(GameObject* hit_object)
         hit_object->HPControl(Damage);
         Finalize();
     }
-    else if (hit_collision.object_type == eObjectType::Ground)
+    else
     {
         Finalize();
     }

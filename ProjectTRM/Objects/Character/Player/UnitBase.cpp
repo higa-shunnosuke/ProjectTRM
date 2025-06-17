@@ -212,7 +212,7 @@ void UnitBase::NoHit()
 }
 
 // HPŠÇ—ˆ—
-void UnitBase::HPControl(int Damage)
+void UnitBase::HPControl(float Damage)
 {
 	// UŒ‚ó‘Ô‚Å‚È‚¯‚ê‚Îƒ_ƒ[ƒWó‘Ô‚É‚·‚é
 	if (now_state != State::Attack)

@@ -78,7 +78,7 @@ public:
 	/// HPŠÇ—ˆ—
 	/// </summary>
 	/// <param name="hit_object">ƒ_ƒ[ƒW</param>
-	virtual void HPControl(int Damage) override;
+	virtual void HPControl(float Damage) override;
 
 protected:
 	/// <summary>

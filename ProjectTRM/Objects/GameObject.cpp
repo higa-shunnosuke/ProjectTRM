@@ -119,7 +119,7 @@ const bool GameObject::GetAoE() const
 }
 
 // HPŠÇ—ˆ—
-void GameObject::HPControl(int Damage)
+void GameObject::HPControl(float Damage)
 {
 	this->HP -= Damage;
 	if (this->HP < 0)

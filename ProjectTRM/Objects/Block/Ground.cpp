@@ -16,7 +16,7 @@ void Ground::Initialize()
 	is_mobility = false;
 
 	collision.is_blocking = true;
-	collision.object_type = eObjectType::Ground;
+	collision.object_type = eObjectType::None;
 	collision.collision_size = Vector2D(60.0f, 60.0f);
 
 	HP = 1;

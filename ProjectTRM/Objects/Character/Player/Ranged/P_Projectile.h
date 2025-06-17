@@ -10,7 +10,7 @@
 class P_Projectile :public Character
 {
 private:
-	int Damage;	//ダメージ
+	float Damage;	//ダメージ
 	Vector2D target_location;
 	Vector2D old_location;
 	float angle;

@@ -181,6 +181,7 @@ void E_Ranged::AnimationControl(float delta_second)
 			image = animation[Anim_count];
 			anim_max_count = 5;
 			anim_rate = 0.1f;
+			on_hit = 4;
 			break;
 		case State::Damage:
 			break;

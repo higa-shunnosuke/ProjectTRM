@@ -8,7 +8,7 @@
 class UnitBase : public Character
 {
 protected:
-	int Damage;	//ダメージ
+	float Damage;	//ダメージ
 	int sounds;	//音
 	float basic_power;	//基礎攻撃力
 	float basic_speed;	//基礎移動速度
@@ -63,7 +63,7 @@ public:
 	/// HP管理処理
 	/// </summary>
 	/// <param name="hit_object">ダメージ</param>
-	virtual void HPControl(int Damage) override;
+	virtual void HPControl(float Damage) override;
 
 protected:
 	/// <summary>

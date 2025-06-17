@@ -244,7 +244,7 @@ void P_Tank::NoHit()
 }
 
 // HPŠÇ—ˆ—
-void P_Tank::HPControl(int Damage)
+void P_Tank::HPControl(float Damage)
 {
 	// UŒ‚ó‘Ô‚Å‚È‚¯‚ê‚Îƒ_ƒ[ƒWó‘Ô‚É‚·‚é
 	if (now_state != State::Attack && now_state != State::Death)

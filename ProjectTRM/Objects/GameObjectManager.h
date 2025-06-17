@@ -40,7 +40,7 @@ public:
 					// Zレイヤーが大きい場所に要素を追加する
 					// 例 itr->ZLayer{1, 1, 2, 3}、z_layer = 2 の時
 					//    itr->ZLayer{1, 1, 2, z_layer, 3}とする
-					if (typeid(*obj) == typeid(**itr) && obj->GetCollision().object_type != eObjectType::Ground)
+					if (typeid(*obj) == typeid(**itr))
 					{
 						if (position_y + MAX_LANE >= (*itr)->GetLocation().y)
 						{

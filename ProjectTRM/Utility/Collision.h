@@ -9,7 +9,7 @@ enum class eObjectType : unsigned char
 	None,
 	Player,	
 	Enemy,
-	Ground,
+	Projectile,
 };
 
 // “–‚½‚è”»’èŠî’êƒNƒ‰ƒX

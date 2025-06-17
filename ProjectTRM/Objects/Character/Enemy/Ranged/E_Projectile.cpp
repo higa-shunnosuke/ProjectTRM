@@ -28,7 +28,7 @@ void E_Projectile::Initialize()
     is_aggressive = true;
 
     collision.is_blocking = true;
-    collision.object_type = eObjectType::None;
+    collision.object_type = eObjectType::Projectile;
     collision.hit_object_type.push_back(eObjectType::Player);
     collision.hitbox_size = Vector2D(30.0f, 60.0f);
 
@@ -129,7 +129,7 @@ void E_Projectile::OnAreaDetection(GameObject* hit_object)
         hit_object->HPControl(Damage);
         Finalize();
     }
-    else if (hit_collision.object_type == eObjectType::Ground)
+    else
     {
         Finalize();
     }

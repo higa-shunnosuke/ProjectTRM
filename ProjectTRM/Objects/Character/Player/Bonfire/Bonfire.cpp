@@ -179,7 +179,7 @@ void Bonfire::OnAreaDetection(GameObject* hit_object)
 }
 
 // HPŠÇ—ˆ—
-void Bonfire::HPControl(int Damage)
+void Bonfire::HPControl(float Damage)
 {
 	// UŒ‚ó‘Ô‚Å‚È‚¯‚ê‚Îƒ_ƒ[ƒWó‘Ô‚É‚·‚é
 	if (now_state != State::Attack)

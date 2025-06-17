@@ -49,7 +49,7 @@ void EnemyBase::Initialize()
 	// 音量設定
 	for (int i = 0; i < 3; i++)
 	{
-		ChangeVolumeSoundMem(50, SE[i]);
+		ChangeVolumeSoundMem(100, SE[i]);
 	}
 
 	alpha = 200;
@@ -203,7 +203,7 @@ void EnemyBase::OutLightRange()
 }
 
 // HP管理処理
-void EnemyBase::HPControl(int Damage)
+void EnemyBase::HPControl(float Damage)
 {
 	// エフェクトが終わっていたら開始する
 	if (effect_count[1] == 0)
