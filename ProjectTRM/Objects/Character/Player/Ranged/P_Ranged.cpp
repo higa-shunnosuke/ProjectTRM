@@ -131,8 +131,7 @@ void P_Ranged::Draw(const Vector2D camera_pos) const
 {
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-
-	position.y += z_layer * 5;
+	position.y += z_layer * 2;
 
 	//è¢ä´êwï`âÊ
 	if (now_state == State::Summon)
