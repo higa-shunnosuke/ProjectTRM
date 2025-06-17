@@ -319,7 +319,7 @@ void UnitBase::EffectControl(float delta_second)
 	if (Effect_flame >= 0.1f)
 	{
 		Effect_count++;
-		if (Effect_count > effect_max_count)
+		if (Effect_count == effect_max_count)
 		{
 			Effect_count = 0;
 			if (power_up)
@@ -340,7 +340,7 @@ void UnitBase::EffectControl(float delta_second)
 	switch (now_state)
 	{
 	case State::Summon:
-		if (Effect_count == effect_max_count)
+		if (Effect_count == effect_max_count - 1)
 		{
 			now_state = State::Move;
 			break;

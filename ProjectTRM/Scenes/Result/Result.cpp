@@ -64,16 +64,16 @@ void Result::Initialize()
 	}
 	else
 	{
-		if (bgmHandle[1] == -1)
+		if (bgmHandle[0] == -1)
 		{
 			MessageBoxA(NULL, "BGM2の読み込みに失敗しました", "エラー", MB_OK);
 		}
 		else
 		{
 			// 音量設定
-			ChangeVolumeSoundMem(150, bgmHandle[1]);
+			ChangeVolumeSoundMem(150, bgmHandle[0]);
 			// BGM再生
-			if (PlaySoundMem(bgmHandle[1], DX_PLAYTYPE_BACK) == -1)
+			if (PlaySoundMem(bgmHandle[0], DX_PLAYTYPE_BACK) == -1)
 			{
 				MessageBoxA(NULL, "BGM2の再生に失敗しました", "エラー", MB_OK);
 			}
@@ -397,7 +397,7 @@ void Result::Finalize()
 	}
 	else
 	{
-		StopSoundMem(bgmHandle[1]);
+		StopSoundMem(bgmHandle[0]);
 	}
 	
 	/*StopSoundMem(CountdownSE);*/

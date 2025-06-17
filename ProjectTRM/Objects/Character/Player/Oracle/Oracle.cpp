@@ -10,7 +10,9 @@ Oracle::Oracle() :
 	old_sun_level(),
 	now_sun_level(),
 	power_up(false),
-	effect_image()
+	effect_image(),
+	anime_max_count(),
+	JustDead(false)
 {
 
 }
@@ -27,7 +29,8 @@ void Oracle::Initialize()
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 	EffectImage = rm->GetImages("Resource/Images/Effect/Unit/sprite-sheet.png", 15, 5, 3, 128, 128);
-	image = rm->GetImages("Resource/Images/Unit/Oracle/Oracle01.png",1,1,1,2048,2048)[0];
+	animation = rm->GetImages("Resource/Images/Unit/Oracle/Oracle_Idle.png",7,7,1,128,128);
+	anime_max_count = 7;
 
 	is_mobility = false;
 	is_aggressive = false;
@@ -38,6 +41,10 @@ void Oracle::Initialize()
 	collision.collision_size = Vector2D(60.0f, 120.0f);
 	collision.hitbox_size = Vector2D(200.0f, 200.0f);
 	z_layer = 1;
+
+	now_state = State::Idle;
+
+	flip_flag = true;
 
 	summon_flag = false;
 
@@ -50,8 +57,6 @@ void Oracle::Initialize()
 // 更新処理
 void Oracle::Update(float delta_second)
 {
-
-
 	if (ProjectConfig::DEBUG)
 	{
 		if (CheckHitKey(KEY_INPUT_6))
@@ -66,8 +71,9 @@ void Oracle::Update(float delta_second)
 		old_sun_level = Ingame->GetSunLevel();
 	}
 
-	EffectControl(delta_second);
+	AnimationControl(delta_second);
 
+	EffectControl(delta_second);
 	/*if (summon_flag == true)
 	{
 		attack_flame += delta_second;
@@ -98,11 +104,13 @@ void Oracle::Draw(const Vector2D camera_pos) const
 	}
 
 
+	if (now_state != State::Death)
+	{
+		DrawBoxAA(position.x - 50.0f, position.y - 150.0f, position.x + (50.0f - (100 - HP)), position.y - 135.0f, 0xFFFFFF, true);
+	}
 
-	DrawBoxAA(position.x - 50.0f, position.y - 150.0f, position.x + (50.0f - (100 - HP)), position.y - 135.0f, 0xFFFFFF, true);
-
-
-	DrawRotaGraphF(position.x-5.0f, position.y+1.0f, 0.06, 0.0, image, TRUE, flip_flag);
+	DrawRotaGraphF(position.x - 15.0f, position.y - 25.0f,
+		1.5, 0.0, image, TRUE, flip_flag);
 	if (power_up)
 	{
 		DrawRotaGraph(position.x, position.y + 2.0f, 1.0, 0.0, effect_image, TRUE);
@@ -163,6 +171,12 @@ void Oracle::HPControl(float Damage)
 			object->CreateObject<P_Guardian>(Vector2D(location.x, location.y + 15.0f))->SetInGamePoint(Ingame);
 	}
 
+	if (this->HP <= 0)
+	{
+		now_state = State::Death;
+		this->HP = 0.0f;
+	}
+
 }
 
 // 移動処理
@@ -171,11 +185,63 @@ void Oracle::Movement(float delta_second)
 
 }
 
+bool Oracle::GetDead()
+{
+	return JustDead;
+}
+
 // アニメーション制御処理
 void Oracle::AnimationControl(float delta_second)
 {
+	ResourceManager* rm = ResourceManager::GetInstance();
+	if (now_state != old_state)
+	{
+		Anim_count = 0;		
+		switch (now_state)
+		{
+		case State::Idle:
+			animation = rm->GetImages("Resource/Images/Unit/Oracle/Oracle_Idle.png", 7, 7, 1, 128, 128);
+			anime_max_count = 7;
+			break;
+		case State::Death:
+			animation = rm->GetImages("Resource/Images/Unit/Oracle/Oracle_Dead.png", 5, 5, 1, 128, 128);
+			anime_max_count = 5;
+		}
+		old_state = now_state;
+	}
 
+	auto now_time = std::chrono::steady_clock::now();
+
+	if (now_time - anime_time > std::chrono::milliseconds(350))
+	{
+		Anim_count++;
+		anime_time = std::chrono::steady_clock::now();
+
+		if (Anim_count >= anime_max_count)
+		{
+			Anim_count = 0;
+		}
+	}
+	// 死亡アニメーション
+	image = animation[Anim_count];
+
+	switch (now_state)
+	{
+	case Idle:
+		image = animation[Anim_count];
+		break;
+	case Death:
+		image = animation[Anim_count];
+		if (Anim_count == anime_max_count - 1)
+		{
+			JustDead = true;
+		}
+		break;
+	default:
+		break;
+	}
 }
+
 // エフェクト制御処理
 void Oracle::EffectControl(float delta_second)
 {

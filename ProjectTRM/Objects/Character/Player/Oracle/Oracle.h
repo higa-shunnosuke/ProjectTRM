@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Character.h"
+#include <chrono>
 
 // ゲームオブジェクト基底クラス
 class Oracle :public Character
@@ -14,6 +15,9 @@ private:
 	int now_sun_level;
 	bool power_up;
 	int effect_image;
+	bool	JustDead = false;	//死亡時アニメーションも終わって丁度死んだ
+	int anime_max_count;
+	std::chrono::steady_clock::time_point	anime_time;			// アニメーション加算用変数
 
 
 public:
@@ -59,6 +63,8 @@ public:
 	/// </summary>
 	/// <param name="hit_object">ダメージ</param>
 	virtual void HPControl(float Damage);
+
+	bool GetDead();
 
 private:
 	/// <summary>

@@ -118,7 +118,6 @@ void P_Guardian::AnimationControl(float delta_second)
 	{
 		Anim_flame = 0;
 		Anim_count = 0;
-		con = 1;
 		switch (now_state)
 		{
 		case State::Idle:

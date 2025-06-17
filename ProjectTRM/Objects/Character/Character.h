@@ -33,7 +33,6 @@ protected:
 	float	Anim_flame = 0.0f;
 	int		Effect_count = 0;
 	float   Effect_flame = 0.0f;
-	int     con;
 	float   attack_flame = 0.0f;
 	bool	attack_flag;
 

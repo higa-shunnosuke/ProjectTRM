@@ -32,7 +32,10 @@ InGame::InGame():
 	SunImages(),
 	sound(),
 	bgmHandle(),
-	SummonSE()
+	SummonSE(),
+	Text_Images(),
+	Sun_Images(),
+	Text_BackGround()
 {
 	
 }
@@ -62,6 +65,9 @@ void InGame::Initialize()
 	BackGroundImage[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
 	BackGroundImage[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
 	BackGroundImage[2] = rm->GetImages("Resource/Images/BackGround/RedMoon.png")[0];
+	//文字
+	Text_Images[0] = rm->GetImages("Resource/Images/BackGround/text_fail.png")[0];
+	Text_Images[1] = rm->GetImages("Resource/Images/BackGround/text_clear.png")[0];
 	//太陽
 	std::string Imagestring, Imagepng, Number;;
 	Imagestring = "Resource/Images/BackGround/Sun";
@@ -88,6 +94,8 @@ void InGame::Initialize()
 	bgmHandle[2] = rm->GetSounds("Resource/Sounds/Ingame/BGM/Stage3.mp3");
 	// 勝利
 	bgmHandle[3] = rm->GetSounds("Resource/Sounds/Result/Win_BGM.mp3");
+	//敗北
+	bgmHandle[4] = rm->GetSounds("Resource/Sounds/Result/Loose_BGM.mp3");
 	// 召喚
 	SummonSE[0] = rm->GetSounds("Resource/Sounds/Ingame/SummonAllies.mp3");
 	SummonSE[1] = rm->GetSounds("Resource/Sounds/Ingame/SummonEnemy.mp3");
@@ -212,8 +220,13 @@ eSceneType InGame::Update(const float& delta_second)
 	{
 		if (player->GetHP() <= 0)
 		{
+			if (!CheckSoundMem(bgmHandle[4]))
+			{
+				ChangeVolumeSoundMem(150, bgmHandle[4]);
+				PlaySoundMem(bgmHandle[4], DX_PLAYTYPE_BACK);
+			}
 			IsPlayerWin(false);
-			return eSceneType::result;
+			state = GameState::PLAYER_DEAD;
 		}
 		else
 		{
@@ -252,6 +265,13 @@ eSceneType InGame::Update(const float& delta_second)
 		RegenerateCost();
 
 		break;
+	case GameState::PLAYER_DEAD:
+		if (player->GetDead())
+		{
+			return eSceneType::result;
+		}
+		break;
+
 	case GameState::BOSS_DEAD:
 		// オブジェクトマネージャーのポインタ
 		GameObjectManager* object = GameObjectManager::GetInstance();
@@ -307,12 +327,11 @@ void InGame::Draw() const
 	default:
 		break;
 	}
-
+	int offset = ProjectConfig::STAGE_WIDTH - camera->GetScreeenSize().x / 2 - camera->GetCameraPos().x;
 	switch (state)
 	{
 	case GameState::PLAYING:
 	{
-		int offset = ProjectConfig::STAGE_WIDTH - camera->GetScreeenSize().x / 2 - camera->GetCameraPos().x;
 		DrawGraph(D_WIN_MAX_X / 2 - 700 + offset, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
 
 		LightMapManager* light_map = LightMapManager::GetInstance();
@@ -610,10 +629,16 @@ void InGame::Draw() const
 
 	}
 	break;
+	case GameState::PLAYER_DEAD:
+		DrawGraph(D_WIN_MAX_X / 2 - 700 + offset, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
+		DrawRotaGraph(D_WIN_MAX_X / 2 , D_WIN_MAX_Y / 2, 1.0f, 0.0f, Text_Images[0], true);
+		__super::Draw();
+		break;
 	case GameState::BOSS_DEAD:
 	{
 
 		DrawGraph(enemy->GetLocation().x - 100.0f, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
+		DrawRotaGraph(D_WIN_MAX_X / 2, D_WIN_MAX_Y / 2, 1.0f, 0.0f, Text_Images[1], true);
 
 		LightMapManager* light_map = LightMapManager::GetInstance();
 

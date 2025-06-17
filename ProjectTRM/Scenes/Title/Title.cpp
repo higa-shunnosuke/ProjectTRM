@@ -31,7 +31,7 @@ void Title::Initialize()
 	Anim_count = 0;
 
 	ChangeVolumeSoundMem(100, BGM);
-	ChangeVolumeSoundMem(110, DecisionSE);
+	ChangeVolumeSoundMem(190, DecisionSE);
 	if (PlaySoundMem(BGM, DX_PLAYTYPE_LOOP) == -1)
 	{
 		MessageBoxA(NULL, "BGM1ÇÃçƒê∂Ç…é∏îsÇµÇ‹ÇµÇΩ", "ÉGÉâÅ[", MB_OK);

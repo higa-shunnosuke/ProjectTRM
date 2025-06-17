@@ -17,7 +17,8 @@
 enum class GameState
 {
 	PLAYING,
-	BOSS_DEAD
+	BOSS_DEAD,
+	PLAYER_DEAD
 };
 
 
@@ -34,6 +35,7 @@ private:
 	int SunImages[10];
 	int Sun_Images;
 	int BackGroundImage[3];
+	int Text_Images[2];				//勝敗演の文字画像
 	int sound;
 	int Click;
 	int ClickUp;
@@ -45,7 +47,7 @@ private:
 	Oracle*		player;				// 巫女のポインタ
 	Heretic*	enemy;				// 異端者のポインタ
 	int			unit_ui[5];			// ユニット選択UIの画像
-	int bgmHandle[4];				// BGM
+	int bgmHandle[5];				// BGM
 	int SummonSE[2];				// 召喚SE
 
 public:
