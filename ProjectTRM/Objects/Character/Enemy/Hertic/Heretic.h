@@ -40,7 +40,7 @@ private:
 	State nowsta = State::Idle;
 	std::vector<int> EffectImage;
 	int EffectCount;
-	int DeadImage[2];
+	std::vector<int> DeadImage;
 	int SoptLight;
 	int LightStrong = 0 ;
 	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数

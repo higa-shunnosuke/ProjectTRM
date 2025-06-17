@@ -15,7 +15,7 @@
 #define COST_UPNUM 10
 
 
-#define ENEMY_TEST
+//#define ENEMY_TEST
 
 #include"../../../../Utility/Input/InputManager.h"
 #include "../../Player/Guardian/P_Guardian.h"
@@ -57,10 +57,9 @@ void Heretic::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 
 	animation = rm->GetImages("Resource/Images/Enemy/Heretic/Idle.png", 8, 8, 1, 250, 250);
+	DeadImage = rm->GetImages("Resource/Images/Enemy/Heretic/Death.png", 7, 7, 1, 250, 250);
 	EffectImage = rm->GetImages("Resource/Images/Effect/Gravity-Sheet.png", 20, 4, 5, 96, 80);
 	image = animation[0];
-	DeadImage[0] = rm->GetImages("Resource/Images/Enemy/Heretic/NotDead.png")[0];
-	DeadImage[1] = rm->GetImages("Resource/Images/Enemy/Heretic/ImDead.png")[0];
 	SoptLight = rm->GetImages("Resource/Images/Enemy/Heretic/SpotLight.png")[0];
 
 	is_mobility = false;
@@ -96,6 +95,19 @@ void Heretic::Update(float delta_second)
 			}
 			prev_time = std::chrono::steady_clock::now();
 		}
+
+		if (now_time - anime_time > std::chrono::milliseconds(250))
+		{
+			Anim_count++;
+			anime_time = std::chrono::steady_clock::now();
+
+			if (Anim_count >= 6)
+			{
+				Anim_count = 6;
+			}
+		}
+		// 死亡アニメーション
+		image = DeadImage[Anim_count];
 		break;
 
 	default:
@@ -178,7 +190,6 @@ void Heretic::Update(float delta_second)
 			}
 
 		}
-
 		if (now_time - anime_time > std::chrono::milliseconds(100))
 		{
 			Anim_count++;
@@ -190,6 +201,7 @@ void Heretic::Update(float delta_second)
 			}
 		}
 
+		// 待機アニメーション
 		image = animation[Anim_count];
 
 		break;
@@ -213,7 +225,7 @@ void Heretic::Draw(const Vector2D camera_pos) const
 			DrawGraphF(position.x - collision.collision_size.x / 2-50.0f, position.y - collision.collision_size.y / 2 - 50.0f, SoptLight, true);
 
 			//// キャラ画像を中心に描画		
-			DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, DeadImage[1], true);
+			DrawRotaGraphF(position.x - 0.0f, position.y - 20.0f, 2.0, 0.0, image, TRUE, flip_flag);
 
 		}
 		else
@@ -223,7 +235,7 @@ void Heretic::Draw(const Vector2D camera_pos) const
 			DrawGraphF(position.x - collision.collision_size.x / 2 - 50.0f, position.y - collision.collision_size.y / 2 - 50.0f, SoptLight, true);
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 			// キャラ画像を中心に描画
-			DrawGraphF(position.x - collision.collision_size.x / 2 - 10.0f, position.y - collision.collision_size.y / 2, DeadImage[0], true);
+			DrawRotaGraphF(position.x - 0.0f, position.y - 20.0f, 2.0, 0.0, image, TRUE, flip_flag);
 
 		}
 		break;
@@ -618,6 +630,8 @@ void Heretic::HPControl(float Damage)
 	if (this->HP <= 0)
 	{
 	nowsta = State::Death;
+	image = DeadImage[0];
+	Anim_count = 0;
 	}
 	else
 	{

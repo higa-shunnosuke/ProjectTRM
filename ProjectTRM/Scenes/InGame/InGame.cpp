@@ -273,7 +273,7 @@ eSceneType InGame::Update(const float& delta_second)
 			}
 		}
 
-		camera->SetCameraPos(Vector2D(0, 0));
+		camera->SetCameraPos(enemy->GetLocation());
 		if (enemy->GetDead())
 		{
 			return eSceneType::result;
@@ -748,12 +748,12 @@ void InGame::UnitSelection()
 		{
 			// タンク召喚
 		case 0:
-			// 召喚SE再生
-			PlaySoundMem(SummonSE[0], DX_PLAYTYPE_BACK);
 			if (summon_flag[cursor] == false)
 			{
 				if (cost - Tank_Cost >= 0)
 				{
+					// 召喚SE再生
+					PlaySoundMem(SummonSE[0], DX_PLAYTYPE_BACK);
 					// タンクを生成
 					GameObject* obj = object->CreateObject<P_Tank>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
 					obj->SetInGamePoint(this);
@@ -766,12 +766,12 @@ void InGame::UnitSelection()
 			break;
 			// 近接召喚
 		case 1:
-			// 召喚SE再生
-			PlaySoundMem(SummonSE[0], DX_PLAYTYPE_BACK);
 			if (summon_flag[cursor] == false)
 			{
 				if (cost - Melee_Cost >= 0)
 				{
+					// 召喚SE再生
+					PlaySoundMem(SummonSE[0], DX_PLAYTYPE_BACK);
 					// 近接を生成
 					GameObject* obj = object->CreateObject<P_Melee>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
 					obj->SetInGamePoint(this);
@@ -783,12 +783,12 @@ void InGame::UnitSelection()
 			break;
 			// 遠距離召喚
 		case 2:
-			// 召喚SE再生
-			PlaySoundMem(SummonSE[0], DX_PLAYTYPE_BACK);
 			if (summon_flag[cursor] == false)
 			{
 				if (cost - Range_Cost >= 0)
 				{
+					// 召喚SE再生
+					PlaySoundMem(SummonSE[0], DX_PLAYTYPE_BACK);
 					object->CreateObject<P_Ranged>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f))->SetInGamePoint(this);
 					cost -= Range_Cost;
 					//summon_flag[cursor] = true;
@@ -797,12 +797,12 @@ void InGame::UnitSelection()
 			}
 			break;
 		case 3:
-			// 召喚SE再生
-			PlaySoundMem(SummonSE[0], DX_PLAYTYPE_BACK);
 			if (summon_flag[cursor] == false)
 			{
 				if (cost - Guardian_Cost >= 0)
 				{
+					// 召喚SE再生
+					PlaySoundMem(SummonSE[0], DX_PLAYTYPE_BACK);
 					// 近接を生成
 					GameObject* obj = object->CreateObject<P_Guardian>(Vector2D(player->GetLocation().x, player->GetLocation().y + 30.0f));
 					obj->SetInGamePoint(this);
