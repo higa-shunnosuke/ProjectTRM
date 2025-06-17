@@ -4,7 +4,7 @@
 #include "../../../../Utility/LightMapManager.h"
 #include "../../../GameObjectManager.h"
 
-#define BASIC_Tank_POWER (1)
+#define BASIC_Tank_POWER (1.0f)
 #define BASIC_Tank_SPEED (-5.0f)
 
 // ゲームオブジェクト基底クラス

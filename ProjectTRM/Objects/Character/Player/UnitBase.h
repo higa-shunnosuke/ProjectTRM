@@ -15,6 +15,8 @@ protected:
 	LightMapManager* light; //明り
 	int anim_max_count;
 	GameObjectManager* object;
+	int old_sun_level;
+	bool power_up;
 
 	//エフェクト類
 	int effect_image;

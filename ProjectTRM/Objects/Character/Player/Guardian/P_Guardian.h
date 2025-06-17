@@ -2,7 +2,7 @@
 #include "../UnitBase.h"
 #include "../../../GameObjectManager.h"
 
-#define BASIC_Guardian_POWER (20)
+#define BASIC_Guardian_POWER (20.0f)
 #define BASIC_Guardian_SPEED (-4.0f)
 
 class P_Guardian : public UnitBase

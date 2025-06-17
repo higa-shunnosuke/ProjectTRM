@@ -11,7 +11,9 @@ UnitBase::UnitBase() :
 	sounds(),
 	effect_max_count(),
 	reduction_amount(),
-	text()
+	text(),
+	old_sun_level(),
+	power_up(false)
 {
 
 }
@@ -46,6 +48,7 @@ void UnitBase::Initialize()
 	//UŒ‚—Í
 	Damage = basic_power;
 
+	old_sun_level = 1;
 
 	object = GameObjectManager::GetInstance();
 
@@ -109,6 +112,12 @@ void UnitBase::Update(float delta_second)
 		}
 	}
 
+	if (old_sun_level != Ingame->GetSunLevel())
+	{
+		power_up = !power_up;
+		old_sun_level = Ingame->GetSunLevel();
+	}
+
 	EffectControl(delta_second);
 
 	SoundControl();
@@ -125,6 +134,11 @@ void UnitBase::Draw(const Vector2D camera_pos) const
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 	position.y += z_layer * 2;
+
+	if (power_up)
+	{
+		DrawRotaGraph(position.x, position.y + 2.0f, 1.0, 0.0, effect_image, TRUE);
+	}
 
 	if (ProjectConfig::DEBUG)
 	{
@@ -283,8 +297,10 @@ void UnitBase::EffectControl(float delta_second)
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
 
-	if (now_state != old_state)
+	if (now_state != old_state || power_up)
 	{
+		Effect = rm->GetImages("Resource/Images/Effect/Unit/PowerUp_Unit.png", 12, 5, 3, 128, 128);
+		effect_max_count = 12;
 		switch (now_state)
 		{
 		case State::Summon:
@@ -306,6 +322,10 @@ void UnitBase::EffectControl(float delta_second)
 		if (Effect_count > effect_max_count)
 		{
 			Effect_count = 0;
+			if (power_up)
+			{
+				power_up = !power_up;
+			}
 		}
 		Effect_flame = 0;
 	}
@@ -340,7 +360,10 @@ void UnitBase::EffectControl(float delta_second)
 	default:
 		break;
 	}
-
+	if (power_up)
+	{
+		effect_image = Effect[Effect_count];
+	}
 }
 
 //SE‚Ì§Œäˆ—

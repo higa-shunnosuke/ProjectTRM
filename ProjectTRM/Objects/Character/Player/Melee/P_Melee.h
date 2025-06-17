@@ -3,7 +3,7 @@
 #include "../UnitBase.h"
 #include "../../../GameObjectManager.h"
 
-#define BASIC_Melee_POWER (12)
+#define BASIC_Melee_POWER (12.0f)
 #define BASIC_Melee_SPEED (-5.5f)
 
 // ゲームオブジェクト基底クラス
