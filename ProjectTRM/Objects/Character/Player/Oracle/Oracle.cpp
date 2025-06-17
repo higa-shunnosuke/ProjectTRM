@@ -149,7 +149,7 @@ void Oracle::Attack()
 
 
 // HPŠÇ—ˆ—
-void Oracle::HPControl(int Damage)
+void Oracle::HPControl(float Damage)
 {
 	HP -= Damage;
 	

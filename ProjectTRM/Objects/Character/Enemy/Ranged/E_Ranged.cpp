@@ -139,8 +139,11 @@ void E_Ranged::OutLightRange()
 // UŒ‚ˆ—
 void E_Ranged::Attack(GameObject* hit_object)
 {
+	E_Projectile* arrow;
 	GameObjectManager* object = GameObjectManager::GetInstance();
-	object->CreateObject<E_Projectile>(this->location)->SetTargetLocation(hit_object->GetLocation());
+	arrow = object->CreateObject<E_Projectile>(Vector2D(location.x + 20.0f, location.y - 5.0f));
+	arrow->SetTargetLocation(hit_object->GetLocation());
+	arrow->SetDamage(Damage);
 }
 
 // ˆÚ“®ˆ—
@@ -181,7 +184,7 @@ void E_Ranged::AnimationControl(float delta_second)
 			image = animation[Anim_count];
 			anim_max_count = 5;
 			anim_rate = 0.1f;
-			on_hit = 4;
+			on_hit = 5;
 			break;
 		case State::Damage:
 			break;

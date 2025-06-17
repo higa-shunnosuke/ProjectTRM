@@ -2,12 +2,16 @@
 #include "../../../GameObjectManager.h"
 #include <cmath>
 
+#define GRAVITY (9.8f)
+#define INITIAL_SPEED (100.0f)
+
 // コンストラクタ
 E_Projectile::E_Projectile() :
-    Damage(0),
-    angle(0.0f),
+    Damage(),
+    angle(),
     target_location(),
-    old_location()
+    old_location(),
+    end_loc()
 {
 
 }
@@ -30,15 +34,11 @@ void E_Projectile::Initialize()
     collision.is_blocking = true;
     collision.object_type = eObjectType::Projectile;
     collision.hit_object_type.push_back(eObjectType::Player);
-    collision.hitbox_size = Vector2D(30.0f, 60.0f);
+    collision.hitbox_size = Vector2D(30.0f, 20.0f);
 
     z_layer = 3;
 
-    now_state = State::Idle;
-
-    lane = rand() % 3 + 1;
-
-    Damage = 5;
+    Damage = 5.0f;
 
 }
 
@@ -57,7 +57,7 @@ void E_Projectile::Update(float delta_second)
         float distance = std::sqrt(dx * dx + dy * dy);
 
         // 簡易的に放物線になるような角度を計算（高さに余裕がある場合）
-        float angle_init = std::atan2(dy + 0.5 * GRAVITY * (distance / speed) * (distance / speed), dx);
+        float angle_init = std::atan2(dy + 1.0 * GRAVITY * (distance / speed) * (distance / speed), dx);
 
         // 初速度ベクトルに分解
         velocity.x = speed * std::cos(angle_init);
@@ -87,7 +87,6 @@ void E_Projectile::Draw(const Vector2D camera_pos) const
 {
     Vector2D position = this->GetLocation();
     position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-    position.y -= lane * 3;
 
 
     // オフセット値を基に画像の描画を行う
@@ -156,7 +155,14 @@ void E_Projectile::EffectControl(float delta_second)
 
 }
 
+// ターゲット設定処理
 void E_Projectile::SetTargetLocation(Vector2D location)
 {
     target_location = location;
+}
+
+// ダメージ設定処理
+void E_Projectile::SetDamage(float Damage)
+{
+    this->Damage = Damage;
 }
