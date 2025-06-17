@@ -33,7 +33,7 @@ void P_Ranged::Initialize()
 	// ‰æ‘œ‚Ì“Ç‚Ýž‚Ý
 	ResourceManager* rm = ResourceManager::GetInstance();
 	animation = rm->GetImages("Resource/Images/Unit/Ranged/Archer_All.png", 55, 11, 5, 64, 64);
-	effect_image = rm->GetImages("Resource/Images/Effect/Unit/Ranged_Ghost.png", 1, 1, 1, 32, 32)[0];
+	effect_image = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 32, 32)[0];
 	text = rm->GetImages("Resource/Images/BackGround/numbers.png", 10, 5, 2, 32, 32);
 	minus = rm->GetImages("Resource/Images/BackGround/minus.png")[0];
 
