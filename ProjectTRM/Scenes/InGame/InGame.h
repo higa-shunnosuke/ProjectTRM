@@ -11,7 +11,7 @@
 #define Tank_Cost 20
 #define Melee_Cost 50
 #define Range_Cost 100
-#define Guardian_Cost 500
+#define Guardian_Cost 5
 
 
 enum class GameState

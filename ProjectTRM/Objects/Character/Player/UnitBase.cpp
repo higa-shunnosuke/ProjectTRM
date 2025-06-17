@@ -1,14 +1,17 @@
 #include "UnitBase.h"
+#include <iostream >
 
 // コンストラクタ
 UnitBase::UnitBase() :
 	Damage(),
-	sounds(),
-	basic_power(),
-	basic_speed(),
 	effect_image(),
 	effect_alpha(),
-	light(nullptr)
+	object(nullptr),
+	anim_max_count(),
+	sounds(),
+	effect_max_count(),
+	reduction_amount(),
+	text()
 {
 
 }
@@ -22,8 +25,10 @@ UnitBase::~UnitBase()
 // 初期化処理
 void UnitBase::Initialize()
 {
-	light = LightMapManager::GetInstance();
-	light->AddLight(this);
+	// 画像の読み込み
+	ResourceManager* rm = ResourceManager::GetInstance();
+	text = rm->GetImages("Resource/Images/BackGround/numbers.png", 10, 5, 2, 32, 32);
+	minus = rm->GetImages("Resource/Images/BackGround/minus.png")[0];
 
 	is_mobility = true;
 	is_aggressive = true;
@@ -33,20 +38,16 @@ void UnitBase::Initialize()
 	collision.hit_object_type.push_back(eObjectType::Enemy);
 
 
-	//移動速度
-	velocity.x = basic_speed;
+	attack_flag = false;
+	flip_flag = true;
+
+	now_state = State::Summon;
 
 	//攻撃力
 	Damage = basic_power;
 
-	//反転フラグ
-	flip_flag = true;
 
-	//攻撃フラグ
-	attack_flag = false;
-
-	//初期化
-	now_state = State::Move;
+	object = GameObjectManager::GetInstance();
 
 	alpha = MAX_ALPHA;
 	effect_alpha = MAX_ALPHA;
@@ -81,13 +82,22 @@ void UnitBase::Update(float delta_second)
 			}
 			else
 			{
-				now_state = State::Idle;
 				attack_flame -= delta_second * (1 + (Ingame->GetSunLevel() / 10));
 			}
-			if (attack_flame <= 0.0f)
+			if (attack_flame <= 0.0f && now_state != State::Summon)
 			{
 				attack_flag = false;
 				now_state = State::Move;
+			}
+		}
+
+		if (!reduction_amount.empty())
+		{
+			for (int i = reduction_amount.size() - 1; i >= 0; --i) {
+				if (damage_time[i] <= 0.0f) {
+					reduction_amount.erase(reduction_amount.begin() + i);
+					damage_time.erase(damage_time.begin() + i); // damage_time も合わせて消す
+				}
 			}
 		}
 
@@ -114,36 +124,7 @@ void UnitBase::Draw(const Vector2D camera_pos) const
 {
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-
-	//レイヤーをもとに座標をずらす
-	position.y += z_layer * 5;
-
-	// 灯守の描画
-	// オフセット値を基に画像の描画を行う
-	if (Anim_count <= anim_max_count)
-	{
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-	}
-
-	//ステートによってエフェクトの描画を行う
-	switch (now_state)
-	{
-	case State::Damage:
-		DrawRotaGraphF(position.x, position.y, 1.0, 0.0, effect_image, TRUE, flip_flag);
-		break;
-	case State::Death:
-		position.y -= Effect_count * 10 + Effect_flame * 10;
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, effect_alpha);
-		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		break;
-	default:
-		break;
-	}
-	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
-		(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0xff00ff, TRUE);*/
+	position.y += z_layer * 2;
 
 	if (ProjectConfig::DEBUG)
 	{
@@ -155,17 +136,17 @@ void UnitBase::Draw(const Vector2D camera_pos) const
 		// 攻撃範囲を表示
 		DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
 			(int)(position.x - collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
-		// HPを表示
-		DrawFormatString(position.x, position.y - 20.0f, 0x00ffff, "%d", HP);
+		// 攻撃力を表示
+		DrawFormatString(position.x, position.y - 20.0f, 0x00ffff, "%f", velocity.x);
 	}
 }
 
 // 終了時処理
 void UnitBase::Finalize()
 {
-	GameObjectManager* object = GameObjectManager::GetInstance();
 	LightMapManager* light = LightMapManager::GetInstance();
 	light->DeleteLight(this);
+	//object->CreateObject<Torch>(this->location);
 	object->DestroyObject(this);
 }
 
@@ -186,7 +167,7 @@ void UnitBase::OnAreaDetection(GameObject* hit_object)
 		if (hit_col.object_type == eObjectType::Enemy)
 		{
 			velocity.x = 0.0f;
-			if (attack_flag == false)
+			if (attack_flag == false && now_state != State::Summon)
 			{
 				now_state = State::Attack;
 			}
@@ -205,9 +186,9 @@ void UnitBase::OnAreaDetection(GameObject* hit_object)
 void UnitBase::NoHit()
 {
 	// 移動状態にする
-	if (now_state != State::Death)
+	if (now_state != State::Death && now_state != State::Summon)
 	{
-		velocity.x = basic_speed + ((basic_speed / 100) * (Ingame->GetSunLevel()));
+		now_state = State::Move;
 	}
 }
 
@@ -215,19 +196,18 @@ void UnitBase::NoHit()
 void UnitBase::HPControl(float Damage)
 {
 	// 攻撃状態でなければダメージ状態にする
-	if (now_state != State::Attack)
+	if (now_state != State::Attack && now_state != State::Death)
 	{
-		now_state = State::Damage;
+		//PlaySoundMem(sounds, DX_PLAYTYPE_BACK, true);
+		reduction_amount.push_back(Damage);
+		__super::HPControl(Damage);
+		damage_time.push_back(0.5f);
 	}
-
-	__super::HPControl(Damage);
 }
 
 // 攻撃処理
 void UnitBase::Attack(GameObject* hit_object)
 {
-
-	PlaySoundMem(sounds, DX_PLAYTYPE_BACK, TRUE);
 	hit_object->HPControl(Damage);
 	attack_flame = 2.0f;
 }
@@ -260,6 +240,7 @@ void UnitBase::AnimationControl(float delta_second)
 	switch (now_state)
 	{
 	case State::Idle:
+	case State::Summon:
 		image = animation[Anim_count];
 		break;
 	case State::Move:
@@ -268,30 +249,14 @@ void UnitBase::AnimationControl(float delta_second)
 		break;
 	case State::Attack:
 		image = animation[Anim_count];
-		if (Anim_count == anim_max_count / 2)
+		if (Anim_count == anim_max_count / 2 && Ingame->GetNowState() == GameState::PLAYING)
 		{
+			attack_flag = true;
 			PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
 		}
 		if (Anim_count == anim_max_count - 1)
 		{
-			attack_flag = true;
-			now_state = State::Move;
-			velocity.x = basic_speed + ((basic_speed / 100) * (Ingame->GetSunLevel()));
-		}
-		break;
-	case State::Damage:
-		alpha += add;
-		if (alpha <= 0 || alpha >= 255)
-		{
-			add = -add;
-		}
-		if (velocity.x < 0.0f)
-		{
-			image = animation[Anim_count];
-		}
-		else
-		{
-			image = animation[0];
+			now_state = State::Idle;
 		}
 		break;
 	case State::Death:
@@ -311,28 +276,75 @@ void UnitBase::AnimationControl(float delta_second)
 	default:
 		break;
 	}
+
 }
 // エフェクト制御処理
 void UnitBase::EffectControl(float delta_second)
 {
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+	if (now_state != old_state)
+	{
+		switch (now_state)
+		{
+		case State::Summon:
+			Effect = rm->GetImages("Resource/Images/Effect/Magic_Remove.png", 10, 5, 2, 192, 192);
+			effect_max_count = 10;
+			break;
+		case State::Death:
+			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50);
+			break;
+		default:
+			break;
+		}
+	}
 
 	Effect_flame += delta_second;
 	if (Effect_flame >= 0.1f)
 	{
-		if (Effect_count < 29)
-		{
-			Effect_count++;
-		}
-		else
+		Effect_count++;
+		if (Effect_count > effect_max_count)
 		{
 			Effect_count = 0;
 		}
 		Effect_flame = 0;
 	}
+	if (!damage_time.empty())
+	{
+		for (int i = 0; i < damage_time.size(); i++)
+		{
+			damage_time[i] -= delta_second;
+		}
+	}
+
+	switch (now_state)
+	{
+	case State::Summon:
+		if (Effect_count == effect_max_count)
+		{
+			now_state = State::Move;
+			break;
+		}
+		effect_image = Effect[Effect_count];
+		break;
+	case State::Death:
+		effect_image = Effect[0];
+		effect_alpha += add;
+		//完全に透明になったらオブジェクト消去
+		if (effect_alpha <= 0)
+		{
+			effect_alpha = 0;
+			Finalize();
+		}
+		break;
+	default:
+		break;
+	}
+
 }
 
 //SEの制御処理
 void UnitBase::SoundControl()
 {
-
+	ChangeVolumeSoundMem(90, sounds);
 }

@@ -14,11 +14,19 @@ protected:
 	float basic_speed;	//基礎移動速度
 	LightMapManager* light; //明り
 	int anim_max_count;
+	GameObjectManager* object;
 
 	//エフェクト類
 	int effect_image;
 	int effect_alpha;
 	std::vector<int> Effect;
+	int effect_max_count;	//エフェクト画像の枚数
+
+	//ダメージ表記関連
+	std::vector<int> text;
+	std::vector<int> reduction_amount;	//HP減少量
+	std::vector<float> damage_time; //ダメージの表記時間
+	int minus;
 
 public:
 	//コンストラクタ
