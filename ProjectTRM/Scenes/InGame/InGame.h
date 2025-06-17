@@ -46,6 +46,7 @@ private:
 	Heretic*	enemy;				// 異端者のポインタ
 	int			unit_ui[5];			// ユニット選択UIの画像
 	int bgmHandle[4];				// BGM
+	int SummonSE[2];				// 召喚SE
 
 public:
 	// コンストラクタ

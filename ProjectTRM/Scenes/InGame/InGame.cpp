@@ -31,7 +31,8 @@ InGame::InGame():
 	Cost_Max(),
 	SunImages(),
 	sound(),
-	bgmHandle()
+	bgmHandle(),
+	SummonSE()
 {
 	
 }
@@ -87,6 +88,13 @@ void InGame::Initialize()
 	bgmHandle[2] = rm->GetSounds("Resource/Sounds/Ingame/BGM/Stage3.mp3");
 	// 勝利
 	bgmHandle[3] = rm->GetSounds("Resource/Sounds/Result/Win_BGM.mp3");
+	// 召喚
+	SummonSE[0] = rm->GetSounds("Resource/Sounds/Ingame/SummonAllies.mp3");
+	SummonSE[1] = rm->GetSounds("Resource/Sounds/Ingame/SummonEnemy.mp3");
+	for (int i = 0; i < 2; i++)
+	{
+		ChangeVolumeSoundMem(100, SummonSE[i]);
+	}
 
 	// ライトマップの初期化
 	LightMapManager* light_map = LightMapManager::GetInstance();
@@ -659,19 +667,22 @@ void InGame::CreateEnemy(E_enemy e_enem)
 	// オブジェクトマネージャーの情報を取得
 	GameObjectManager* object = GameObjectManager::GetInstance();
 
+	// 召喚SE再生
+	PlaySoundMem(SummonSE[1], DX_PLAYTYPE_BACK);
+
 	switch (e_enem)
 	{
 	case Tank:
-		object->CreateObject<E_Tank>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
+		object->CreateObject<E_Tank>(Vector2D(enemy->GetLocation().x + 50.0f, enemy->GetLocation().y + 30.0f));
 		break;
 	case Melee:
-		object->CreateObject<E_Melee>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
+		object->CreateObject<E_Melee>(Vector2D(enemy->GetLocation().x + 50.0f, enemy->GetLocation().y + 30.0f));
 		break;
 	case Range:
-		object->CreateObject<E_Ranged>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 30.0f));
+		object->CreateObject<E_Ranged>(Vector2D(enemy->GetLocation().x + 50.0f, enemy->GetLocation().y + 30.0f));
 		break;
 	case Boss:
-		object->CreateObject<class Boss>(Vector2D(enemy->GetLocation().x, enemy->GetLocation().y + 0.0f));
+		object->CreateObject<class Boss>(Vector2D(enemy->GetLocation().x + 50.0f, enemy->GetLocation().y + 0.0f));
 		break;
 	default:
 		break;
@@ -737,6 +748,8 @@ void InGame::UnitSelection()
 		{
 			// タンク召喚
 		case 0:
+			// 召喚SE再生
+			PlaySoundMem(SummonSE[0], DX_PLAYTYPE_BACK);
 			if (summon_flag[cursor] == false)
 			{
 				if (cost - Tank_Cost >= 0)
@@ -753,6 +766,8 @@ void InGame::UnitSelection()
 			break;
 			// 近接召喚
 		case 1:
+			// 召喚SE再生
+			PlaySoundMem(SummonSE[0], DX_PLAYTYPE_BACK);
 			if (summon_flag[cursor] == false)
 			{
 				if (cost - Melee_Cost >= 0)
@@ -768,6 +783,8 @@ void InGame::UnitSelection()
 			break;
 			// 遠距離召喚
 		case 2:
+			// 召喚SE再生
+			PlaySoundMem(SummonSE[0], DX_PLAYTYPE_BACK);
 			if (summon_flag[cursor] == false)
 			{
 				if (cost - Range_Cost >= 0)
@@ -780,6 +797,8 @@ void InGame::UnitSelection()
 			}
 			break;
 		case 3:
+			// 召喚SE再生
+			PlaySoundMem(SummonSE[0], DX_PLAYTYPE_BACK);
 			if (summon_flag[cursor] == false)
 			{
 				if (cost - Guardian_Cost >= 0)

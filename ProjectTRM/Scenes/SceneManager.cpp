@@ -119,7 +119,7 @@ void SceneManager::Update(float delta_second)
 			else
 			{
 				// 最短距離をステージサイズで初期化
-				float shortest_distance = ProjectConfig::STAGE_WIDTH;
+				float shortest_distance = (float)ProjectConfig::STAGE_WIDTH;
 				// 攻撃対象
 				GameObject* partner = nullptr;
 
