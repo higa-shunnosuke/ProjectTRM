@@ -12,6 +12,7 @@ public:
 	End();
 
 	int MovieGraphHandle;
+	int SoundHandle;
 	// デストラクタ
 	virtual ~End();
 
