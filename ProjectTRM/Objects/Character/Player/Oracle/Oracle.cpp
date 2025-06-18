@@ -205,25 +205,41 @@ void Oracle::AnimationControl(float delta_second)
 			break;
 		case State::Death:
 			animation = rm->GetImages("Resource/Images/Unit/Oracle/Oracle_Dead.png", 5, 5, 1, 128, 128);
-			anime_max_count = 5;
+			anime_max_count = 7;
 		}
 		old_state = now_state;
 	}
 
 	auto now_time = std::chrono::steady_clock::now();
 
-	if (now_time - anime_time > std::chrono::milliseconds(350))
+	switch (now_state)
 	{
-		Anim_count++;
-		anime_time = std::chrono::steady_clock::now();
-
-		if (Anim_count >= anime_max_count)
+	case Idle:
+		if (now_time - anime_time > std::chrono::milliseconds(100))
 		{
-			Anim_count = 0;
+			Anim_count++;
+			anime_time = std::chrono::steady_clock::now();
+
+			if (Anim_count >= anime_max_count)
+			{
+				Anim_count = 0;
+			}
 		}
+		break;
+	case Death:
+		if (now_time - anime_time > std::chrono::milliseconds(250))
+		{
+			Anim_count++;
+			anime_time = std::chrono::steady_clock::now();
+
+			if (Anim_count >= anime_max_count)
+			{
+				Anim_count = 0;
+			}
+		}
+		break;
 	}
-	// 死亡アニメーション
-	image = animation[Anim_count];
+
 
 	switch (now_state)
 	{
@@ -231,7 +247,14 @@ void Oracle::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		break;
 	case Death:
-		image = animation[Anim_count];
+		if (Anim_count < anime_max_count - 2)
+		{
+			image = animation[Anim_count];
+		}
+		else
+		{
+			image = animation[4];
+		}
 		if (Anim_count == anime_max_count - 1)
 		{
 			JustDead = true;
