@@ -46,10 +46,13 @@ void EnemyBase::Initialize()
 	SE[0] = rm->GetSounds("Resource/Sounds/EnemySE/Damage1.mp3");
 	SE[1] = rm->GetSounds("Resource/Sounds/EnemySE/Damage2.mp3");
 	SE[2] = rm->GetSounds("Resource/Sounds/EnemySE/Death.mp3");
+	SE[3] = rm->GetSounds("Resource/Sounds/EnemySE/Attack02.mp3");
+	SE[4] = rm->GetSounds("Resource/Sounds/UnitSE/Ranged/Ranged_Attack.mp3");
+
 	// ‰¹—Êİ’è
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 5; i++)
 	{
-		ChangeVolumeSoundMem(100, SE[i]);
+		ChangeVolumeSoundMem(200, SE[i]);
 	}
 
 	alpha = 200;
@@ -68,7 +71,7 @@ void EnemyBase::Initialize()
 
 // XVˆ—
 void EnemyBase::Update(float delta_second)
-{//‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ 
+{
 	// HP‚ª‚O‚É‚È‚é‚Æ€–Só‘Ô‚É‚·‚é
 	if (HP <= 0)
 	{
@@ -268,6 +271,11 @@ void EnemyBase::AnimationControl(float delta_second)
 			now_state = State::Idle;
 			is_attack = false;
 			recovery_flame = 0;
+		}
+		else if (Anim_count == 0)
+		{
+			// UŒ‚SEÄ¶
+			PlaySoundMem(SE[3], DX_PLAYTYPE_BACK);
 		}
 		break;
 	case State::Death:
