@@ -88,7 +88,7 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 	switch (now_state)
 	{
 	case State::Death:
-		position.y -= Effect_count * 10 + Effect_flame * 10;
+		position.y -= Effect_count * 10 + Effect_flame * 100;
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, effect_alpha);
 		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -213,7 +213,6 @@ void P_Tank::AnimationControl(float delta_second)
 		if (Anim_count == anim_max_count - 1)
 		{
 			object->CreateObject<Torch>(this->location);
-			location.y -= Anim_count * 10 + Anim_flame * 10;
 			Anim_count += 2;
 			//他のオブジェクトの邪魔をしないようにオブジェクトタイプの消去
 			collision.hit_object_type.clear();

@@ -91,7 +91,7 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 	switch (now_state)
 	{
 	case State::Death:
-		position.y -= Effect_count * 10 + Effect_flame * 10;
+		position.y -= Effect_count * 10 + Effect_flame * 100;
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, effect_alpha);
 		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
