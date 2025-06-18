@@ -35,7 +35,8 @@ InGame::InGame():
 	SummonSE(),
 	Text_Images(),
 	Sun_Images(),
-	Text_BackGround()
+	Text_BackGround(),
+	alpha(0)
 {
 	
 }
@@ -237,6 +238,10 @@ eSceneType InGame::Update(const float& delta_second)
 			}
 			IsPlayerWin(true);
 			state = GameState::BOSS_DEAD;
+		}
+		if (alpha < 510)
+		{
+			alpha++;
 		}
 	}
 
@@ -631,14 +636,18 @@ void InGame::Draw() const
 	break;
 	case GameState::PLAYER_DEAD:
 		DrawGraph(D_WIN_MAX_X / 2 - 700 + offset, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha / 2);
 		DrawRotaGraph(D_WIN_MAX_X / 2 , D_WIN_MAX_Y / 2, 1.0f, 0.0f, Text_Images[0], true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		__super::Draw();
 		break;
 	case GameState::BOSS_DEAD:
 	{
 
 		DrawGraph(enemy->GetLocation().x - 100.0f, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha / 2);
 		DrawRotaGraph(D_WIN_MAX_X / 2, D_WIN_MAX_Y / 2, 1.0f, 0.0f, Text_Images[1], true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		LightMapManager* light_map = LightMapManager::GetInstance();
 

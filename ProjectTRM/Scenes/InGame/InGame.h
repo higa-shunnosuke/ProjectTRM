@@ -41,6 +41,7 @@ private:
 	int ClickUp;
 	int Cost_Max;
 	int Sun_Level;
+	int alpha;
 	Vector2D old_camerapos;
 	int			cost;				// コスト
 	bool		summon_flag[4];		// 召喚フラグ
