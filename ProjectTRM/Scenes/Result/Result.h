@@ -19,6 +19,7 @@ private:
 	eSceneType nextScene=eSceneType::result;
 	int decisionWaitFrame = 0;
 	int CountdownSE;
+	int BackGroued_Image;
 public:
 	// コンストラクタ
 	Result();
