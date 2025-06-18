@@ -278,7 +278,6 @@ void UnitBase::AnimationControl(float delta_second)
 		if (Anim_count == anim_max_count - 1)
 		{
 
-			location.y -= Anim_count * 10 + Anim_flame * 10;
 			Anim_count += 2;
 			//他のオブジェクトの邪魔をしないようにオブジェクトタイプの消去
 			collision.hit_object_type.clear();
@@ -309,6 +308,7 @@ void UnitBase::EffectControl(float delta_second)
 			break;
 		case State::Death:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50);
+			effect_max_count = 25;
 			break;
 		default:
 			break;
