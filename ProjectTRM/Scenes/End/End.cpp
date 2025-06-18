@@ -22,6 +22,12 @@ void End::Initialize()
 
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
+	
+	// ムービーファイルをロードします。
+	MovieGraphHandle = LoadGraph("Resource/Movie/EndMov.mp4");
+
+	// ムービーの再生位置を0秒目に変更します
+	SeekMovieToGraph(MovieGraphHandle, 0000);
 
 }
 
@@ -31,31 +37,15 @@ eSceneType End::Update(const float& delta_second)
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
 
+	// ムービーを再生状態にします
+	PlayMovieToGraph(MovieGraphHandle);
 
-
-	auto now_time = std::chrono::steady_clock::now();
-	if (now_time - prev_time > std::chrono::milliseconds(10))
+	if (GetMovieStateToGraph(MovieGraphHandle) == 1)
 	{
-		x -= 10;
-		if (x <= 0)
-		{
-			//ゲームを終了させる
-			Application* app = Application::GetInstance();
-			app->QuitGame();
-		}
-		prev_time = std::chrono::steady_clock::now();
+		//ゲームを終了させる
+		Application* app = Application::GetInstance();
+		app->QuitGame();
 	}
-
-
-
-	//// ENTERキー、STARTボタンを押されたら
-	//if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed ||
-	//	input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
-	//{
-	//	//ゲームを終了させる
-	//	Application* app = Application::GetInstance();
-	//	app->QuitGame();
-	//}
 
 	// 親クラスの更新処理を呼び出す
 	return __super::Update(delta_second);
@@ -64,16 +54,21 @@ eSceneType End::Update(const float& delta_second)
 // 描画処理
 void End::Draw() const
 {
-	if (ProjectConfig::DEBUG)
-	{
-		SetFontSize(60);
-		DrawFormatString(120, 140, 0xffffff, "End");
-		SetFontSize(32);
-		DrawFormatString(100, 300, 0xffffff, "Aボタンを押してください");
-	}
 
-	DrawBox(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y, 0xffffff, TRUE);
-	DrawBox(0, 0, x, D_WIN_MAX_Y, 0x000000, 1);
+	// ループ、GetMovieStateToGraph 関数はムービーの再生状態を得る関数です
+   // 戻り値が１の間は再生状態ですのでループを続けます
+	while (ProcessMessage() == 0 && GetMovieStateToGraph(MovieGraphHandle) == 1)
+	{
+		ClearDrawScreen();
+
+		// ムービー映像を画面いっぱいに描画します
+		DrawExtendGraph(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y, MovieGraphHandle, FALSE);
+
+		// ウエイトをかけます、あまり速く描画すると画面がちらつくからです
+		WaitTimer(17);
+
+		ScreenFlip();
+	}
 
 	// 親クラスの描画処理を呼び出す
 	__super::Draw();
