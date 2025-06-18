@@ -25,10 +25,12 @@ void End::Initialize()
 	
 	// ムービーファイルをロードします。
 	MovieGraphHandle = LoadGraph("Resource/Movie/EndMov.mp4");
+	SoundHandle = LoadSoundMem("Resource/Sounds/Ending/ED.mp3");
 
 	// ムービーの再生位置を0秒目に変更します
 	SeekMovieToGraph(MovieGraphHandle, 0000);
 
+	ChangeVolumeSoundMem(255 / 2, SoundHandle);
 }
 
 // 更新処理
@@ -36,6 +38,9 @@ eSceneType End::Update(const float& delta_second)
 {
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
+
+	PlaySoundMem(SoundHandle, DX_PLAYTYPE_LOOP);
+
 
 	// ムービーを再生状態にします
 	PlayMovieToGraph(MovieGraphHandle);
