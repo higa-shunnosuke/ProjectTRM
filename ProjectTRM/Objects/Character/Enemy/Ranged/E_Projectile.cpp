@@ -25,8 +25,11 @@ E_Projectile::~E_Projectile()
 // ‰Šú‰»ˆ—
 void E_Projectile::Initialize()
 {
+    // ‰æ‘œ‚Ì“Ç‚Ýž‚Ý
     ResourceManager* rm = ResourceManager::GetInstance();
     image = rm->GetImages("Resource/Images/Unit/Ranged/Arrow.png", 1, 1, 1, 32, 32)[0];
+    // ‰¹Œ¹‚Ì“Ç‚Ýž‚Ý
+    SE = rm->GetSounds("Resource/Sounds/UnitSE/Ranged/Arrow_Hit.mp3");
 
     is_mobility = true;
     is_aggressive = true;
@@ -125,6 +128,7 @@ void E_Projectile::OnAreaDetection(GameObject* hit_object)
 
     if (hit_collision.object_type == eObjectType::Player)
     {
+        PlaySoundMem(SE, DX_PLAYTYPE_BACK);
         hit_object->HPControl(Damage);
         Finalize();
     }

@@ -25,7 +25,7 @@ protected:
 	int effect_max_count[2];					// アニメーション画像配列の要素数
 
 	// サウンド
-	int SE[3];		// 再生用変数
+	int SE[5];		// 再生用変数
 
 public:
 	//コンストラクタ
