@@ -15,7 +15,7 @@
 #define COST_UPNUM 10
 
 
-//#define ENEMY_TEST
+#define ENEMY_TEST
 
 #include"../../../../Utility/Input/InputManager.h"
 #include "../../Player/Guardian/P_Guardian.h"
@@ -250,10 +250,10 @@ void Heretic::Draw(const Vector2D camera_pos) const
 		}
 
 #ifdef ENEMY_TEST	
-		DrawFormatString(0, 100, 0xFFFFFF, "1:Tank");
-		DrawFormatString(0, 130, 0xFFFFFF, "2:Melee");
-		DrawFormatString(0, 160, 0xFFFFFF, "3:Range");
-		DrawFormatString(0, 10, 0xFFFFFF, "4:Boss");
+		DrawFormatString(10, 600, 0xFFFFFF, "1:Tank");
+		DrawFormatString(10, 630, 0xFFFFFF, "2:Melee");
+		DrawFormatString(10, 660, 0xFFFFFF, "3:Range");
+		DrawFormatString(10, 690, 0xFFFFFF, "4:Boss");
 #endif // ENEMY_TEST
 
 		DrawRotaGraphF(position.x - 0.0f, position.y - 20.0f,
@@ -626,12 +626,15 @@ void Heretic::HPControl(float Damage)
 {
 	__super::HPControl(Damage);
 
-
 	if (this->HP <= 0)
 	{
-	nowsta = State::Death;
-	image = DeadImage[0];
-	Anim_count = 0;
+		if (nowsta != Death)
+		{
+			Anim_count = 0;
+		}
+
+		nowsta = State::Death;
+		image = DeadImage[0];
 	}
 	else
 	{
@@ -653,16 +656,16 @@ void Heretic::SamonEnemy(int e_enem)
 	switch (e_enem)
 	{
 	case Tank:
-		object->CreateObject<E_Tank>(Vector2D(GetLocation().x, GetLocation().y + 30.0f));
+		object->CreateObject<E_Tank>(Vector2D(GetLocation().x + 50.0f, GetLocation().y + 30.0f));
 		break;
 	case Melee:
-		object->CreateObject<E_Melee>(Vector2D(GetLocation().x, GetLocation().y + 30.0f));
+		object->CreateObject<E_Melee>(Vector2D(GetLocation().x + 50.0f, GetLocation().y + 30.0f));
 		break;
 	case Range:
-		object->CreateObject<E_Ranged>(Vector2D(GetLocation().x, GetLocation().y + 30.0f));
+		object->CreateObject<E_Ranged>(Vector2D(GetLocation().x + 50.0f, GetLocation().y + 30.0f));
 		break;
 	case Boss:
-		object->CreateObject<class Boss>(Vector2D(GetLocation().x, GetLocation().y + 0.0f));
+		object->CreateObject<class Boss>(Vector2D(GetLocation().x + 50.0f, GetLocation().y + 0.0f));
 		break;
 	default:
 		break;

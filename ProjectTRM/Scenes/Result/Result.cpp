@@ -19,6 +19,7 @@ void Result::Initialize()
 	__super::Initialize();
 
 	ResourceManager* rm = ResourceManager::GetInstance();
+	BackGroued_Image = rm->GetImages("Resource/Images/BackGround/Result.png")[0];
 
 	decisionWaitFrame = 0;
 	isDecision = false;
@@ -307,11 +308,11 @@ eSceneType Result::Update(const float& delta_second)
 // 描画処理
 void Result::Draw() const
 {
-
+	DrawGraph(0, 0, BackGroued_Image, 0);
 	DrawFormatString(500, 150, 0xffffff, "死亡したユニット:%d\n生産したユニット:%d", -dead_unit, make_unit - 1);
 
 	SetFontSize(60);
-	DrawFormatString(120, 140, 0xffffff, "Result");
+	DrawFormatString(220, 140, 0xffffff, "Result");
 	SetFontSize(32);
 	if (win_flg)
 	{

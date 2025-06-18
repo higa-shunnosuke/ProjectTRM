@@ -11,6 +11,7 @@ private:
 	Vector2D old_location;
 	float angle;
 	float end_loc;
+	int SE;
 
 public:
 	//コンストラクタ

@@ -139,6 +139,9 @@ void E_Ranged::OutLightRange()
 // UŒ‚ˆ—
 void E_Ranged::Attack(GameObject* hit_object)
 {
+	// UŒ‚SEÄ¶
+	PlaySoundMem(SE[4], DX_PLAYTYPE_BACK);
+
 	E_Projectile* arrow;
 	GameObjectManager* object = GameObjectManager::GetInstance();
 	arrow = object->CreateObject<E_Projectile>(Vector2D(location.x + 20.0f, location.y - 5.0f));
