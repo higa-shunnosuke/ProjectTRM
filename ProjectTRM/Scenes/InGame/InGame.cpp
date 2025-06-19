@@ -75,6 +75,7 @@ void InGame::Initialize()
 	// Œˆ’è
 	Click = rm->GetSounds("Resource/Sounds/InGame/Click.mp3");
 	ClickUp = rm->GetSounds("Resource/Sounds/InGame/ClickUp.mp3");
+
 	// BGM
 	bgmHandle[0] = rm->GetSounds("Resource/Sounds/Ingame/BGM/Stage1.mp3");
 	bgmHandle[1] = rm->GetSounds("Resource/Sounds/Ingame/BGM/Stage2.mp3");
@@ -747,6 +748,10 @@ void InGame::UnitSelection()
 		{
 			cursor++;
 		}
+		else
+		{
+			cursor = 0;
+		}
 	}
 	if (input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Pressed ||
 		input->GetButtonState(XINPUT_BUTTON_DPAD_LEFT) == eInputState::Pressed)
@@ -754,6 +759,10 @@ void InGame::UnitSelection()
 		if (cursor > 0)
 		{
 			cursor--;
+		}
+		else
+		{
+			cursor = 4;
 		}
 	}
 
