@@ -25,7 +25,7 @@ void Title::Initialize()
 	BackGroundImage = rm->GetImages("Resource/Images/BackGround/Title.png")[0];
 
 	BGM = rm->GetSounds("Resource/Sounds/Title/BGM/OP.mp3");
-	DecisionSE = rm->GetSounds("Resource/Sounds/Title/Decision.mp3");
+	DecisionSE = rm->GetSounds("Resource/Sounds/Decision.mp3");
 
 	Anim_flame = 0;
 	Anim_count = 0;
@@ -43,7 +43,6 @@ eSceneType Title::Update(const float& delta_second)
 {
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
-
 
 	// インゲームシーンに遷移する
 	if (input->GetKeyState(KEY_INPUT_RETURN)==eInputState::Pressed)
@@ -79,9 +78,8 @@ eSceneType Title::Update(const float& delta_second)
 		Anim_flame = 0.0f;
 	}
 
-
-	// 親クラスの更新処理を呼び出す
-	return __super::Update(delta_second);
+	// 現在のシーン情報を返却する
+	return GetNowSceneType();
 }
 
 // 描画処理

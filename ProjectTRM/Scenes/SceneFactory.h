@@ -5,6 +5,7 @@
 #include "StageSelect/StageSelect.h"
 #include "InGame/InGame.h"
 #include "Result/Result.h"
+#include "Loading/Loading.h"
 #include "End/End.h"
 
 class SceneFactory
@@ -21,6 +22,9 @@ public:
 		// シーンタイプによって、生成するシーンを切り替える
 		switch (next_type)
 		{
+			// ローディング
+		case eSceneType::loading:
+			return dynamic_cast<SceneBase*>(new Loading());
 			// タイトル
 		case eSceneType::title:
 			return dynamic_cast<SceneBase*>(new Title());

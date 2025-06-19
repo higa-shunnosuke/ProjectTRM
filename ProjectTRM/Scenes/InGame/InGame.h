@@ -21,7 +21,7 @@ enum class GameState
 	PLAYER_DEAD
 };
 
-
+// インゲームシーン
 class InGame : public SceneBase
 {
 private:

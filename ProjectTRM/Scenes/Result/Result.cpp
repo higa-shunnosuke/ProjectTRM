@@ -25,7 +25,7 @@ void Result::Initialize()
 	isDecision = false;
 
 	CursorMoveSE = rm->GetSounds("Resource/Sounds/Result/CursorMove.mp3");
-	DecisionSE = rm->GetSounds("Resource/Sounds/Result/Decision.mp3");
+	DecisionSE = rm->GetSounds("Resource/Sounds/Decision.mp3");
 	ChangeVolumeSoundMem(200, DecisionSE);
 	/*PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);*/
 
@@ -301,8 +301,8 @@ eSceneType Result::Update(const float& delta_second)
 		}
 	}
 
-	// 親クラスの更新処理を呼び出す
-	return __super::Update(delta_second);
+	// 現在のシーン情報を返却する
+	return GetNowSceneType();
 }
 
 // 描画処理

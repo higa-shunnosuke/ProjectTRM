@@ -3,6 +3,7 @@
 #include "../SceneBase.h"
 #include <chrono>
 
+// リザルトシーン
 class Result : public SceneBase
 {
 private:

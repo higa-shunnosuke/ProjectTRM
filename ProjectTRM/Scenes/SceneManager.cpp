@@ -20,7 +20,7 @@ SceneManager::~SceneManager()
 void SceneManager::Initialize()
 {
 	// 最初のシーンをタイトル画面にする
-	ChangeScene(eSceneType::title);
+	ChangeScene(eSceneType::loading);
 
 #ifdef _DEBUG
 	ProjectConfig::DEBUG = true;
@@ -275,6 +275,8 @@ void SceneManager::ChangeScene(eSceneType next_type)
 		throw ("シーンが生成できませんでした\n");
 	}
 
+	/*--------------------別関数を作ってほしい--------------------*/
+	// リザルトへの値渡し
 	if (next_scene != nullptr && current_scene != nullptr)
 	{
 		next_scene->win_flg = current_scene->win_flg;
@@ -292,6 +294,7 @@ void SceneManager::ChangeScene(eSceneType next_type)
 			}
 		}
 	}
+	/*---------------------------ここまで---------------------------*/
 
 	// シーン情報が格納されていたら、削除する
 	if (current_scene != nullptr)

@@ -4,7 +4,6 @@
 
 #include "../../Utility/Camera/Camera.h"
 
-#include "../../Objects/Block/Ground.h"
 #include "../../Objects/Character/Player/Melee/P_Melee.h"
 #include "../../Objects/Character/Player/Ranged/P_Ranged.h"
 #include "../../Objects/Character/Player/Tank/P_Tank.h"
@@ -34,7 +33,6 @@ InGame::InGame():
 	bgmHandle(),
 	SummonSE(),
 	Text_Images(),
-	Sun_Images(),
 	Text_BackGround(),
 	alpha(0)
 {
@@ -69,18 +67,6 @@ void InGame::Initialize()
 	//文字
 	Text_Images[0] = rm->GetImages("Resource/Images/BackGround/text_fail.png")[0];
 	Text_Images[1] = rm->GetImages("Resource/Images/BackGround/text_clear.png")[0];
-	//太陽
-	std::string Imagestring, Imagepng, Number;;
-	Imagestring = "Resource/Images/BackGround/Sun";
-	Imagepng = ".png";
-
-	//for (int i = 0; i < 10; i++)
-	//{
-	//	Number = std::to_string(i);
-	//	SunImages[i] = rm->GetImages(Imagestring + Number + Imagepng)[0];
-	//}
-
-	Sun_Images = rm->GetImages(Imagestring + Imagepng)[0];
 
 	Text_BackGround = rm->GetImages("Resource/Images/BackGround/Text.png")[0];
 
@@ -109,8 +95,8 @@ void InGame::Initialize()
 	LightMapManager* light_map = LightMapManager::GetInstance();
 	light_map->Initialize();
 
-	// 画像の読み込み
-	LoadImages();
+	//// 画像の読み込み
+	//LoadImages();
 
 	// BGM再生
 	switch (StageNumber)
@@ -307,7 +293,7 @@ eSceneType InGame::Update(const float& delta_second)
 	}
 
 	// 親クラスの更新処理を呼び出す
-	__super::Update(delta_second);
+	return __super::Update(delta_second);
 }
 
 // 描画処理
@@ -438,7 +424,7 @@ void InGame::Draw() const
 					DrawExtendGraph(
 						(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
 						(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
-						Sun_Images, TRUE);
+						unit_ui[i], TRUE);
 
 					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 
@@ -569,7 +555,7 @@ void InGame::Draw() const
 					DrawExtendGraph(
 						(int)(x + (button_width - w * 1.5) / 2), (int)(y + (button_height - h * 1.5) / 2),
 						(int)(x + (button_width + w * 1.7) / 2), (int)(y + (button_height + h * 1.7) / 2),
-						Sun_Images, TRUE);
+						unit_ui[i], TRUE);
 
 					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 

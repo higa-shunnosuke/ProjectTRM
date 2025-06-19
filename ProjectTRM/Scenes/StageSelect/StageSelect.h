@@ -20,7 +20,7 @@ enum Stage : int
 	END
 };
 
-// タイトルシーン
+// ステージセレクトシーン
 class StageSelect : public SceneBase
 {
 private:
@@ -76,5 +76,14 @@ public:
 	/// </summary>
 	/// <returns>現在のシーンタイプ</returns>
 	virtual const eSceneType GetNowSceneType() const override;
+
+	/// <summary>
+	/// ステージ設定処理
+	/// </summary>
+	/// <param name="Num">ステージナンバー</param>
+	void SetStageNumber(int Num)
+	{
+		StageNumber = Num;
+	}
 };
 

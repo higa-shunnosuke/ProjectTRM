@@ -52,8 +52,8 @@ eSceneType End::Update(const float& delta_second)
 		app->QuitGame();
 	}
 
-	// 親クラスの更新処理を呼び出す
-	return __super::Update(delta_second);
+	// 現在のシーン情報を返却する
+	return GetNowSceneType();
 }
 
 // 描画処理

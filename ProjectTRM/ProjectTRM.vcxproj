@@ -135,10 +135,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
+    <ClCompile Include="Scenes\Loading\Loading.cpp" />
     <ClCompile Include="Objects\Character\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Objects\Character\Player\Bonfire\Bonfire.cpp" />
     <ClCompile Include="Objects\Character\Enemy\Ranged\E_Projectile.cpp" />
-    <ClCompile Include="Objects\Block\Ground.cpp" />
     <ClCompile Include="Objects\Character\Enemy\Boss\Boss.cpp" />
     <ClCompile Include="Objects\Character\Enemy\Tank\E_Tank.cpp" />
     <ClCompile Include="Objects\Character\Enemy\Ranged\E_Ranged.cpp" />
@@ -170,10 +170,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Scenes\Loading\Loading.h" />
     <ClInclude Include="Objects\Character\Enemy\EnemyBase.h" />
     <ClInclude Include="Objects\Character\Player\Bonfire\Bonfire.h" />
     <ClInclude Include="Objects\Character\Enemy\Ranged\E_Projectile.h" />
-    <ClInclude Include="Objects\Block\Ground.h" />
     <ClInclude Include="Objects\Character\Enemy\Boss\Boss.h" />
     <ClInclude Include="Objects\Character\Enemy\Tank\E_Tank.h" />
     <ClInclude Include="Objects\Character\Enemy\Ranged\E_Ranged.h" />

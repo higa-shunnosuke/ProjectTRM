@@ -21,7 +21,7 @@ void StageSelect::Initialize()
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 
-	DecisionSE = rm->GetSounds("Resource/Sounds/StageSelect/Decision.mp3");
+	DecisionSE = rm->GetSounds("Resource/Sounds/Decision.mp3");
 	CursorMoveSE= rm->GetSounds("Resource/Sounds/StageSelect/CursorMove.mp3");
 	Stage_Image[0] = rm->GetImages("Resource/Images/BackGround/BlueMoonUI.png")[0];
 	Stage_Image[1] = rm->GetImages("Resource/Images/BackGround/YelloMoonUI.png")[0];
@@ -30,7 +30,7 @@ void StageSelect::Initialize()
 
 		ChangeFontType(DX_FONTTYPE_ANTIALIASING_EDGE);
 
-	BGM = rm->GetSounds("Resource/Sounds/StageSelect/StageSelect.mp3");
+	BGM = rm->GetSounds("Resource/Sounds/StageSelect/BGM/StageSelect.mp3");
 
 	ChangeVolumeSoundMem(100, BGM);
 	ChangeVolumeSoundMem(190, DecisionSE);
@@ -38,7 +38,6 @@ void StageSelect::Initialize()
 	{
 		MessageBoxA(NULL, "BGM1の読み込みに失敗しました", "エラー", MB_OK);
 	}
-
 }
 
 // 更新処理
@@ -133,8 +132,8 @@ eSceneType StageSelect::Update(const float& delta_second)
 		break;
 	}
 
-	// 親クラスの更新処理を呼び出す
-	return __super::Update(delta_second);
+	// 現在のシーン情報を返却する
+	return GetNowSceneType();
 }
 
 // 描画処理

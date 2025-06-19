@@ -11,12 +11,12 @@
 #include "../Utility/LightMapManager.h"
 #include "../Objects/GameObjectManager.h"
 
-
 /// <summary>
 /// シーンタイプ
 /// </summary>
 enum class eSceneType
 {
+	loading,		// ローディング
 	title,			// タイトル
 	stage_select,	// ステージセレクト
 	in_game,		// インゲーム
@@ -43,7 +43,6 @@ public:
 
 	bool win_flg;				//プレイヤーが勝利したかどうか
 	int StageNumber;
-
 
 	// コンストラクタ
 	SceneBase() :
@@ -134,13 +133,13 @@ public:
 	/// <returns>現在のシーンタイプ情報</returns>
 	virtual const eSceneType GetNowSceneType() const = 0;
 
+	/// <summary>
+	/// 勝敗設定処理
+	/// </summary>
+	/// <param name="setflg">勝敗フラグ</param>
 	void IsPlayerWin(bool setflg)
 	{
 		win_flg = setflg;
-	}
-	void SetStageNumber(int Num)
-	{
-		StageNumber = Num;
 	}
 
 };
