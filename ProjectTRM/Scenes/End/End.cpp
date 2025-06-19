@@ -23,6 +23,10 @@ void End::Initialize()
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 	
+	rm->UnLoadImages();
+	rm->UnLoadSounds();
+
+
 	// ムービーファイルをロードします。
 	MovieGraphHandle = LoadGraph("Resource/Movie/EndMov.mp4");
 	SoundHandle = LoadSoundMem("Resource/Sounds/Ending/ED.mp3");

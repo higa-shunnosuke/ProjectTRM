@@ -405,5 +405,5 @@ FodyWeavers.xsd
 *.app
 
 .vs
-Log.txt
+**/Log.txt
 x64

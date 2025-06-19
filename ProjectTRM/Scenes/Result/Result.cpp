@@ -361,7 +361,7 @@ void Result::Draw() const
 			{
 				DrawString(500, 550, ": Title", 0xffffff);
 			}
-			DrawString(500, 500, ": ReStart", 0xffffff);
+			DrawString(500, 500, ": Restart", 0xffffff);
 		}
 		break;
 		case 2:

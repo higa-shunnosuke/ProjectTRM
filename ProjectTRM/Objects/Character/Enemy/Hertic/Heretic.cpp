@@ -576,26 +576,27 @@ void Heretic::ThinkingEnemy()
 			{
 				//【仮】
 				//これがワイの…切り札や！！！！
-				Cost -= Ecount_num - 5;
+				Cost -= Ecount_num/10;
 				SamonEnemy(E_enemy::Boss);
+
 				summon_flag = true;
 			}
 			//前衛5体で後衛を出す
 			else if ((Etank_count / TANK_eva) <= 5)
 			{
-				Cost -= Ecount_num - 10;
+				Cost -= Ecount_num/10;
 				SamonEnemy(E_enemy::Tank);
 				summon_flag = true;
 			}
 			else if ((Emelee_count / MELEE_eva) <= 1)
 			{
-				Cost -= Ecount_num - 5;
+				Cost -= Ecount_num/10;
 				SamonEnemy(E_enemy::Melee);
 				summon_flag = true;
 			}
 			else
 			{
-				Cost -= Ecount_num - 5;
+				Cost -= Ecount_num /10;
 				SamonEnemy(E_enemy::Range);
 				summon_flag = true;
 			}

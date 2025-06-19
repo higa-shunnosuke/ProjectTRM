@@ -49,7 +49,7 @@ private:
 	std::chrono::steady_clock::time_point	anime_time;			// アニメーション加算用変数
 	int Player_evaluation[4];
 	int Enemy_evaluation[3];
-	int Cost;
+	float Cost;
 	bool Summon_Boss = false;	//ボス1度でも生成したかどうか
 	bool	JustDead = false;	//死亡時アニメーションも終わって丁度死んだ
 	bool	Iam_Dead = false;
