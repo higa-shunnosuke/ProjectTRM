@@ -26,7 +26,7 @@ void Bonfire::Initialize()
 {
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
-	animation = rm->GetImages("Resource/Images/Unit/Bonfire/BonFire_Idle.png", 4, 4, 1, 250, 250);
+	animation = rm->GetImages("Resource/Images/Unit/Bonfire/bon_fire_new.png", 4, 4, 1, 40, 65);
 
 	LightMapManager* light = LightMapManager::GetInstance();
 	light->AddLight(this);
@@ -110,12 +110,12 @@ void Bonfire::Draw(const Vector2D camera_pos) const
 {
 	Vector2D position = this->GetLocation();
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-	position.y += z_layer * 8;
+	position.y += 30;
 
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(position.x, position.y, 0.3, 0.0, image, TRUE, flip_flag);
+	DrawRotaGraphF(position.x, position.y, 2.0f, 0.0, image, TRUE, flip_flag);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
@@ -197,23 +197,23 @@ void Bonfire::AnimationControl(float delta_second)
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 
-	//ステートが変わった時の初期化
-	if (old_state != now_state)
-	{
-		Anim_flame = 0;
-		Anim_count = 0;
-		switch (now_state)
-		{
-		case State::Idle:
-			animation = rm->GetImages("Resource/Images/Unit/Bonfire/BonFire_Idle.png", 4, 4, 1, 250, 250);
-			break;
-		case State::Death:
-			animation = rm->GetImages("Resource/Images/Unit/Bonfire/Bonfire_Down.png", 4, 4, 1, 250, 250);
-			break;
-		default:
-			break;
-		}
-	}
+	////ステートが変わった時の初期化
+	//if (old_state != now_state)
+	//{
+	//	Anim_flame = 0;
+	//	Anim_count = 0;
+	//	switch (now_state)
+	//	{
+	//	case State::Idle:
+	//		animation = rm->GetImages("Resource/Images/Unit/Bonfire/BonFire_Idle.png", 4, 4, 1, 250, 250);
+	//		break;
+	//	case State::Death:
+	//		animation = rm->GetImages("Resource/Images/Unit/Bonfire/Bonfire_Down.png", 4, 4, 1, 250, 250);
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
 
 	Anim_flame += delta_second;
 
