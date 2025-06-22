@@ -81,7 +81,7 @@ public:
 	/// 位置情報変更処理
 	/// </summary>
 	/// <param name="location">変更したい位置情報</param>
-	void SetLocation(const Vector2D& location);
+	virtual void SetLocation(const Vector2D& location);
 
 	/// <summary>
 	/// 当たり判定取得処理

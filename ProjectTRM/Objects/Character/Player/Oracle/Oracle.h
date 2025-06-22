@@ -17,6 +17,7 @@ private:
 	int effect_image;
 	bool	JustDead = false;	//死亡時アニメーションも終わって丁度死んだ
 	int anime_max_count;
+	float move_location;
 	std::chrono::steady_clock::time_point	anime_time;			// アニメーション加算用変数
 
 
@@ -65,6 +66,12 @@ public:
 	virtual void HPControl(float Damage);
 
 	bool GetDead();
+
+	/// <summary>
+	/// 位置情報変更処理
+	/// </summary>
+	/// <param name="location">変更したい位置情報</param>
+	void SetLocation(const Vector2D& location) override;
 
 private:
 	/// <summary>

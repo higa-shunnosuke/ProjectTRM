@@ -119,7 +119,7 @@ void P_Tank::OnHitCollision(GameObject* hit_object)
 void P_Tank::OnAreaDetection(GameObject* hit_object)
 {
 	//現在のステータスが死亡状態かどうか
-	if (now_state != State::Death)
+	if (now_state != State::Death && Ingame->GetNowState() == GameState::PLAYING)
 	{
 		Collision hit_col = hit_object->GetCollision();
 
@@ -205,7 +205,14 @@ void P_Tank::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		break;
 	case State::Move:
-		velocity.x = BASIC_Tank_SPEED + ((BASIC_Tank_SPEED / 100) * (Ingame->GetSunLevel()));
+		if (Ingame->GetNowState() == GameState::PLAYING)
+		{
+			velocity.x = BASIC_Tank_SPEED + ((BASIC_Tank_SPEED / 100) * (Ingame->GetSunLevel()));
+		}
+		else
+		{
+			velocity.x = -BASIC_Tank_SPEED - ((BASIC_Tank_SPEED / 100) * (Ingame->GetSunLevel()));
+		}
 		image = animation[Anim_count];
 		break;
 	case State::Death:

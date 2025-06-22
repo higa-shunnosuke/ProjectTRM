@@ -113,7 +113,7 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 
 	target_loc.y = hit_object->GetLocation().y;
 	//現在のステータスが死亡状態かどうか
-	if (now_state != State::Death)
+	if (now_state != State::Death && Ingame->GetNowState() == GameState::PLAYING)
 	{
 		Collision hit_col = hit_object->GetCollision();
 
@@ -230,7 +230,14 @@ void P_Ranged::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		break;
 	case State::Move:
-		velocity.x = BASIC_Ranged_SPEED + ((BASIC_Ranged_SPEED / 100) * (Ingame->GetSunLevel()));
+		if (Ingame->GetNowState() == GameState::PLAYING)
+		{
+			velocity.x = BASIC_Ranged_SPEED + ((BASIC_Ranged_SPEED / 100) * (Ingame->GetSunLevel()));
+		}
+		else
+		{
+			velocity.x = -BASIC_Ranged_SPEED - ((BASIC_Ranged_SPEED / 100) * (Ingame->GetSunLevel()));
+		}
 		image = animation[Anim_count + 23];
 		break;
 	case State::Attack:

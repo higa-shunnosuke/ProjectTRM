@@ -18,7 +18,8 @@ enum class GameState
 {
 	PLAYING,
 	BOSS_DEAD,
-	PLAYER_DEAD
+	PLAYER_DEAD,
+	GAMESTART
 };
 
 // インゲームシーン

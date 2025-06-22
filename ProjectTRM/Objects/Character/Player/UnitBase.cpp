@@ -104,6 +104,12 @@ void UnitBase::Update(float delta_second)
 			}
 		}
 
+		if (Ingame->GetNowState() != GameState::PLAYING)
+		{
+			now_state = State::Move;
+			flip_flag = false;
+		}
+
 
 		if (HP <= 0)
 		{
@@ -174,7 +180,7 @@ void UnitBase::OnHitCollision(GameObject* hit_object)
 void UnitBase::OnAreaDetection(GameObject* hit_object)
 {
 	//現在のステータスが死亡状態かどうか
-	if (now_state != State::Death)
+	if (now_state != State::Death && Ingame->GetNowState() == GameState::PLAYING)
 	{
 		Collision hit_col = hit_object->GetCollision();
 
@@ -258,7 +264,14 @@ void UnitBase::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		break;
 	case State::Move:
-		velocity.x = basic_speed + ((basic_speed / 100) * (Ingame->GetSunLevel()));
+		if (Ingame->GetNowState() == GameState::PLAYING)
+		{
+			velocity.x = basic_speed + ((basic_speed / 100) * (Ingame->GetSunLevel()));
+		}
+		else
+		{
+			velocity.x = -basic_speed - ((basic_speed / 100) * (Ingame->GetSunLevel()));
+		}
 		image = animation[Anim_count];
 		break;
 	case State::Attack:

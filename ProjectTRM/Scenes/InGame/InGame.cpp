@@ -244,17 +244,19 @@ eSceneType InGame::Update(const float& delta_second)
 	switch (state)
 	{
 	case GameState::PLAYING:
-		// リザルトシーンに遷移する
-		if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
-		{
-			return eSceneType::result;
-		}
 
 		// ユニット選択処理
 		UnitSelection();
 
 		// コスト管理処理
 		RegenerateCost();
+
+	case GameState::GAMESTART:
+		// リザルトシーンに遷移する
+		if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
+		{
+			return eSceneType::result;
+		}
 
 		break;
 	case GameState::PLAYER_DEAD:

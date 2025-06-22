@@ -42,13 +42,15 @@ void Oracle::Initialize()
 	collision.hitbox_size = Vector2D(200.0f, 200.0f);
 	z_layer = 1;
 
-	now_state = State::Idle;
+	now_state = State::Summon;
 
 	flip_flag = true;
 
 	summon_flag = false;
 
 	old_sun_level = 1;
+
+	velocity.x = -5.0f;
 
 	// HP初期化
 	HP = 100;
@@ -69,6 +71,10 @@ void Oracle::Update(float delta_second)
 	{
 		power_up = !power_up;
 		old_sun_level = Ingame->GetSunLevel();
+	}
+	if (now_state == State::Summon)
+	{
+		Movement(delta_second);
 	}
 
 	AnimationControl(delta_second);
@@ -109,14 +115,23 @@ void Oracle::Draw(const Vector2D camera_pos) const
 		DrawBoxAA(position.x - 50.0f, position.y - 150.0f, position.x + (50.0f - (100 - HP)), position.y - 135.0f, 0xFFFFFF, true);
 	}
 
-	DrawRotaGraphF(position.x - 15.0f, position.y - 25.0f,
-		1.5, 0.0, image, TRUE, flip_flag);
+	//スタート時と平常時の描画方法のすみわけ
+	if (now_state == State::Summon)
+	{
+		DrawRotaGraphF(move_location - 15.0f, position.y - 25.0f,
+			1.5, 0.0, image, TRUE, flip_flag);
+	}
+	else
+	{
+		DrawRotaGraphF(position.x - 15.0f, position.y - 25.0f,
+			1.5, 0.0, image, TRUE, flip_flag);
+	}
+
+	//太陽のレベルアップ時エフェクト描画
 	if (power_up)
 	{
 		DrawRotaGraph(position.x, position.y + 2.0f, 1.0, 0.0, effect_image, TRUE);
 	}
-
-
 
 }
 
@@ -182,12 +197,23 @@ void Oracle::HPControl(float Damage)
 // 移動処理
 void Oracle::Movement(float delta_second)
 {
-
+	// 移動の実行
+	move_location += velocity.x * 10 * delta_second;
+	if (move_location <= location.x + 15.0f)
+	{
+		now_state = State::Idle;
+	}
 }
 
 bool Oracle::GetDead()
 {
 	return JustDead;
+}
+
+void Oracle::SetLocation(const Vector2D& location)
+{
+	__super::SetLocation(location);
+	move_location = location.x + 150.0f;
 }
 
 // アニメーション制御処理
@@ -199,6 +225,10 @@ void Oracle::AnimationControl(float delta_second)
 		Anim_count = 0;		
 		switch (now_state)
 		{
+		case State::Summon:
+			animation = rm->GetImages("Resource/Images/Unit/Oracle/Oracle_Walk.png", 7, 7, 1, 128, 128);
+			anime_max_count = 7;
+			break;
 		case State::Idle:
 			animation = rm->GetImages("Resource/Images/Unit/Oracle/Oracle_Idle.png", 7, 7, 1, 128, 128);
 			anime_max_count = 7;
@@ -215,6 +245,7 @@ void Oracle::AnimationControl(float delta_second)
 	switch (now_state)
 	{
 	case Idle:
+	case Summon:
 		if (now_time - anime_time > std::chrono::milliseconds(100))
 		{
 			Anim_count++;
@@ -244,6 +275,7 @@ void Oracle::AnimationControl(float delta_second)
 	switch (now_state)
 	{
 	case Idle:
+	case Summon:
 		image = animation[Anim_count];
 		break;
 	case Death:

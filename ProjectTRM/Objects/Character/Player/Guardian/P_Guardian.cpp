@@ -177,7 +177,14 @@ void P_Guardian::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		break;
 	case State::Move:
-		velocity.x = BASIC_Guardian_SPEED + ((BASIC_Guardian_SPEED / 100) * (Ingame->GetSunLevel() - 1));
+		if (Ingame->GetNowState() == GameState::PLAYING)
+		{
+			velocity.x = BASIC_Guardian_SPEED + ((BASIC_Guardian_SPEED / 100) * (Ingame->GetSunLevel()));
+		}
+		else
+		{
+			velocity.x = -BASIC_Guardian_SPEED - ((BASIC_Guardian_SPEED / 100) * (Ingame->GetSunLevel()));
+		}
 		image = animation[Anim_count + 10];
 		break;
 	case State::Attack:
