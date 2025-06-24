@@ -113,7 +113,7 @@ void P_Ranged::OnAreaDetection(GameObject* hit_object)
 
 	target_loc.y = hit_object->GetLocation().y;
 	//現在のステータスが死亡状態かどうか
-	if (now_state != State::Death && Ingame->GetNowState() == GameState::PLAYING)
+	if (now_state != State::Death && Ingame->GetNowState() != GameState::BOSS_DEAD)
 	{
 		Collision hit_col = hit_object->GetCollision();
 
@@ -234,7 +234,7 @@ void P_Ranged::AnimationControl(float delta_second)
 		{
 			velocity.x = BASIC_Ranged_SPEED + ((BASIC_Ranged_SPEED / 100) * (Ingame->GetSunLevel()));
 		}
-		else
+		else if (Ingame->GetNowState() == GameState::BOSS_DEAD)
 		{
 			velocity.x = -BASIC_Ranged_SPEED - ((BASIC_Ranged_SPEED / 100) * (Ingame->GetSunLevel()));
 		}

@@ -162,15 +162,6 @@ void P_Tank::AnimationControl(float delta_second)
 			animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Unit_Walk.png", 9, 9, 1, 48, 32);
 			anim_max_count = 9;
 			break;
-		case State::Attack:
-			animation = rm->GetImages("Resource/Images/Unit/Tank/Tank_Attack.png", 4, 4, 1, 32, 32);
-			anim_max_count = 4;
-			if (Anim_count >= 2)
-			{
-				attack_flag = true;
-				now_state = State::Idle;
-			}
-			break;
 		case State::Damage:
 			PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
 			break;
@@ -209,7 +200,7 @@ void P_Tank::AnimationControl(float delta_second)
 		{
 			velocity.x = BASIC_Tank_SPEED + ((BASIC_Tank_SPEED / 100) * (Ingame->GetSunLevel()));
 		}
-		else
+		else if (Ingame->GetNowState() == GameState::BOSS_DEAD)
 		{
 			velocity.x = -BASIC_Tank_SPEED - ((BASIC_Tank_SPEED / 100) * (Ingame->GetSunLevel()));
 		}

@@ -73,6 +73,8 @@ public:
 	/// <param name="location">•ÏX‚µ‚½‚¢ˆÊ’uî•ñ</param>
 	void SetLocation(const Vector2D& location) override;
 
+	State GetNowState() const;
+
 private:
 	/// <summary>
 	/// UŒ‚ˆ—

@@ -160,6 +160,9 @@ void InGame::Initialize()
 	camera->Initialize();
 	camera->SetPlayer(player);
 
+	//ステート設定
+	state = GameState::GAMESTART;
+
 	// カーソルの初期化
 	cursor = 0;
 
@@ -256,6 +259,10 @@ eSceneType InGame::Update(const float& delta_second)
 		if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
 		{
 			return eSceneType::result;
+		}
+		if (player->GetNowState() == State::Idle)
+		{
+			state = GameState::PLAYING;
 		}
 
 		break;
@@ -623,6 +630,11 @@ void InGame::Draw() const
 
 	}
 	break;
+	case GameState::GAMESTART:
+		DrawGraph(D_WIN_MAX_X / 2 - 700 + offset, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
+		__super::Draw();
+		break;
+
 	case GameState::PLAYER_DEAD:
 		DrawGraph(D_WIN_MAX_X / 2 - 700 + offset, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha / 2);
@@ -901,29 +913,19 @@ const void InGame::LoadImages() const
 
 
 	//歩行アニメーション
-	rm->GetImages("Resource/Images/Unit/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
-	rm->GetImages("Resource/Images/Unit/Tank/Tank_Walk.png", 4, 4, 1, 32, 32);
-	rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32);
-	rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Walk.png", 3, 3, 1, 1024, 1024);
-	rm->GetImages("Resource/Images/Enemy/Melee/Melee_Walk.png", 4, 4, 1, 32, 32);
-	rm->GetImages("Resource/Images/Enemy/Tank/Tank_Walk.png", 4, 4, 1, 32, 32);
-	rm->GetImages("Resource/Images/Enemy/Ranged/Ranged_Walk.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Walk.png", 10, 10, 1, 100, 55);
+	rm->GetImages("Resource/Images/Unit/Tank/Tank_Unit_Walk.png", 9, 9, 1, 48, 32);
+	rm->GetImages("Resource/Images/Unit/Ranged/Archer_All.png", 55, 11, 5, 64, 64);
+	rm->GetImages("Resource/Images/Unit/Guardian/Guardian_All.png", 121, 11, 11, 96, 96);
 
 	//攻撃アニメーション
-	rm->GetImages("Resource/Images/Unit/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
-	rm->GetImages("Resource/Images/Unit/Tank/Tank_Attack.png", 4, 4, 1, 32, 32);
-	rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Attack.png", 4, 4, 1, 32, 32);
-	rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Attack.png", 3, 3, 1, 1024, 1024);
-	rm->GetImages("Resource/Images/Enemy/Melee/Melee_Attack.png", 4, 4, 1, 32, 32);
-	rm->GetImages("Resource/Images/Enemy/Tank/Tank_Attack.png", 4, 4, 1, 32, 32);
-	rm->GetImages("Resource/Images/Enemy/Ranged/Ranged_Attack.png", 4, 4, 1, 32, 32);
+	rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Attack.png", 9, 9, 1, 100, 55);
 
 	//死亡アニメーション
-	rm->GetImages("Resource/Images/Unit/Melee/Melee_Down.png", 3, 3, 1, 32, 32);
-	rm->GetImages("Resource/Images/Unit/Tank/Tank_Down.png", 3, 3, 1, 32, 32);
-	rm->GetImages("Resource/Images/Unit/Ranged/Ranged_Down.png", 3, 3, 1, 32, 32);
-	rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Down.png", 3, 3, 1, 1024, 1024);
+	rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Death.png", 9, 9, 1, 100, 55);
+	rm->GetImages("Resource/Images/Unit/Tank/Tank_Unit_Down.png", 8, 8, 1, 48, 32);
 
-
-
+	//待機アニメーション
+	rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Idle.png", 8, 8, 1, 100, 55);
+	rm->GetImages("Resource/Images/Unit/Tank/Tank_Unit_Idle.png", 10, 10, 1, 48, 32);
 }

@@ -58,6 +58,7 @@ void Heretic::Initialize()
 
 	animation = rm->GetImages("Resource/Images/Enemy/Heretic/Idle.png", 8, 8, 1, 250, 250);
 	DeadImage = rm->GetImages("Resource/Images/Enemy/Heretic/Death.png", 7, 7, 1, 250, 250);
+	AppearImage = rm->GetImages("Resource/Images/Enemy/Heretic/Attack2.png", 8, 8, 1, 250, 250);
 	EffectImage = rm->GetImages("Resource/Images/Effect/Gravity-Sheet.png", 20, 4, 5, 96, 80);
 	image = animation[0];
 	SoptLight = rm->GetImages("Resource/Images/Enemy/Heretic/SpotLight.png")[0];
@@ -70,6 +71,8 @@ void Heretic::Initialize()
 	collision.collision_size = Vector2D(60.0f, 120.0f);
 	collision.hitbox_size = Vector2D(400.0f, 200.0f);
 	z_layer = 1;
+
+	nowsta = State::Summon;
 
 	// HP初期化
 	HP = 500.0f;
@@ -110,7 +113,8 @@ void Heretic::Update(float delta_second)
 		image = DeadImage[Anim_count];
 		break;
 
-	default:
+	case Idle:
+
 		if (ProjectConfig::DEBUG)
 		{
 			if (CheckHitKey(KEY_INPUT_5))
@@ -161,13 +165,12 @@ void Heretic::Update(float delta_second)
 		}
 
 #endif
-
 		if (summon_flag)
 		{
 			summon_effect = true;
 		}
 
-		 now_time = std::chrono::steady_clock::now();
+		now_time = std::chrono::steady_clock::now();
 
 		if (now_time - prev_time > std::chrono::milliseconds(500))
 		{
@@ -190,6 +193,7 @@ void Heretic::Update(float delta_second)
 			}
 
 		}
+
 		if (now_time - anime_time > std::chrono::milliseconds(100))
 		{
 			Anim_count++;
@@ -203,6 +207,29 @@ void Heretic::Update(float delta_second)
 
 		// 待機アニメーション
 		image = animation[Anim_count];
+		break;
+
+	default:
+		 now_time = std::chrono::steady_clock::now();
+
+		 if (now_time - anime_time > std::chrono::milliseconds(200))
+		 {
+			 Anim_count++;
+			 anime_time = std::chrono::steady_clock::now();
+
+			 if (Anim_count >= 8)
+			 {
+				 Anim_count = 0;
+			 }
+		 }
+
+		 // 待機アニメーション
+		 image = AppearImage[Anim_count];
+
+		 if (Ingame->GetNowState() != GameState::GAMESTART)
+		 {
+			 nowsta = State::Idle;
+		 }
 
 		break;
 	}

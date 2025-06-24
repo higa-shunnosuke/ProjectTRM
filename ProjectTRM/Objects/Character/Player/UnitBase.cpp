@@ -180,7 +180,7 @@ void UnitBase::OnHitCollision(GameObject* hit_object)
 void UnitBase::OnAreaDetection(GameObject* hit_object)
 {
 	//現在のステータスが死亡状態かどうか
-	if (now_state != State::Death && Ingame->GetNowState() == GameState::PLAYING)
+	if (now_state != State::Death && Ingame->GetNowState() != GameState::BOSS_DEAD)
 	{
 		Collision hit_col = hit_object->GetCollision();
 
@@ -268,7 +268,7 @@ void UnitBase::AnimationControl(float delta_second)
 		{
 			velocity.x = basic_speed + ((basic_speed / 100) * (Ingame->GetSunLevel()));
 		}
-		else
+		else if(Ingame->GetNowState() == GameState::BOSS_DEAD)
 		{
 			velocity.x = -basic_speed - ((basic_speed / 100) * (Ingame->GetSunLevel()));
 		}

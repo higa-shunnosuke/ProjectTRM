@@ -41,6 +41,7 @@ private:
 	std::vector<int> EffectImage;
 	int EffectCount;
 	std::vector<int> DeadImage;
+	std::vector<int> AppearImage;
 	int SoptLight;
 	int LightStrong = 0 ;
 	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数

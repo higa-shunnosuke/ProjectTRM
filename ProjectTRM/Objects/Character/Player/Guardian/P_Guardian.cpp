@@ -181,7 +181,7 @@ void P_Guardian::AnimationControl(float delta_second)
 		{
 			velocity.x = BASIC_Guardian_SPEED + ((BASIC_Guardian_SPEED / 100) * (Ingame->GetSunLevel()));
 		}
-		else
+		else if (Ingame->GetNowState() == GameState::BOSS_DEAD)
 		{
 			velocity.x = -BASIC_Guardian_SPEED - ((BASIC_Guardian_SPEED / 100) * (Ingame->GetSunLevel()));
 		}

@@ -213,7 +213,12 @@ bool Oracle::GetDead()
 void Oracle::SetLocation(const Vector2D& location)
 {
 	__super::SetLocation(location);
-	move_location = location.x + 150.0f;
+	move_location = location.x + 100.0f;
+}
+
+State Oracle::GetNowState() const
+{
+	return now_state;
 }
 
 // アニメーション制御処理
