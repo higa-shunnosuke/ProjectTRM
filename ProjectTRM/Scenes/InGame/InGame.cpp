@@ -690,6 +690,13 @@ void InGame::Draw() const
 	// 異端者HP表示
 	DrawBoxAA(E_position.x - 50.0f, E_position.y - 150.0f, E_position.x + (50.0f - (100 - ((double)enemy->GetHP() / 500) * 100)), E_position.y - 135.0f, 0xFFFFFF, true);
 
+	// ポーズクラスのポインタ
+	Pause* pause = Pause::GetInstance();
+
+	if (pause->GetPause())
+	{
+		pause->Draw();
+	}
 }
 
 // 終了処理

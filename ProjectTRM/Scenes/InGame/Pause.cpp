@@ -1,4 +1,5 @@
 #include "Pause.h"
+#include "Dxlib.h"
 
 // コンストラクタ
 Pause::Pause():
@@ -28,7 +29,9 @@ void Pause::Update(float delta_second)
 // 描画処理
 void Pause::Draw() const
 {
-
+	SetFontSize(240);
+	DrawFormatString(350, 250, 0xffffff, "PAUSE");
+	SetFontSize(32);
 }
 
 // ポーズフラグ設定処理
