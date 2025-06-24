@@ -48,7 +48,7 @@ void UnitBase::Initialize()
 	//UŒ‚—Í
 	Damage = basic_power;
 
-	old_sun_level = 1;
+	
 
 	object = GameObjectManager::GetInstance();
 
@@ -69,6 +69,11 @@ void UnitBase::Update(float delta_second)
 		{
 			HP = 0;
 		}
+	}
+
+	if (now_state == State::Summon)
+	{
+		old_sun_level = Ingame->GetSunLevel();
 	}
 
 	if (now_state != State::Death)
@@ -141,7 +146,7 @@ void UnitBase::Draw(const Vector2D camera_pos) const
 	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 	position.y += z_layer * 2;
 
-	if (power_up)
+	if (power_up  && now_state != State::Summon)
 	{
 		DrawRotaGraph(position.x, position.y + 2.0f, 1.0, 0.0, effect_image, TRUE);
 	}
@@ -316,7 +321,7 @@ void UnitBase::EffectControl(float delta_second)
 		switch (now_state)
 		{
 		case State::Summon:
-			Effect = rm->GetImages("Resource/Images/Effect/Magic_Remove.png", 10, 5, 2, 192, 192);
+			Effect = rm->GetImages("Resource/Images/Effect/magic_circle.png", 10, 5, 2, 192, 65);
 			effect_max_count = 10;
 			break;
 		case State::Death:
@@ -373,7 +378,7 @@ void UnitBase::EffectControl(float delta_second)
 	default:
 		break;
 	}
-	if (power_up)
+	if (power_up )
 	{
 		effect_image = Effect[Effect_count];
 	}

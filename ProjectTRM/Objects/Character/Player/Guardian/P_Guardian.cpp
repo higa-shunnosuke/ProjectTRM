@@ -59,7 +59,7 @@ void P_Guardian::Draw(const Vector2D camera_pos) const
 	//¢Š«w•`‰æ
 	if (now_state == State::Summon)
 	{
-		DrawRotaGraphF(position.x, position.y + collision.collision_size.y / 3, 0.5, 0.0, effect_image, TRUE, flip_flag);
+		DrawRotaGraphF(position.x, position.y + collision.collision_size.y / 2, 0.5, 0.0, effect_image, TRUE, flip_flag);
 	}
 
 	// ‹ßÚƒ†ƒjƒbƒg‚Ì•`‰æ

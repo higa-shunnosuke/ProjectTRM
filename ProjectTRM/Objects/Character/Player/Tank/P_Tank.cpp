@@ -64,7 +64,7 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 	//è¢ä´êwï`âÊ
 	if (now_state == State::Summon)
 	{
-		DrawRotaGraphF(position.x + collision.collision_size.y / 3, position.y + collision.collision_size.y / 3, 0.5, 0.0, effect_image, TRUE, flip_flag);
+		DrawRotaGraphF(position.x + collision.collision_size.y / 3, position.y + collision.collision_size.y / 2, 0.5, 0.0, effect_image, TRUE, flip_flag);
 	}
 
 	// ìîéÁÇÃï`âÊ
