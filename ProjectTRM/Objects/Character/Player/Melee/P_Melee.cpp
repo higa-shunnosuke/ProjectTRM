@@ -76,7 +76,7 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 	if (Anim_count <= anim_max_count)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawRotaGraphF(position.x, position.y, 1.5, 0.0, image, TRUE, flip_flag);
+		DrawRotaGraphF(position.x, position.y - 7.0f, 2.0, 0.0, image, TRUE, flip_flag);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 

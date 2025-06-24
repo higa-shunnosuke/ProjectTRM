@@ -72,7 +72,7 @@ void P_Tank::Draw(const Vector2D camera_pos) const
 	if (Anim_count <= anim_max_count - 1)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE, flip_flag);
+		DrawRotaGraphF(position.x, position.y, 2.5, 0.0, image, TRUE, flip_flag);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 

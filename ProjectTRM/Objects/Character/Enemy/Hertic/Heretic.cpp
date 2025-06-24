@@ -664,10 +664,10 @@ void Heretic::HPControl(float Damage)
 		nowsta = State::Death;
 		image = DeadImage[0];
 	}
-	else
-	{
-	nowsta = State::Damage;
-	}
+	//else
+	//{
+	//nowsta = State::Damage;
+	//}
 
 }
 
