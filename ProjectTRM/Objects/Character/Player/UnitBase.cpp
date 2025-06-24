@@ -104,7 +104,7 @@ void UnitBase::Update(float delta_second)
 			}
 		}
 
-		if (Ingame->GetNowState() != GameState::PLAYING)
+		if (Ingame->GetNowState() == GameState::BOSS_DEAD)
 		{
 			now_state = State::Move;
 			flip_flag = false;

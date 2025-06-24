@@ -196,13 +196,13 @@ void P_Tank::AnimationControl(float delta_second)
 		image = animation[Anim_count];
 		break;
 	case State::Move:
-		if (Ingame->GetNowState() == GameState::PLAYING)
-		{
-			velocity.x = BASIC_Tank_SPEED + ((BASIC_Tank_SPEED / 100) * (Ingame->GetSunLevel()));
-		}
-		else if (Ingame->GetNowState() == GameState::BOSS_DEAD)
+		if (Ingame->GetNowState() == GameState::BOSS_DEAD)
 		{
 			velocity.x = -BASIC_Tank_SPEED - ((BASIC_Tank_SPEED / 100) * (Ingame->GetSunLevel()));
+		}
+		else
+		{
+			velocity.x = BASIC_Tank_SPEED + ((BASIC_Tank_SPEED / 100) * (Ingame->GetSunLevel()));
 		}
 		image = animation[Anim_count];
 		break;
