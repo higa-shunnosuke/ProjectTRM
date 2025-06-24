@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include <fstream>
 
+#include "Pause.h"
 #include "../../Utility/Camera/Camera.h"
 
 #include "../../Objects/Character/Player/Melee/P_Melee.h"
@@ -175,135 +176,151 @@ void InGame::Initialize()
 // 更新処理
 eSceneType InGame::Update(const float& delta_second)
 {
-	// ユニットとエネミーのカウント処理
-	int Pcount_sum = 0;
-	int Ecount_sum = 0;
-
-	Pcount_sum = (int)P_Tank::GetCount() + (int)P_Melee::GetCount() + (int)P_Ranged::GetCount() + (int)P_Guardian::GetCount() ;
-	Ecount_sum = (int)E_Tank::GetCount() + (int)E_Melee::GetCount() + (int)E_Ranged::GetCount()	;
-
-	if (max_unit < Pcount_sum)
-	{
-		make_unit +=  Pcount_sum - max_unit ;
-	}
-
-	if(Pcount_sum < max_unit)
-	{
-		dead_unit -= max_unit - Pcount_sum;
-	}
-	max_unit = Pcount_sum;
-
-	if (Ecount_sum < max_enemy)
-	{
-		dead_enemy = max_enemy - Ecount_sum;
-	}
-	max_enemy = Ecount_sum;
-
-	// Zキーでプレイヤーの勝利（デバック用）
-	if (CheckHitKey(KEY_INPUT_Z))
-	{
-		IsPlayerWin(false);
-		return eSceneType::result;
-	}
-
-	// 勝敗判定処理
-	if (enemy->GetHP() <= 0 || player->GetHP() <= 0)
-	{
-		if (player->GetHP() <= 0)
-		{
-			if (!CheckSoundMem(bgmHandle[4]))
-			{
-				ChangeVolumeSoundMem(150, bgmHandle[4]);
-				PlaySoundMem(bgmHandle[4], DX_PLAYTYPE_BACK);
-			}
-			IsPlayerWin(false);
-			state = GameState::PLAYER_DEAD;
-		}
-		else
-		{
-			if (!CheckSoundMem(bgmHandle[3]))
-			{
-				ChangeVolumeSoundMem(100, bgmHandle[3]);
-				PlaySoundMem(bgmHandle[3], DX_PLAYTYPE_BACK);
-			}
-			IsPlayerWin(true);
-			state = GameState::BOSS_DEAD;
-		}
-		if (alpha < 510)
-		{
-			alpha++;
-		}
-	}
-
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
+	// ポーズクラスのポインタ
+	Pause* pause = Pause::GetInstance();
 
-	//カメラの情報を取得
-	Camera* camera = Camera::GetInstance();
-
-	//カメラの更新
-	camera->Update();
-
-	switch (state)
+	// ポーズの切り替え
+	if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed)
 	{
-	case GameState::PLAYING:
+		pause->SetPause(!pause->GetPause());
+	}
 
-		// ユニット選択処理
-		UnitSelection();
+	if (pause->GetPause())
+	{
+		return GetNowSceneType();
+	}
+	else
+	{
 
-		// コスト管理処理
-		RegenerateCost();
+		// ユニットとエネミーのカウント処理
+		int Pcount_sum = 0;
+		int Ecount_sum = 0;
 
-	case GameState::GAMESTART:
-		// リザルトシーンに遷移する
-		if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
+		Pcount_sum = (int)P_Tank::GetCount() + (int)P_Melee::GetCount() + (int)P_Ranged::GetCount() + (int)P_Guardian::GetCount();
+		Ecount_sum = (int)E_Tank::GetCount() + (int)E_Melee::GetCount() + (int)E_Ranged::GetCount();
+
+		if (max_unit < Pcount_sum)
 		{
+			make_unit += Pcount_sum - max_unit;
+		}
+
+		if (Pcount_sum < max_unit)
+		{
+			dead_unit -= max_unit - Pcount_sum;
+		}
+		max_unit = Pcount_sum;
+
+		if (Ecount_sum < max_enemy)
+		{
+			dead_enemy = max_enemy - Ecount_sum;
+		}
+		max_enemy = Ecount_sum;
+
+		// Zキーでプレイヤーの勝利（デバック用）
+		if (CheckHitKey(KEY_INPUT_Z))
+		{
+			IsPlayerWin(false);
 			return eSceneType::result;
 		}
-		if (player->GetNowState() == State::Idle)
-		{
-			state = GameState::PLAYING;
-		}
 
-		break;
-	case GameState::PLAYER_DEAD:
-		if (player->GetDead())
+		// 勝敗判定処理
+		if (enemy->GetHP() <= 0 || player->GetHP() <= 0)
 		{
-			return eSceneType::result;
-		}
-		break;
-
-	case GameState::BOSS_DEAD:
-		// オブジェクトマネージャーのポインタ
-		GameObjectManager* object = GameObjectManager::GetInstance();
-		// オブジェクトリストを取得
-		std::vector<GameObject*> objects_list = object->GetObjectsList();
-
-		// 敵削除
-		if (!objects_list.empty())
-		{
-			for (GameObject* obj : objects_list)
+			if (player->GetHP() <= 0)
 			{
-				// エネミー以外は無視する
-				if (obj->GetCollision().object_type == eObjectType::Enemy &&
-				// 異端者も無視する
-					obj != enemy)
+				if (!CheckSoundMem(bgmHandle[4]))
 				{
-					obj->Finalize();
+					ChangeVolumeSoundMem(150, bgmHandle[4]);
+					PlaySoundMem(bgmHandle[4], DX_PLAYTYPE_BACK);
 				}
+				IsPlayerWin(false);
+				state = GameState::PLAYER_DEAD;
+			}
+			else
+			{
+				if (!CheckSoundMem(bgmHandle[3]))
+				{
+					ChangeVolumeSoundMem(100, bgmHandle[3]);
+					PlaySoundMem(bgmHandle[3], DX_PLAYTYPE_BACK);
+				}
+				IsPlayerWin(true);
+				state = GameState::BOSS_DEAD;
+			}
+			if (alpha < 510)
+			{
+				alpha++;
 			}
 		}
 
-		camera->SetCameraPos(enemy->GetLocation());
-		if (enemy->GetDead())
-		{
-			return eSceneType::result;
-		}
-		break;
-	}
+		//カメラの情報を取得
+		Camera* camera = Camera::GetInstance();
 
-	// 親クラスの更新処理を呼び出す
-	return __super::Update(delta_second);
+		//カメラの更新
+		camera->Update();
+
+		switch (state)
+		{
+		case GameState::PLAYING:
+
+			// ユニット選択処理
+			UnitSelection();
+
+			// コスト管理処理
+			RegenerateCost();
+
+		case GameState::GAMESTART:
+			// リザルトシーンに遷移する
+			if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
+			{
+				return eSceneType::result;
+			}
+			if (player->GetNowState() == State::Idle)
+			{
+				state = GameState::PLAYING;
+			}
+
+			break;
+		case GameState::PLAYER_DEAD:
+			if (player->GetDead())
+			{
+				return eSceneType::result;
+			}
+			break;
+
+		case GameState::BOSS_DEAD:
+			// オブジェクトマネージャーのポインタ
+			GameObjectManager* object = GameObjectManager::GetInstance();
+			// オブジェクトリストを取得
+			std::vector<GameObject*> objects_list = object->GetObjectsList();
+
+			// 敵削除
+			if (!objects_list.empty())
+			{
+				for (GameObject* obj : objects_list)
+				{
+					// エネミー以外は無視する
+					if (obj->GetCollision().object_type == eObjectType::Enemy &&
+						// 異端者も無視する
+						obj != enemy)
+					{
+						obj->Finalize();
+					}
+				}
+			}
+
+			camera->SetCameraPos(enemy->GetLocation());
+			if (enemy->GetDead())
+			{
+				return eSceneType::result;
+			}
+			break;
+		}
+
+		// 親クラスの更新処理を呼び出す
+		return __super::Update(delta_second);
+	}
 }
 
 // 描画処理
@@ -900,32 +917,4 @@ void InGame::RegenerateCost()
 
 		prev_time = std::chrono::steady_clock::now();
 	}
-}
-
-const void InGame::LoadImages() const
-{
-	//リソースマネージャーのインスタンス取得
-	ResourceManager* rm = ResourceManager::GetInstance();
-
-	//画像読込み
-	// 単品
-	rm->GetImages("Resource/Images/Unit/Ranged/Arrow.png", 1, 1, 1, 32, 32);
-
-
-	//歩行アニメーション
-	rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Walk.png", 10, 10, 1, 100, 55);
-	rm->GetImages("Resource/Images/Unit/Tank/Tank_Unit_Walk.png", 9, 9, 1, 48, 32);
-	rm->GetImages("Resource/Images/Unit/Ranged/Archer_All.png", 55, 11, 5, 64, 64);
-	rm->GetImages("Resource/Images/Unit/Guardian/Guardian_All.png", 121, 11, 11, 96, 96);
-
-	//攻撃アニメーション
-	rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Attack.png", 9, 9, 1, 100, 55);
-
-	//死亡アニメーション
-	rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Death.png", 9, 9, 1, 100, 55);
-	rm->GetImages("Resource/Images/Unit/Tank/Tank_Unit_Down.png", 8, 8, 1, 48, 32);
-
-	//待機アニメーション
-	rm->GetImages("Resource/Images/Unit/Melee/Unit_Melee_Idle.png", 8, 8, 1, 100, 55);
-	rm->GetImages("Resource/Images/Unit/Tank/Tank_Unit_Idle.png", 10, 10, 1, 48, 32);
 }

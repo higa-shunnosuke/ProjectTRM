@@ -33,8 +33,7 @@ void SceneManager::Update(float delta_second)
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
 	// デバックモードの切り替え
-	if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Pressed ||
-		input->GetKeyState(KEY_INPUT_TAB) == eInputState::Pressed)
+	if (input->GetKeyState(KEY_INPUT_TAB) == eInputState::Pressed)
 	{
 		ProjectConfig::DEBUG = !ProjectConfig::DEBUG;
 	}

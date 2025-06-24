@@ -135,6 +135,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
+    <ClCompile Include="Scenes\InGame\Pause.cpp" />
     <ClCompile Include="Scenes\Loading\Loading.cpp" />
     <ClCompile Include="Objects\Character\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Objects\Character\Player\Bonfire\Bonfire.cpp" />
@@ -170,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Scenes\InGame\Pause.h" />
     <ClInclude Include="Scenes\Loading\Loading.h" />
     <ClInclude Include="Objects\Character\Enemy\EnemyBase.h" />
     <ClInclude Include="Objects\Character\Player\Bonfire\Bonfire.h" />

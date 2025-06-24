@@ -34,7 +34,6 @@ private:
 	std::chrono::seconds					cooldown[3];		// 召喚クールダウン
 	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数
 	int SunImages[10];
-	int Sun_Images;
 	int BackGroundImage[3];
 	int Text_Images[2];				//勝敗演の文字画像
 	int sound;
@@ -109,11 +108,6 @@ private:
 	//void FirstStage();
 
 	/// <summary>
-	/// ステージの生成処理
-	/// </summary>
-	void LoadStage();
-
-	/// <summary>
 	///	ユニット追召喚
 	/// </summary>
 	void UnitSelection();
@@ -122,10 +116,4 @@ private:
 	///	コスト管理処理
 	/// </summary>
 	void RegenerateCost();
-
-	/// <summary>
-	/// 画像読込み処理
-	/// </summary>
-	/// <returns></returns>
-	const void LoadImages() const;
 };

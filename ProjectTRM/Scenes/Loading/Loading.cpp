@@ -20,7 +20,7 @@ Loading::~Loading()
 void Loading::Initialize()
 {
 	count = 0;
-	size = load_list.size();
+	size = (int)load_list.size();
 	is_complete = false;
 }
 
