@@ -118,19 +118,19 @@ void Oracle::Draw(const Vector2D camera_pos) const
 	//スタート時と平常時の描画方法のすみわけ
 	if (now_state == State::Summon)
 	{
-		DrawRotaGraphF(move_location - 15.0f, position.y - 25.0f,
+		DrawRotaGraphF(move_location - 15.0f, position.y - 30.0,
 			1.5, 0.0, image, TRUE, flip_flag);
 	}
 	else
 	{
-		DrawRotaGraphF(position.x - 15.0f, position.y - 25.0f,
+		DrawRotaGraphF(position.x - 15.0f, position.y - 30.0f,
 			1.5, 0.0, image, TRUE, flip_flag);
 	}
 
 	//太陽のレベルアップ時エフェクト描画
 	if (power_up)
 	{
-		DrawRotaGraph(position.x, position.y + 2.0f, 1.0, 0.0, effect_image, TRUE);
+		DrawRotaGraph(position.x, position.y + 15.0f, 1.0, 0.0, effect_image, TRUE);
 	}
 
 }
@@ -190,6 +190,7 @@ void Oracle::HPControl(float Damage)
 	{
 		now_state = State::Death;
 		this->HP = 0.0f;
+		z_layer = 10;
 	}
 
 }
