@@ -12,7 +12,9 @@ Oracle::Oracle() :
 	power_up(false),
 	effect_image(),
 	anime_max_count(),
-	JustDead(false)
+	JustDead(false),
+	move_location(0.0f),
+	sounds()
 {
 
 }
@@ -30,6 +32,7 @@ void Oracle::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	EffectImage = rm->GetImages("Resource/Images/Effect/Unit/sprite-sheet.png", 15, 5, 3, 128, 128);
 	animation = rm->GetImages("Resource/Images/Unit/Oracle/Oracle_Idle.png",7,7,1,128,128);
+	sounds = rm->GetSounds("Resource/Sounds/Ingame/SummonAllies.mp3");
 	anime_max_count = 7;
 
 	is_mobility = false;
@@ -184,7 +187,8 @@ void Oracle::HPControl(float Damage)
 	{
 
 			summon_flag = true;
-	
+			// ¢Š«SEÄ¶
+			PlaySoundMem(sounds, DX_PLAYTYPE_BACK);
 			object->CreateObject<P_Guardian>(Vector2D(location.x, location.y + 15.0f))->SetInGamePoint(Ingame);
 	}
 

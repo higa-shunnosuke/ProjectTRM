@@ -19,6 +19,7 @@ private:
 	int anime_max_count;
 	float move_location;
 	std::chrono::steady_clock::time_point	anime_time;			// アニメーション加算用変数
+	int sounds;
 
 
 public:
