@@ -89,8 +89,17 @@ void Oracle::Update(float delta_second)
 // 描画処理
 void Oracle::Draw(const Vector2D camera_pos) const
 {
-	Vector2D position = this->GetLocation();
-	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
+	Vector2D position;
+	if (now_state == State::Summon)
+	{
+		position = Vector2D(move_location,this->GetLocation().y);
+		position.x -= camera_pos.x - D_WIN_MAX_X / 2;
+	}
+	else
+	{
+		position = this->GetLocation();
+		position.x -= camera_pos.x - D_WIN_MAX_X / 2;
+	}
 
 	if (ProjectConfig::DEBUG)
 	{
@@ -110,22 +119,15 @@ void Oracle::Draw(const Vector2D camera_pos) const
 	}
 
 
-	if (now_state != State::Death)
+	if (now_state != State::Death && now_state != State::Summon)
 	{
 		DrawBoxAA(position.x - 50.0f, position.y - 150.0f, position.x + (50.0f - (100 - HP)), position.y - 135.0f, 0xFFFFFF, true);
 	}
 
-	//スタート時と平常時の描画方法のすみわけ
-	if (now_state == State::Summon)
-	{
-		DrawRotaGraphF(move_location - 15.0f, position.y - 30.0,
-			1.5, 0.0, image, TRUE, flip_flag);
-	}
-	else
-	{
-		DrawRotaGraphF(position.x - 15.0f, position.y - 30.0f,
-			1.5, 0.0, image, TRUE, flip_flag);
-	}
+
+	DrawRotaGraphF(position.x - 15.0f, position.y - 30.0f,
+		1.5, 0.0, image, TRUE, flip_flag);
+	
 
 	//太陽のレベルアップ時エフェクト描画
 	if (power_up)
