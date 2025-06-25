@@ -191,14 +191,14 @@ eSceneType Result::Update(const float& delta_second)
 			{
 				PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
 				isDecision = true;
-				nextScene = eSceneType::title;
+				nextScene = eSceneType::stage_select;
 				/*return eSceneType::title;*/
 			}
 			else if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
 			{
 				PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
 				isDecision = true;
-				nextScene = eSceneType::title;
+				nextScene = eSceneType::stage_select;
 				/*return eSceneType::title;*/
 			}
 		}
@@ -320,20 +320,21 @@ void Result::Draw() const
 		{
 			case 1:
 			{
-				DrawCircle(480, 566, 10, 0xffffff);
+				DrawString(500, 550, ": Title", 0xfff00f);
 				if (show != true)
 				{
-					DrawString(500, 550, ": Title", 0xffffff);
+					DrawCircle(480, 566, 10, 0xffffff);
+
 				}
 				DrawString(500, 500, ": Stage Select", 0xffffff);
 			}
 			break;
 			case 2:
 			{
-				DrawCircle(480, 516, 10, 0xffffff);
+				DrawString(500, 500, ": Stage Select", 0xfff00f);
 				if (show != true)
 				{
-					DrawString(500, 500, ": Stage Select", 0xffffff);
+					DrawCircle(480, 516, 10, 0xffffff);
 				}
 				DrawString(500, 550, ": Title", 0xffffff);
 			}
@@ -356,28 +357,28 @@ void Result::Draw() const
 		{
 		case 1:
 		{
-			DrawCircle(480, 566, 10, 0xffffff);
+			DrawString(500, 550, ": Stage Select", 0xfff00f);
 			if (show != true)
 			{
-				DrawString(500, 550, ": Title", 0xffffff);
+				DrawCircle(480, 566, 10, 0xffffff);
 			}
 			DrawString(500, 500, ": Restart", 0xffffff);
 		}
 		break;
 		case 2:
 		{
-			DrawCircle(480, 516, 10, 0xffffff);
+			DrawString(500, 500, ": Restart", 0xfff00f);
 			if (show != true)
 			{
-				DrawString(500, 500, ": Restart", 0xffffff);
+				DrawCircle(480, 516, 10, 0xffffff);
 			}
-			DrawString(500, 550, ": Title", 0xffffff);
+			DrawString(500, 550, ": Stage Select", 0xffffff);
 		}
 		break;
 		default:
 		{
 			DrawString(500, 500, ": Restart", 0xffffff);
-			DrawString(500, 550, ": Title", 0xffffff);
+			DrawString(500, 550, ": Stage Select", 0xffffff);
 		}
 		break;
 		}

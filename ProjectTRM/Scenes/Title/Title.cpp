@@ -27,7 +27,7 @@ void Title::Initialize()
 
 	BGM = rm->GetSounds("Resource/Sounds/Title/BGM/OP.mp3");
 	DecisionSE = rm->GetSounds("Resource/Sounds/Decision.mp3");
-
+	Y = D_WIN_MAX_Y;
 	Anim_flame = 0;
 	Anim_count = 0;
 
@@ -70,8 +70,8 @@ eSceneType Title::Update(const float& delta_second)
 	}
 	break;
 	case USEING:
-		Y++;
-		if (Y == D_WIN_MAX_Y)
+		Y--;
+		if (Y == 450)
 		{
 			State = TitleState::SELECTED;
 		}
@@ -175,12 +175,15 @@ void Title::Draw() const
 		DrawBox(0, Y, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
 		break;
 	case SELECTED:
-			DrawBox(0, 500, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
+			DrawBox(0, 450, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
 			//DrawBox(0, 500, D_WIN_MAX_X, D_WIN_MAX_Y, 0xffffff, 0);
-			DrawExtendGraphF(300, 450 + Selected * 50,450,550 + Selected * 50, SellectImage[Anim_count], false);
+			DrawExtendGraphF(300, 450 + Selected * 64,450,582 + Selected * 64, SellectImage[Anim_count], false);
 
-			DrawString(415, 481, "Game Start", 0xffffff);
-			DrawString(415, 481 + 50, "Game End", 0xffffff);
+			SetFontSize(64);
+			DrawString(415, 481, "Game Start", 0xff0000);
+			DrawString(415, 481 + 64, "Game End", 0xff0000);
+			SetFontSize(32);
+
 		break;
 	case FINAL:
 		break;

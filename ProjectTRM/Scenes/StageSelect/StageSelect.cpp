@@ -18,6 +18,15 @@ void StageSelect::Initialize()
 	// 親クラスの初期化処理を呼び出す
 	__super::Initialize();
 
+	if (StageNumber != NULL)
+	{
+		SerectStage = StageNumber;
+	}
+	else
+	{
+		SerectStage = 1;
+	}
+
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 

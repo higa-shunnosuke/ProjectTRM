@@ -274,26 +274,8 @@ void SceneManager::ChangeScene(eSceneType next_type)
 		throw ("シーンが生成できませんでした\n");
 	}
 
-	/*--------------------別関数を作ってほしい--------------------*/
-	// リザルトへの値渡し
-	if (next_scene != nullptr && current_scene != nullptr)
-	{
-		next_scene->win_flg = current_scene->win_flg;
-		next_scene->StageNumber = current_scene->StageNumber;
-		if (Result* res = dynamic_cast<Result*>(next_scene))
-		{
-			if (current_scene->max_unit != -1)
-			{
-				next_scene->make_unit = current_scene->make_unit;
-				next_scene->dead_unit = current_scene->dead_unit;
-				next_scene->max_unit = current_scene->max_unit;
-				next_scene->make_enemy = current_scene->make_enemy;
-				next_scene->dead_enemy = current_scene->dead_enemy;
-				next_scene->max_enemy = current_scene->max_enemy;
-			}
-		}
-	}
-	/*---------------------------ここまで---------------------------*/
+	//シーン情報を引継ぎ
+	Pass_Intel(next_scene,current_scene);
 
 	// シーン情報が格納されていたら、削除する
 	if (current_scene != nullptr)
@@ -409,5 +391,27 @@ bool SceneManager::CheckLightRange(GameObject* target, GameObject* partner)
 	else
 	{
 		return false;
+	}
+}
+
+void SceneManager::Pass_Intel(SceneBase* next_scene, SceneBase* current_scene)
+{
+	// リザルトへの値渡し
+	if (next_scene != nullptr && current_scene != nullptr)
+	{
+		next_scene->win_flg = current_scene->win_flg;
+		next_scene->StageNumber = current_scene->StageNumber;
+		if (Result* res = dynamic_cast<Result*>(next_scene))
+		{
+			if (current_scene->max_unit != -1)
+			{
+				next_scene->make_unit = current_scene->make_unit;
+				next_scene->dead_unit = current_scene->dead_unit;
+				next_scene->max_unit = current_scene->max_unit;
+				next_scene->make_enemy = current_scene->make_enemy;
+				next_scene->dead_enemy = current_scene->dead_enemy;
+				next_scene->max_enemy = current_scene->max_enemy;
+			}
+		}
 	}
 }

@@ -63,4 +63,10 @@ private:
 	/// <param name="target">1つ目のゲームオブジェクト</param>
 	/// <param name="partner">2つ目のゲームオブジェクト</param>
 	bool CheckLightRange(GameObject* target, GameObject* partner);
+
+
+	/// <summary>
+	///　全体で必要になっている情報を渡す
+	/// </summary>
+	void Pass_Intel(SceneBase* next_scene, SceneBase* current_scene);
 };

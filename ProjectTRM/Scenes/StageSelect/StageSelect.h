@@ -27,7 +27,7 @@ private:
 	Stage State = Stage::DEFAULT;
 	int Stage_Image[3];
 	int BackGroued_Image;
-	int SerectStage = 1;
+	int SerectStage;
 
 	int x = 200;
 	int y = 100;
