@@ -327,6 +327,7 @@ void UnitBase::EffectControl(float delta_second)
 		case State::Death:
 			Effect = rm->GetImages("Resource/Images/Effect/Unit/Ghost.png", 1, 1, 1, 50, 50);
 			effect_max_count = 25;
+			power_up = FALSE;
 			break;
 		default:
 			break;
@@ -355,6 +356,11 @@ void UnitBase::EffectControl(float delta_second)
 		}
 	}
 
+	if (power_up)
+	{
+		effect_image = Effect[Effect_count];
+	}
+
 	switch (now_state)
 	{
 	case State::Summon:
@@ -377,10 +383,6 @@ void UnitBase::EffectControl(float delta_second)
 		break;
 	default:
 		break;
-	}
-	if (power_up )
-	{
-		effect_image = Effect[Effect_count];
 	}
 }
 
