@@ -2,15 +2,27 @@
 
 #include "..//SceneBase.h"
 
+enum TitleState :int
+{
+	SELECT_WAIT,
+	SELECTED,
+	USEING,
+	FINAL
+};
+
+#define MAX_SELECT 1
+
 // タイトルシーン
 class Title : public SceneBase
 {
 private:
-
+	TitleState State = TitleState::SELECT_WAIT;
 	int		Anim_count;
 	float	Anim_flame;
-
+	int Selected = 0;
+	int Y;
 	int BackGroundImage;
+	std::vector<int> SellectImage;
 	int BGM;
 	int DecisionSE;
 public:

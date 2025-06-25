@@ -23,6 +23,7 @@ void Title::Initialize()
 
 
 	BackGroundImage = rm->GetImages("Resource/Images/BackGround/Title.png")[0];
+	SellectImage = rm->GetImages("Resource/Images/Effect/Flamethrower.png",10,3,4,96,48);
 
 	BGM = rm->GetSounds("Resource/Sounds/Title/BGM/OP.mp3");
 	DecisionSE = rm->GetSounds("Resource/Sounds/Decision.mp3");
@@ -44,35 +45,94 @@ eSceneType Title::Update(const float& delta_second)
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
 
-	// インゲームシーンに遷移する
-	if (input->GetKeyState(KEY_INPUT_RETURN)==eInputState::Pressed)
+	switch (State)
 	{
-		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
-		return eSceneType::stage_select;
+	case SELECT_WAIT:
+	{
+
+		// インゲームシーンに遷移する
+		if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
+		{
+			PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
+			State = TitleState::USEING;
+		}
+		if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
+		{
+			PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
+			State = TitleState::USEING;
+		}
+		if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+		{
+			PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
+			return eSceneType::end;
+		}
+
 	}
-	if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed)
-	{
-		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
-		return eSceneType::stage_select;
-	}
-	if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
-	{
-		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
-		return eSceneType::end;
-	}
-	if (input->GetButtonState(XINPUT_BUTTON_B) == eInputState::Pressed)
-	{
-		PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
-		return eSceneType::end;
+	break;
+	case USEING:
+		Y++;
+		if (Y == D_WIN_MAX_Y)
+		{
+			State = TitleState::SELECTED;
+		}
+		break;
+	case SELECTED:
+		if (input->GetButtonState(XINPUT_BUTTON_DPAD_UP) == eInputState::Pressed)
+		{
+			if (Selected != 0)
+			{
+				Selected--;
+			}
+		}
+		else if (input->GetButtonState(XINPUT_BUTTON_DPAD_DOWN) == eInputState::Pressed)
+		{
+			if (Selected != MAX_SELECT)
+			{
+				Selected++;
+			}
+		}
+
+		if (input->GetKeyState(KEY_INPUT_UP) == eInputState::Pressed)
+		{
+			if (Selected != 0)
+			{
+				Selected--;
+			}
+		}
+		else if (input->GetKeyState(KEY_INPUT_DOWN) == eInputState::Pressed)
+		{
+			if (Selected != MAX_SELECT)
+			{
+				Selected++;
+			}
+		}
+		else if ((input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Pressed) || (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed))
+		{
+			PlaySoundMem(DecisionSE, DX_PLAYTYPE_BACK);
+			switch (Selected)
+			{
+			case 0:
+				return eSceneType::stage_select;
+			case MAX_SELECT:
+				return eSceneType::end;
+			default:
+				break;
+			}
+		}
+		break;
+	case FINAL:
+		break;
+	default:
+		break;
 	}
 
-	Anim_flame += delta_second;
+	Anim_flame += delta_second*10.0f;
 	if (Anim_flame >= 1.0f)
 	{
-		Anim_count ++;
+		Anim_count++;
 		Anim_flame = 0.0f;
 	}
-	if (Anim_count > 1)
+	if (Anim_count > 9)
 	{
 		Anim_count = 0;
 		Anim_flame = 0.0f;
@@ -85,8 +145,9 @@ eSceneType Title::Update(const float& delta_second)
 // 描画処理
 void Title::Draw() const
 {
-
 	DrawGraph(0, 0, BackGroundImage, 0);
+	switch (State)
+	{
 
 	/*
 	SetFontSize(120);
@@ -107,6 +168,25 @@ void Title::Draw() const
 		DrawFormatString(100, 300, 0xffffff, "Enterを押してね!");
 	}
 	*/
+
+	case SELECT_WAIT:
+		break;
+	case USEING:
+		DrawBox(0, Y, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
+		break;
+	case SELECTED:
+			DrawBox(0, 500, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
+			//DrawBox(0, 500, D_WIN_MAX_X, D_WIN_MAX_Y, 0xffffff, 0);
+			DrawExtendGraphF(300, 450 + Selected * 50,450,550 + Selected * 50, SellectImage[Anim_count], false);
+
+			DrawString(415, 481, "Game Start", 0xffffff);
+			DrawString(415, 481 + 50, "Game End", 0xffffff);
+		break;
+	case FINAL:
+		break;
+	default:
+		break;
+	}
 
 	// 親クラスの描画処理を呼び出す
 	__super::Draw();

@@ -70,6 +70,7 @@ void InGame::Initialize()
 	Text_Images[1] = rm->GetImages("Resource/Images/BackGround/text_clear.png")[0];
 
 	Text_BackGround = rm->GetImages("Resource/Images/BackGround/Text.png")[0];
+	LText_BackGround = rm->GetImages("Resource/Images/BackGround/TextLeft.png")[0];
 
 
 	// 音源の読み込み
@@ -460,11 +461,11 @@ void InGame::Draw() const
 					if (StageNumber == 1)
 					{
 						DrawExtendGraph(
-							(int)x-330, (int)y + h,
-							(int)x + 300, (int)y + h + 120,
-							Text_BackGround, TRUE);
+							(int)x-440, (int)y + h,
+							(int)x + 280, (int)y + h + 220,
+							LText_BackGround, TRUE);
 
-						DrawFormatString(x - 300, y + h + 40, 0x000000, "信仰度 cost:現在の最大値すべて\nコストの上限と回復速度が上がる");
+						DrawFormatString(x - 395, y + h + 80, 0x000000, "信仰度 cost:現在の最大値すべて\nコストの上限と回復速度が上がる\nレベルに応じて味方ユニットを強化する");
 					}
 
 				}
@@ -485,31 +486,42 @@ void InGame::Draw() const
 					if (StageNumber == 1)
 					{
 
-						DrawExtendGraph(
-							(int)x, (int)y + h,
-							(int)x + 380, (int)y + h + 120,
-							Text_BackGround, TRUE);
-
 						switch (i)
 						{
 							case 0:
 							{
+								DrawExtendGraph(
+									(int)x, (int)y + h,
+									(int)x + 380, (int)y + h + 120,
+									Text_BackGround, TRUE);
 								DrawFormatString(x + 30, y + h + 40, 0x000000, "灯守 cost:20\n唯一灯りを持つ");
 							}
 							break;
 							case 1:
 							{
-								DrawFormatString(x + 30, y + h + 40, 0x000000, "兵士 cost:50\n前線を守る");
+								DrawExtendGraph(
+									(int)x - 50, (int)y + h,
+									(int)x + 500, (int)y + h + 120,
+									Text_BackGround, TRUE);
+								DrawFormatString(x - 10, y + h + 40, 0x000000, "兵士 cost:50\n灯りを持たない近接ユニット");
 							}
 							break;
 							case 2:
 							{
+								DrawExtendGraph(
+									(int)x, (int)y + h,
+									(int)x + 380, (int)y + h + 120,
+									Text_BackGround, TRUE);
 								DrawFormatString(x + 30, y + h + 40, 0x000000, "弓兵 cost:100\n遠距離から攻撃する");
 							}
 							break;
 							case 3:
 							{
-								DrawFormatString(x + 30, y + h + 40, 0x000000, "騎士 cost:500\n兵士の上位互換");
+								DrawExtendGraph(
+									(int)x - 120, (int)y + h,
+									(int)x + 500, (int)y + h + 120,
+									Text_BackGround, TRUE);
+								DrawFormatString(x - 70, y + h + 40, 0x000000, "騎士 cost:500\n灯りを持たない上級近接ユニット");
 							}
 							break;
 

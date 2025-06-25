@@ -26,7 +26,7 @@ enum class GameState
 class InGame : public SceneBase
 {
 private:
-	int Text_BackGround;
+	int Text_BackGround, LText_BackGround;
 	std::string Tutorial_Text[4] = { "UŒ‚~‘Ì—Í~\n—Bˆê“”‚è‚ğ‚Á‚Ä‚¢‚éƒLƒƒƒ‰","UŒ‚Z‘Ì—ÍZ\nM‹Â‚ÌƒŒƒxƒ‹‚É‰‚¶‚Ä‹­‚­‚È‚éI","UŒ‚Z‘Ì—ÍZ\n‰“‹——£‚©‚çUŒ‚‚·‚éI“G‚ªŒ©‚¦‚È‚¢‚ÆUŒ‚‚ª‚Å‚«‚È‚¢!!","UŒ‚‘Ì—Í\n‚«”\‚ÈƒLƒƒƒ‰ƒNƒ^[!!"};
 
 	GameState state = GameState::PLAYING;

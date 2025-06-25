@@ -37,6 +37,7 @@ private:
 		{"image","BackGround/text_fail"},
 		{"image","BackGround/text_clear"},
 		{"image","BackGround/Text"},
+		{"image","BackGround/TextLeft"},
 		// リザルト
 		{"image","BackGround/Result"},
 		// タイトル
