@@ -9,6 +9,7 @@ Title::Title()
 // デストラクタ
 Title::~Title()
 {
+	ChangeFontType(DX_FONTTYPE_NORMAL);
 
 }
 
@@ -17,6 +18,9 @@ void Title::Initialize()
 {
 	// 親クラスの初期化処理を呼び出す
 	__super::Initialize();
+
+	ChangeFontType(DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+
 
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
@@ -178,7 +182,7 @@ void Title::Draw() const
 	{
 		DrawBox(0, 450, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
 		//DrawBox(0, 500, D_WIN_MAX_X, D_WIN_MAX_Y, 0xffffff, 0);
-		DrawExtendGraphF(300, 450 + Selected * 64, 450, 582 + Selected * 64, SellectImage[Anim_count], true);
+		DrawExtendGraphF(300, 450 + Selected * 84, 450, 582 + Selected * 84, SellectImage[Anim_count], true);
 
 		SetFontSize(64);
 		float SelectColor = 0xffff00, Color = 0xff0000;
@@ -186,13 +190,12 @@ void Title::Draw() const
 		if (Selected == 0)
 		{
 			DrawString(415, 481, "Game Start", SelectColor);
-			DrawString(415, 481 + 64, "Game End", Color);
-
+			DrawString(415, 481 + 84, "Game End", Color);
 		}
 		else
 		{
 			DrawString(415, 481, "Game Start", Color);
-			DrawString(415, 481 + 64, "Game End", SelectColor);
+			DrawString(415, 481 + 84, "Game End", SelectColor);
 		}
 		SetFontSize(32);
 	}
@@ -211,6 +214,7 @@ void Title::Draw() const
 // 終了処理
 void Title::Finalize()
 {
+	ChangeFontType(DX_FONTTYPE_NORMAL);
 
 	StopSoundMem(BGM);
 

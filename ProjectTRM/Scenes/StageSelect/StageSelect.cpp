@@ -9,6 +9,7 @@ StageSelect::StageSelect()
 // デストラクタ
 StageSelect::~StageSelect()
 {
+	ChangeFontType(DX_FONTTYPE_NORMAL);
 
 }
 
