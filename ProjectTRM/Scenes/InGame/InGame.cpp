@@ -75,8 +75,10 @@ void InGame::Initialize()
 	LText_BackGround = rm->GetImages("Resource/Images/BackGround/TextLeft.png")[0];
 
 	//コスト、レベル描画用
-	numbers = rm->GetImages("Resource/Images/BackGround/level_numbers.png", 10, 5, 2, 32, 32);
-	cost_ui = rm->GetImages("Resource/Images/BackGround/cost_base.png")[0];
+	numbers = rm->GetImages("Resource/Images/BackGround/numbers_gray.png", 10, 5, 2, 32, 32);
+	numbers.push_back(rm->GetImages("Resource/Images/BackGround/Cost_Over_Gray.png")[0]);
+	cost_ui = rm->GetImages("Resource/Images/BackGround/Cost_Out.png")[0];
+
 
 	// 音源の読み込み
 	// 決定
@@ -176,6 +178,9 @@ void InGame::Initialize()
 	// コストの初期化 
 	cost = 0;
 	prev_time = std::chrono::steady_clock::now();
+
+	draw_number.push_back(0);
+	digit = 1;
 
 }
 
@@ -375,18 +380,6 @@ void InGame::Draw() const
 
 		// 親クラスの描画処理を呼び出す
 		__super::Draw();
-
-		DrawRotaGraph(1200, 680, 0.15, 0.0, cost_ui, TRUE);
-
-		for (int i = 0; i < draw_number.size(); i++)
-		{
-			DrawRotaGraph((1200 - (digit * 15)) + (i * 15), 680, 0.7, 0.0, numbers[draw_number[i]], TRUE);
-		}
-		DrawRotaGraph(1215, 680, 0.7, 0.0, numbers[Sun_Level], TRUE);
-		for (int i = 0; i < 2; i++)
-		{
-			DrawRotaGraph(1230 + (i * 15), 680, 0.7, 0.0, numbers[0], TRUE);
-		}
 
 		// ボタンサイズ
 		const int button_width = 200;
@@ -650,20 +643,25 @@ void InGame::Draw() const
 
 		DrawFormatString(1000, 30, 0x00ffff, "Level:%d/10", Sun_Level);
 		// コスト表示
+
+		DrawRotaGraph(1200, 680, 0.15, 0.0, cost_ui, TRUE);
+
+		for (int i = 0; i < draw_number.size(); i++)
+		{
+			DrawRotaGraph((1200 - (digit * 15)) + (i * 15), 685, 0.7, 0.0, numbers[draw_number[i]], TRUE);
+		}
 		if (Sun_Level == 10)
 		{
-				DrawFormatString(1000, 680, 0xffffff, "Cost:%d/∞", cost);
+			DrawRotaGraph(1230, 685, 0.7, 0.0, numbers[10], TRUE);
 		}
 		else
 		{
 
-			if (cost < Sun_Level * 100)
+
+			DrawRotaGraph(1215, 685, 0.7, 0.0, numbers[Sun_Level], TRUE);
+			for (int i = 0; i < 2; i++)
 			{
-				DrawFormatString(1000, 680, 0xffffff, "Cost:%d/%d", cost, Sun_Level * 100);
-			}
-			else
-			{
-				DrawFormatString(1000, 680, 0xffff00, "Cost:%d/%d", cost, Sun_Level * 100);
+				DrawRotaGraph(1230 + (i * 15), 685, 0.7, 0.0, numbers[0], TRUE);
 			}
 		}
 
