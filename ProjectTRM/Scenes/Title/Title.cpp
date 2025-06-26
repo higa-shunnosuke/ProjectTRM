@@ -21,12 +21,17 @@ void Title::Initialize()
 
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 
+	MovieHandle = LoadGraph("Resource/Movie/TitleBack.mp4");
+
+	// ムービーの再生位置を0秒目に変更します
+	SeekMovieToGraph(MovieHandle, 0000);
 
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 
 
 	BackGroundImage = rm->GetImages("Resource/Images/BackGround/Title.png")[0];
+	BackBackGroundImage = rm->GetImages("Resource/Images/BackGround/TitleBack.png")[0];
 	SellectImage = rm->GetImages("Resource/Images/Effect/Flamethrower.png",10,3,4,96,48);
 
 	BGM = rm->GetSounds("Resource/Sounds/Title/BGM/OP.mp3");
@@ -46,8 +51,18 @@ void Title::Initialize()
 // 更新処理
 eSceneType Title::Update(const float& delta_second)
 {
+
+	
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
+	int state = GetMovieStateToGraph(MovieHandle);
+	if (state == 0) { // 停止状態
+		SeekMovieToGraph(MovieHandle, 0);        // 先頭に戻す
+		PlayMovieToGraph(MovieHandle);           // 再再生
+	}
+
+	// ムービーを再生状態にします
+	PlayMovieToGraph(MovieHandle);
 
 	switch (State)
 	{
@@ -149,7 +164,10 @@ eSceneType Title::Update(const float& delta_second)
 // 描画処理
 void Title::Draw() const
 {
-	DrawGraph(0, 0, BackGroundImage, 0);
+	// ムービー映像を画面いっぱいに描画します
+	DrawExtendGraph(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y, MovieHandle, FALSE);
+	DrawGraph(0, 0, BackGroundImage, 1);
+
 	switch (State)
 	{
 
@@ -181,7 +199,7 @@ void Title::Draw() const
 	case SELECTED:
 	{
 		DrawBox(0, 450, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
-		//DrawBox(0, 500, D_WIN_MAX_X, D_WIN_MAX_Y, 0xffffff, 0);
+		DrawBox(0, 450, D_WIN_MAX_X, D_WIN_MAX_Y, 0xffffff, 0);
 		DrawExtendGraphF(300, 450 + Selected * 84, 450, 582 + Selected * 84, SellectImage[Anim_count], true);
 
 		SetFontSize(64);
@@ -190,17 +208,19 @@ void Title::Draw() const
 		if (Selected == 0)
 		{
 			DrawString(415, 481, "Game Start", SelectColor);
-			DrawString(415, 481 + 84, "Game End", Color);
+			DrawString(415, 481 + 84, " Game End", Color);
 		}
 		else
 		{
-			DrawString(415, 481, "Game Start", Color);
+			DrawString(415, 481, " Game Start", Color);
 			DrawString(415, 481 + 84, "Game End", SelectColor);
 		}
+
 		SetFontSize(32);
 	}
 		break;
 	case FINAL:
+
 		break;
 	default:
 		break;
@@ -215,7 +235,8 @@ void Title::Draw() const
 void Title::Finalize()
 {
 	ChangeFontType(DX_FONTTYPE_NORMAL);
-
+	// 読み込んだムービーファイルのグラフィックハンドルの削除
+	DeleteGraph(MovieHandle);
 	StopSoundMem(BGM);
 
 	// 親クラスの終了時処理を呼び出す

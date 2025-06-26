@@ -21,7 +21,11 @@ private:
 	float	Anim_flame;
 	int Selected = 0;
 	int Y;
+
+	int MovieHandle;
+
 	int BackGroundImage;
+	int BackBackGroundImage;
 	std::vector<int> SellectImage;
 	int BGM;
 	int DecisionSE;

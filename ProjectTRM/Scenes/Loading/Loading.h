@@ -20,6 +20,7 @@ private:
 	std::vector<LoadItem> load_list = {
 		// タイトル
 		{"image","BackGround/Title"},
+		{"image","BackGround/TitleBack"},
 		// ステージセレクト
 		{"image","BackGround/BlueMoonUI"},
 		{"image","BackGround/YelloMoonUI"},
