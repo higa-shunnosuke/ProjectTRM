@@ -36,6 +36,10 @@ private:
 	int SunImages[10];
 	int BackGroundImage[3];
 	int Text_Images[2];				//勝敗演の文字画像
+	int cost_ui;
+	std::vector<int> numbers;		//コストやレベルの数字画像
+	std::vector<int>draw_number;	//描画する数字
+	int digit;
 	int sound;
 	int Click;
 	int ClickUp;

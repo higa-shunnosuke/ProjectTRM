@@ -34,8 +34,10 @@ InGame::InGame():
 	bgmHandle(),
 	SummonSE(),
 	Text_Images(),
-	Text_BackGround(),
-	alpha(0)
+	Text_BackGround(0),
+	alpha(0),
+	digit(0),
+	cost_ui()
 {
 	
 }
@@ -72,6 +74,9 @@ void InGame::Initialize()
 	Text_BackGround = rm->GetImages("Resource/Images/BackGround/Text.png")[0];
 	LText_BackGround = rm->GetImages("Resource/Images/BackGround/TextLeft.png")[0];
 
+	//コスト、レベル描画用
+	numbers = rm->GetImages("Resource/Images/BackGround/level_numbers.png", 10, 5, 2, 32, 32);
+	cost_ui = rm->GetImages("Resource/Images/BackGround/cost_base.png")[0];
 
 	// 音源の読み込み
 	// 決定
@@ -255,6 +260,8 @@ eSceneType InGame::Update(const float& delta_second)
 			}
 		}
 
+
+
 		//カメラの情報を取得
 		Camera* camera = Camera::GetInstance();
 
@@ -268,6 +275,11 @@ eSceneType InGame::Update(const float& delta_second)
 			// ユニット選択処理
 			UnitSelection();
 
+			if (!draw_number.empty())
+			{
+				draw_number.clear();
+				digit = 0;
+			}
 			// コスト管理処理
 			RegenerateCost();
 
@@ -363,6 +375,18 @@ void InGame::Draw() const
 
 		// 親クラスの描画処理を呼び出す
 		__super::Draw();
+
+		DrawRotaGraph(1200, 680, 0.15, 0.0, cost_ui, TRUE);
+
+		for (int i = 0; i < draw_number.size(); i++)
+		{
+			DrawRotaGraph((1200 - (digit * 15)) + (i * 15), 680, 0.7, 0.0, numbers[draw_number[i]], TRUE);
+		}
+		DrawRotaGraph(1215, 680, 0.7, 0.0, numbers[Sun_Level], TRUE);
+		for (int i = 0; i < 2; i++)
+		{
+			DrawRotaGraph(1230 + (i * 15), 680, 0.7, 0.0, numbers[0], TRUE);
+		}
 
 		// ボタンサイズ
 		const int button_width = 200;
@@ -935,5 +959,20 @@ void InGame::RegenerateCost()
 	{
 
 		prev_time = std::chrono::steady_clock::now();
+	}
+	int cost_calculation = cost;
+	if (cost == 0)
+	{
+		draw_number.push_back(0);
+		digit++;
+	}
+	else
+	{
+		while (cost_calculation > 0)
+		{
+			draw_number.insert(draw_number.begin(), cost_calculation % 10);
+			cost_calculation /= 10;
+			digit++;
+		}
 	}
 }

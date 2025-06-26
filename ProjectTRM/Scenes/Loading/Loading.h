@@ -38,6 +38,7 @@ private:
 		{"image","BackGround/text_clear"},
 		{"image","BackGround/Text"},
 		{"image","BackGround/TextLeft"},
+		{"image","BackGround/cost_base"},
 		// リザルト
 		{"image","BackGround/Result"},
 		// タイトル
