@@ -55,11 +55,8 @@ eSceneType StageSelect::Update(const float& delta_second)
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
 
-	switch (State)
-	{
-	case Stage::DEFAULT:
 	// →を押したらステージを1つ右に移動させて画像を切り替える処理
-	if (input->GetKeyState(KEY_INPUT_RIGHT)		== eInputState::Pressed ||
+	if (input->GetKeyState(KEY_INPUT_RIGHT) == eInputState::Pressed ||
 		input->GetButtonState(XINPUT_BUTTON_DPAD_RIGHT) == eInputState::Pressed)
 	{
 		SerectStage += 1;
@@ -87,11 +84,16 @@ eSceneType StageSelect::Update(const float& delta_second)
 		else
 		{
 			PlaySoundMem(CursorMoveSE, DX_PLAYTYPE_BACK);
-			ChangeX = x;
+			ChangeX = 200;
 			x = -Set_StageX;
 			State = Stage::RMOVE;
 		}
 	}
+
+	switch (State)
+	{
+	case Stage::DEFAULT:
+
 	// インゲームに遷移する
 	if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
 	{
@@ -112,8 +114,8 @@ eSceneType StageSelect::Update(const float& delta_second)
 	break;
 	case Stage::LMOVE:
 
-		x -= 1;
-		ChangeX -= 1;
+		x -= 5;
+		ChangeX -= 5;
 
 		if (ChangeX == 200)
 		{
@@ -125,8 +127,8 @@ eSceneType StageSelect::Update(const float& delta_second)
 		break;
 	case Stage::RMOVE:
 
-		x += 1;
-		ChangeX += 1;
+		x += 5;
+		ChangeX += 5;
 
 		if (x == 200)
 		{

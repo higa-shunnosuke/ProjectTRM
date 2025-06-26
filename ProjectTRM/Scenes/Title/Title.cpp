@@ -175,15 +175,27 @@ void Title::Draw() const
 		DrawBox(0, Y, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
 		break;
 	case SELECTED:
-			DrawBox(0, 450, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
-			//DrawBox(0, 500, D_WIN_MAX_X, D_WIN_MAX_Y, 0xffffff, 0);
-			DrawExtendGraphF(300, 450 + Selected * 64,450,582 + Selected * 64, SellectImage[Anim_count], false);
+	{
+		DrawBox(0, 450, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
+		//DrawBox(0, 500, D_WIN_MAX_X, D_WIN_MAX_Y, 0xffffff, 0);
+		DrawExtendGraphF(300, 450 + Selected * 64, 450, 582 + Selected * 64, SellectImage[Anim_count], true);
 
-			SetFontSize(64);
-			DrawString(415, 481, "Game Start", 0xff0000);
-			DrawString(415, 481 + 64, "Game End", 0xff0000);
-			SetFontSize(32);
+		SetFontSize(64);
+		float SelectColor = 0xffff00, Color = 0xff0000;
 
+		if (Selected == 0)
+		{
+			DrawString(415, 481, "Game Start", SelectColor);
+			DrawString(415, 481 + 64, "Game End", Color);
+
+		}
+		else
+		{
+			DrawString(415, 481, "Game Start", Color);
+			DrawString(415, 481 + 64, "Game End", SelectColor);
+		}
+		SetFontSize(32);
+	}
 		break;
 	case FINAL:
 		break;

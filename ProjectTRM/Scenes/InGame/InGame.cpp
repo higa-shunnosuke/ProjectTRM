@@ -485,11 +485,11 @@ void InGame::Draw() const
 					if (StageNumber == 1)
 					{
 						DrawExtendGraph(
-							(int)x-440, (int)y + h,
-							(int)x + 280, (int)y + h + 220,
+							(int)x-440, (int)y + h-20,
+							(int)x + 280, (int)y + h + 200,
 							LText_BackGround, TRUE);
 
-						DrawFormatString(x - 395, y + h + 80, 0x000000, "信仰度 cost:現在の最大値すべて\nコストの上限と回復速度が上がる\nレベルに応じて味方ユニットを強化する");
+						DrawFormatString(x - 395, y + h + 80, 0x000000, "信仰度 cost:上限(%d)\nコストの上限と回復速度が上がる\nレベルに応じて味方ユニットを強化する", Sun_Level * 100);
 					}
 
 				}
