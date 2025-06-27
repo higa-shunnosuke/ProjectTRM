@@ -67,9 +67,9 @@ void InGame::Initialize()
 	unit_ui[3] = rm->GetImages("Resource/Images/Unit/Guardian/Guardian_Cost.png")[0];
 	unit_ui[4] = rm->GetImages("Resource/Images/BackGround/Sun.png")[0];
 	// 背景
-	BackGroundImage[0] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
+	BackGroundImage[2] = rm->GetImages("Resource/Images/BackGround/BlueMoon.png")[0];
 	BackGroundImage[1] = rm->GetImages("Resource/Images/BackGround/YelloMoon.png")[0];
-	BackGroundImage[2] = rm->GetImages("Resource/Images/BackGround/RedMoon.png")[0];
+	BackGroundImage[0] = rm->GetImages("Resource/Images/BackGround/RedMoon.png")[0];
 	//文字
 	Text_Images[0] = rm->GetImages("Resource/Images/BackGround/text_fail.png")[0];
 	Text_Images[1] = rm->GetImages("Resource/Images/BackGround/text_clear.png")[0];
@@ -542,7 +542,7 @@ void InGame::Draw() const
 							(int)x + 280, (int)y + h + 200,
 							LText_BackGround, TRUE);
 
-						DrawFormatString(x - 395, y + h + 80, 0x000000, "信仰度 cost:上限(%d)\nコストの上限と回復速度が上がる\nレベルに応じて味方ユニットを強化する", Sun_Level * 100);
+						DrawFormatString(x - 395, y + h + 65, 0x000000, "信仰度 cost:上限(%d)\nコストの上限と回復速度が上がる\nレベルに応じて味方ユニットを強化する", Sun_Level * 100);
 					}
 
 				}
