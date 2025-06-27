@@ -25,6 +25,8 @@ void Title::Initialize()
 
 	// ムービーの再生位置を0秒目に変更します
 	SeekMovieToGraph(MovieHandle, 0000);
+	PlayMovieToGraph(MovieHandle);           // 再再生
+
 
 	// 画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
@@ -57,12 +59,10 @@ eSceneType Title::Update(const float& delta_second)
 	InputManager* input = InputManager::GetInstance();
 	int state = GetMovieStateToGraph(MovieHandle);
 	if (state == 0) { // 停止状態
-		SeekMovieToGraph(MovieHandle, 0);        // 先頭に戻す
-		PlayMovieToGraph(MovieHandle);           // 再再生
+		SeekMovieToGraph(MovieHandle, 6500);        // 先頭に戻す
+		PlayMovieToGraph(MovieHandle);           // 再生
 	}
 
-	// ムービーを再生状態にします
-	PlayMovieToGraph(MovieHandle);
 
 	switch (State)
 	{
