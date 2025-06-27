@@ -181,6 +181,7 @@ void InGame::Initialize()
 
 	// カーソルの初期化
 	cursor = 0;
+	now_zoom = 2.0f;
 
 	// コストの初期化 
 	cost = 0;
@@ -257,6 +258,7 @@ eSceneType InGame::Update(const float& delta_second)
 			{
 				if (!CheckSoundMem(bgmHandle[4]))
 				{
+					move_flame = 0.0f;
 					now_zoom = camera->GetZoom();
 					ChangeVolumeSoundMem(150, bgmHandle[4]);
 					PlaySoundMem(bgmHandle[4], DX_PLAYTYPE_BACK);
@@ -268,6 +270,7 @@ eSceneType InGame::Update(const float& delta_second)
 			{
 				if (!CheckSoundMem(bgmHandle[3]))
 				{
+					move_flame = 0.0f;
 					now_zoom = camera->GetZoom();
 					ChangeVolumeSoundMem(100, bgmHandle[3]);
 					PlaySoundMem(bgmHandle[3], DX_PLAYTYPE_BACK);
@@ -308,7 +311,16 @@ eSceneType InGame::Update(const float& delta_second)
 			{
 				state = GameState::PLAYING;
 			}
-
+			move_flame += delta_second;
+			if (move_flame >= 0.01f)
+			{
+				if (now_zoom > 1.1f)
+				{
+					now_zoom -= 0.01f;
+				}
+				move_flame = 0;
+			}
+			camera->SetZoom(now_zoom);
 			break;
 		case GameState::PLAYER_DEAD:
 			if (player->GetDead())
@@ -592,8 +604,6 @@ void InGame::Draw() const
 
 						}
 					}
-
-					//DrawGraph(x, y, Text_BackGround, 1);
 				}
 			}
 			else
@@ -897,16 +907,6 @@ const GameState InGame::GetNowState() const
 {
 	return state;
 }
-
-//void InGame::FirstStage()
-//{
-//
-//	if (cursor == 0)
-//	{
-//
-//	}
-//
-//}
 
 //	ユニット召喚
 void InGame::UnitSelection()
