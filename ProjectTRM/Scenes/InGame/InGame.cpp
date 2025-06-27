@@ -300,7 +300,7 @@ eSceneType InGame::Update(const float& delta_second)
 			}
 			// コスト管理処理
 			RegenerateCost();
-
+			break;
 		case GameState::GAMESTART:
 			// リザルトシーンに遷移する
 			if (input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
