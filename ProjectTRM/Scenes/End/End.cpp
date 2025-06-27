@@ -36,7 +36,8 @@ void End::Initialize()
 
 	creditText = {
 	"Torchguard",
-	"Shadows Fall",
+	"",
+	"～Shadows Fall～",
 	"",
 	"",
 	"",
@@ -66,7 +67,7 @@ void End::Initialize()
 	"ぴぽや",
 	"Pixel Art VFX",
 	"",
-	"プログラム",
+	"開発メンバー",
 	"比嘉 駿之介",
 	"知念 敏輝",
 	"大村 彩斗",
@@ -92,12 +93,6 @@ eSceneType End::Update(const float& delta_second)
 {
 	// 入力情報を取得
 	InputManager* input = InputManager::GetInstance();
-
-	if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Released)
-	{
-		DeleteSoundMem(SoundHandle);
-		return eSceneType::title;
-	}
 
 	time++;
 
@@ -129,6 +124,11 @@ eSceneType End::Update(const float& delta_second)
 		Application* app = Application::GetInstance();
 		app->QuitGame();
 	}
+	if (input->GetButtonState(XINPUT_BUTTON_START) == eInputState::Released)
+	{
+		Application* app = Application::GetInstance();
+		app->QuitGame();
+	}
 
 	return GetNowSceneType();
 }
@@ -143,6 +143,16 @@ void End::Draw() const
 	const int centerX = 600; //画面中心X（適度調整）
 
 	SetFontThickness(6);
+
+	SetFontSize(24);
+	SetFontThickness(4);
+	const char* hintText = "Aボタン：早送り　STARTボタン：スキップ";
+
+	int textWidth = GetDrawStringWidth(hintText, strlen(hintText));
+	int x = 640 - textWidth - 20;  // 右端から20px内側
+	int Y = 720 - 40;              // 下端から40px上（フォントサイズ＋余白）
+
+	DrawString(x, Y, hintText, GetColor(255, 255, 255));
 
 	////フェーズの制御
 	//if (time < 300) // 秒程度、タイトル表示のみ
@@ -185,9 +195,14 @@ void End::Draw() const
 		int color = GetColor(255, 255, 255);
 
 		//特定の行だけサイズを大きくする
-		if (text == "Torchguard" || text == "Shadows Fall")
+		if (text == "Torchguard")
 		{
 			fontsize = 100;
+		}
+
+		if (text == "Shadows Fall")
+		{
+			fontsize = 70;
 		}
 
 		if (text == "THANK YOU FOR PLAYING")
