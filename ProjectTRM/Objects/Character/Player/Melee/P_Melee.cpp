@@ -64,7 +64,7 @@ void P_Melee::Draw() const
 	//¢Š«w•`‰æ
 	if (now_state == State::Summon)
 	{
-		DrawRotaGraphF(location.x, location.y + collision.collision_size.y / 2, 0.5f, 0.0, effect_image, TRUE, flip_flag);
+		DrawRotaGraphF(location.x, location.y + 40.0f, 0.5f, 0.0, effect_image, TRUE, flip_flag);
 	}
 
 	// ‹ßÚƒ†ƒjƒbƒg‚Ì•`‰æ
