@@ -271,8 +271,6 @@ eSceneType InGame::Update(const float& delta_second)
 			}
 		}
 
-
-
 		//ƒJƒƒ‰‚Ìî•ñ‚ðŽæ“¾
 		Camera* camera = Camera::GetInstance();
 
@@ -378,7 +376,6 @@ void InGame::Draw() const
 		//---------------
 		SetDrawScreen(back_buffer);
 		ClearDrawScreen();
-		DrawBox(0, 0, 1280, 720, 0xffffff, true);
 
 		// ”wŒi
 		DrawGraph(D_WIN_MAX_X / 2 - 700, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
@@ -727,19 +724,52 @@ void InGame::Draw() const
 	}
 	break;
 	case GameState::GAMESTART:
+		//---------------
+		// ‰¼‘z‰æ–Ê‚É•`‰æ
+		//---------------
+		SetDrawScreen(back_buffer);
+		ClearDrawScreen();
+
 		DrawGraph(D_WIN_MAX_X / 2 - 700, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
 		__super::Draw();
+
+		//---------------
+		// •\‰æ–Ê‚É•`‰æ
+		//---------------
+		SetDrawScreen(DX_SCREEN_BACK);
+		ClearDrawScreen();
+		// ‰¼‘z‰æ–Ê‚ð•`‰æ
+		camera->Draw(back_buffer);
 		break;
 
 	case GameState::PLAYER_DEAD:
+		//---------------
+		// ‰¼‘z‰æ–Ê‚É•`‰æ
+		//---------------
+		SetDrawScreen(back_buffer);
+		ClearDrawScreen();
+
 		DrawGraph(D_WIN_MAX_X / 2 - 700, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha / 2);
 		DrawRotaGraph(D_WIN_MAX_X / 2 , D_WIN_MAX_Y / 2, 1.0f, 0.0f, Text_Images[0], true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		__super::Draw();
+
+		//---------------
+		// •\‰æ–Ê‚É•`‰æ
+		//---------------
+		SetDrawScreen(DX_SCREEN_BACK);
+		ClearDrawScreen();
+		// ‰¼‘z‰æ–Ê‚ð•`‰æ
+		camera->Draw(back_buffer);
 		break;
 	case GameState::BOSS_DEAD:
 	{
+		//---------------
+		// ‰¼‘z‰æ–Ê‚É•`‰æ
+		//---------------
+		SetDrawScreen(back_buffer);
+		ClearDrawScreen();
 
 		DrawGraph(enemy->GetLocation().x - 100.0f, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha / 2);
@@ -757,6 +787,13 @@ void InGame::Draw() const
 		// ƒ‰ƒCƒgƒ}ƒbƒv‚ð•`‰æ
 		light_map->DrawLightMap();
 
+		//---------------
+		// •\‰æ–Ê‚É•`‰æ
+		//---------------
+		SetDrawScreen(DX_SCREEN_BACK);
+		ClearDrawScreen();
+		// ‰¼‘z‰æ–Ê‚ð•`‰æ
+		camera->Draw(back_buffer);
 		break;
 	}
 	}
