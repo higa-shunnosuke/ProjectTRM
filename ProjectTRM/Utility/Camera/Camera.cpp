@@ -42,11 +42,21 @@ void Camera::Update()
 {
 	InputManager* input = InputManager::GetInstance();
 
+	// ズーム変更前の値を記録
+	float prevZoom = zoom;
+
 	// ズーム
 	Zoom();
 
 	// スクロール
 	Scroll();
+
+	// 画面中央のワールド座標を保つためにカメラ位置を補正
+	float centerX = location.x + (640.0f / prevZoom);
+	float centerY = location.y + (360.0f / prevZoom);
+
+	location.x = centerX - (640.0f / zoom);
+	location.y = centerY - (360.0f / zoom);
 
 	// 最前線へ移動
 	if (input->GetButtonState(XINPUT_BUTTON_LEFT_SHOULDER) == eInputState::Pressed)
@@ -88,9 +98,6 @@ void Camera::Draw(int back_buffer)
 // ズーム処理
 void Camera::Zoom()
 {
-	// ズーム変更前の値を記録
-	float prevZoom = zoom;
-
 	// マウス
 	int wheel = GetMouseWheelRotVol();
 	if (wheel != 0) 
@@ -108,13 +115,6 @@ void Camera::Zoom()
 
 	if (zoom < ZOOM_MIN) zoom = ZOOM_MIN;
 	if (zoom > ZOOM_MAX) zoom = ZOOM_MAX;
-
-	// 画面中央のワールド座標を保つためにカメラ位置を補正
-	float centerX = location.x + (640.0f / prevZoom);
-	float centerY = location.y + (360.0f / prevZoom);
-
-	location.x = centerX - (640.0f / zoom);
-	location.y = centerY - (360.0f / zoom);
 }
 
 // スクロール処理
@@ -180,7 +180,7 @@ void Camera::Scroll()
 			// 前線を追跡
 			if (front_line != nullptr)
 			{
-				location.x = front_line->GetLocation().x;
+				location.x = front_line->GetLocation().x - 300.0f;
 			}
 		}
 	}
