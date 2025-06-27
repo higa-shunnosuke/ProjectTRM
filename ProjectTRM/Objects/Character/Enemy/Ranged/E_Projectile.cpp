@@ -86,25 +86,21 @@ void E_Projectile::Update(float delta_second)
 }
 
 // 描画処理
-void E_Projectile::Draw(const Vector2D camera_pos) const
+void E_Projectile::Draw() const
 {
-    Vector2D position = this->GetLocation();
-    position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-
-
     // オフセット値を基に画像の描画を行う
-    DrawRotaGraphF(position.x, position.y, 2.0, angle, image, TRUE);
+    DrawRotaGraphF(location.x, location.y, 2.0, angle, image, TRUE);
 
     if (ProjectConfig::DEBUG)
     {
         // 中心を表示
-        DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
+        DrawCircle((int)location.x, (int)location.y, 2, 0x0000ff, TRUE);
         // 当たり判定表示
-        DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
-            (int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0x0000ff, FALSE);
+        DrawBox((int)(location.x - collision.collision_size.x / 2), (int)(location.y - collision.collision_size.y / 2),
+            (int)(location.x + collision.collision_size.x / 2), (int)(location.y + collision.collision_size.y / 2), 0x0000ff, FALSE);
         // 攻撃範囲を表示
-        DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
-            (int)(position.x + collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
+        DrawBox((int)location.x, (int)(location.y - collision.hitbox_size.y / 2),
+            (int)(location.x + collision.hitbox_size.x), (int)(location.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
     }
 }
 

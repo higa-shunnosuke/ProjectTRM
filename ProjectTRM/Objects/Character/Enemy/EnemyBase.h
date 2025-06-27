@@ -45,7 +45,7 @@ public:
 	/// <summary>
 	/// •`‰æˆ—
 	/// </summary>
-	virtual void Draw(const Vector2D camera_pos) const override;
+	virtual void Draw() const override;
 	/// <summary>
 	/// I—¹ˆ—
 	/// </summary>

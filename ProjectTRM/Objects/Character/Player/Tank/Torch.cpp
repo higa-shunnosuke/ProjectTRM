@@ -49,15 +49,10 @@ void Torch::Update(float delta_second)
 }
 
 // 描画処理
-void Torch::Draw(const Vector2D camera_pos) const
+void Torch::Draw() const
 {
-	Vector2D position = this->GetLocation();
-	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-
-	position.y += z_layer * 5;
-
 	// オフセット値を基に画像の描画を行う
-	DrawRotaGraphF(position.x, position.y, 2.0, 0.0, image, TRUE);
+	DrawRotaGraphF(location.x, location.y, 2.0, 0.0, image, TRUE);
 }
 
 // 終了時処理

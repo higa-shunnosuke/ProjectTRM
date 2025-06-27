@@ -37,7 +37,8 @@ InGame::InGame():
 	Text_BackGround(0),
 	alpha(0),
 	digit(0),
-	cost_ui()
+	cost_ui(),
+	back_buffer()
 {
 	
 }
@@ -132,7 +133,7 @@ void InGame::Initialize()
 			MessageBoxA(NULL, "BGM2の再生に失敗しました", "エラー", MB_OK);
 		}
 		// ステージサイズ設定
-		ProjectConfig::STAGE_WIDTH = 1500;
+		ProjectConfig::STAGE_WIDTH = 1280;
 		ProjectConfig::STAGE_HEIGHT = 720;
 		break;
 	default:
@@ -182,6 +183,7 @@ void InGame::Initialize()
 	draw_number.push_back(0);
 	digit = 1;
 
+	back_buffer = MakeScreen(1280, 720, TRUE);
 }
 
 // 更新処理
@@ -363,23 +365,42 @@ void InGame::Draw() const
 	default:
 		break;
 	}
-	int offset = ProjectConfig::STAGE_WIDTH - camera->GetScreeenSize().x / 2 - camera->GetCameraPos().x;
 	switch (state)
 	{
 	case GameState::PLAYING:
 	{
-		DrawGraph(D_WIN_MAX_X / 2 - 700 + offset, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
+		//---------------
+		// 仮想画面に描画
+		//---------------
+		SetDrawScreen(back_buffer);
+		ClearDrawScreen();
+		DrawBox(0, 0, 1280, 720, 0xffffff, true);
+
+		// 背景
+		DrawGraph(D_WIN_MAX_X / 2 - 700, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
 
 		LightMapManager* light_map = LightMapManager::GetInstance();
 
+		// 描画画面設定
+		light_map->SetBackBuffer(back_buffer);
+
 		// 光を加算合成
-		light_map->DrawLights(camera->GetCameraPos());
+		light_map->DrawLights();
 
 		// ライトマップを描画
 		light_map->DrawLightMap();
 
-		// 親クラスの描画処理を呼び出す
+		// オブジェクト
 		__super::Draw();
+
+		//---------------
+		// 表画面に描画
+		//---------------
+		SetDrawScreen(DX_SCREEN_BACK);
+		ClearDrawScreen();
+
+		// 仮想画面を描画
+		camera->Draw(back_buffer);
 
 		// ボタンサイズ
 		const int button_width = 200;
@@ -668,9 +689,6 @@ void InGame::Draw() const
 
 		if (ProjectConfig::DEBUG)
 		{
-			// カメラ座標描画
-			DrawFormatString(500, 300, 0xffffff, "%f", camera->GetCameraPos().x);
-
 			// シーン情報の描画
 			SetFontSize(60);
 			DrawFormatString(0, 0, 0xffffff, "InGame");
@@ -682,12 +700,12 @@ void InGame::Draw() const
 	}
 	break;
 	case GameState::GAMESTART:
-		DrawGraph(D_WIN_MAX_X / 2 - 700 + offset, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
+		DrawGraph(D_WIN_MAX_X / 2 - 700, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
 		__super::Draw();
 		break;
 
 	case GameState::PLAYER_DEAD:
-		DrawGraph(D_WIN_MAX_X / 2 - 700 + offset, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
+		DrawGraph(D_WIN_MAX_X / 2 - 700, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha / 2);
 		DrawRotaGraph(D_WIN_MAX_X / 2 , D_WIN_MAX_Y / 2, 1.0f, 0.0f, Text_Images[0], true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -704,7 +722,7 @@ void InGame::Draw() const
 		LightMapManager* light_map = LightMapManager::GetInstance();
 
 		// 光を加算合成
-		light_map->DrawLights(camera->GetCameraPos());
+		light_map->DrawLights();
 
 		// 親クラスの描画処理を呼び出す
 		__super::Draw();
@@ -715,14 +733,6 @@ void InGame::Draw() const
 		break;
 	}
 	}
-	Vector2D P_position = player->GetLocation();
-	P_position.x -= camera->GetCameraPos().x - D_WIN_MAX_X / 2;
-	Vector2D E_position = enemy->GetLocation();
-	E_position.x -= camera->GetCameraPos().x - D_WIN_MAX_X / 2;
-	// 巫女HP表示
-	DrawBoxAA(P_position.x - 50.0f, P_position.y - 150.0f, P_position.x + (50.0f - (100 - player->GetHP())), P_position.y - 135.0f, 0xFFFFFF, true);
-	// 異端者HP表示
-	DrawBoxAA(E_position.x - 50.0f, E_position.y - 150.0f, E_position.x + (50.0f - (100 - ((double)enemy->GetHP() / 500) * 100)), E_position.y - 135.0f, 0xFFFFFF, true);
 
 	// ポーズクラスのポインタ
 	Pause* pause = Pause::GetInstance();

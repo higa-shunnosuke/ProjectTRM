@@ -27,13 +27,10 @@ void Character::Update(float delta_second)
 }
 
 // 描画処理
-void Character::Draw(const Vector2D camera_pos) const
+void Character::Draw() const
 {
-	Vector2D position = this->GetLocation();
-	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-
 	// オフセット値を基に画像の描画を行う
-	DrawRotaGraphF(camera_pos.x, camera_pos.y, 1.0, 0.0, image, TRUE);
+	DrawRotaGraphF(location.x, location.y, 1.0, 0.0, image, TRUE);
 }
 
 // 終了時処理

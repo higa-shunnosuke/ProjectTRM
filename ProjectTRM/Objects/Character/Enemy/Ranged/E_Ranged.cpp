@@ -62,36 +62,32 @@ void E_Ranged::Update(float delta_second)
 }
 
 // 描画処理
-void E_Ranged::Draw(const Vector2D camera_pos) const
+void E_Ranged::Draw() const
 {
 	// 画像のずれ
 	Vector2D offset;
 	offset.x = 10.0f;
 	offset.y = -30.0f;
 
-	// カメラ座標をもとに描画位置を計算
-	Vector2D position = this->GetLocation();
-	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-
 	// 遠距離の描画
-	DrawRotaGraphF(position.x + offset.x, position.y + offset.y,
+	DrawRotaGraphF(location.x + offset.x, location.y + offset.y,
 		2.0, 0.0, image, TRUE, flip_flag);
 
 	if (now_state != State::Death)
 	{
 		// エフェクト１の描画
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawRotaGraphF(position.x, position.y - 75.0f,
+		DrawRotaGraphF(location.x, location.y - 75.0f,
 			3.0, 0.0, effect[0], TRUE, flip_flag);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		// エフェクト２の描画
-		DrawRotaGraphF(position.x, position.y + 5.0f,
+		DrawRotaGraphF(location.x, location.y + 5.0f,
 			0.7, 0.0, effect[1], TRUE, flip_flag);
 	}
 
 	// 親クラスの描画
-	__super::Draw(camera_pos);
+	__super::Draw();
 }
 
 // 終了時処理

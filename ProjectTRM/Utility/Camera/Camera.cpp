@@ -24,6 +24,9 @@ Camera::~Camera()
 // 初期化処理
 void Camera::Initialize()
 {
+	// ズーム倍率を設定
+	zoom = 2.0f;
+
 	// スクリーンの初期サイズを設定
 	this->size.x = D_WIN_MAX_X;
 	this->size.y = D_WIN_MAX_Y;
@@ -31,24 +34,104 @@ void Camera::Initialize()
 	// カメラの初期座標を設定
 	this->location.x = ProjectConfig::STAGE_WIDTH - (size.x / 2);
 	this->location.y = size.y / 2;
+
 }
 
 // 更新処理
 void Camera::Update()
 {
-	//追跡処理
 	InputManager* input = InputManager::GetInstance();
 
-	// 手動スクロール
+	// ズーム
+	Zoom();
+
+	// スクロール
+	Scroll();
+
+	// 最前線へ移動
+	if (input->GetButtonState(XINPUT_BUTTON_LEFT_SHOULDER) == eInputState::Pressed)
+	{
+		tracking_flag = true;
+	}
+
+	// 初期座標へ移動
+	if (input->GetButtonState(XINPUT_BUTTON_RIGHT_SHOULDER) == eInputState::Pressed)
+	{
+		tracking_flag = false;
+		// カメラの初期化
+		zoom = 2.0f;
+		this->location.x = ProjectConfig::STAGE_WIDTH - (size.x / 2);
+		this->location.y = size.y / 2;
+	}
+
+	/// ステージ外にいかないようにする処理
+	float maxCameraX = 1280 - (1280 / zoom);
+	if (location.x < 0) location.x = 0.0f;
+	if (location.x > maxCameraX) location.x = maxCameraX;
+}
+
+// 描画処理
+void Camera::Draw(int back_buffer)
+{
+	// スケーリング後のサイズ
+	int drawW = (int)(D_WIN_MAX_X * zoom);
+	int drawH = (int)(D_WIN_MAX_Y * zoom);
+
+	// 描画位置（X はスクロールに応じて、Y は下合わせ）
+	int drawX = -(int)(location.x * zoom);
+	int drawY = 720 - drawH;  // 画面下端に合わせる
+
+	// 背景を拡大・縮小＋スクロールして描画
+	DrawExtendGraph(drawX, drawY, drawX + drawW, drawY + drawH, back_buffer, TRUE);
+}
+
+// ズーム処理
+void Camera::Zoom()
+{
+	int wheel = GetMouseWheelRotVol();
+	if (wheel != 0) 
+	{
+		// ズーム変更前の値を記録
+		float prevZoom = zoom;
+
+		// 新しいズーム倍率を計算
+		zoom += wheel * 0.1f;
+		if (zoom < ZOOM_MIN) zoom = ZOOM_MIN;
+		if (zoom > ZOOM_MAX) zoom = ZOOM_MAX;
+
+		// 画面中央のワールド座標を保つためにカメラ位置を補正
+		float centerX = location.x + (640.0f / prevZoom);
+		float centerY = location.y + (360.0f / prevZoom);
+
+		location.x = centerX - (640.0f / zoom);
+		location.y = centerY - (360.0f / zoom);
+	}
+}
+
+// スクロール処理
+void Camera::Scroll()
+{
+	InputManager* input = InputManager::GetInstance();
+
+	// 手動スクロール（コントローラー）
 	if (input->GetLeftStick().x < 0.0f)
 	{
 		tracking_flag = false;
-		location.x += (float)input->GetLeftStick().x * 1.5;
+		location.x += (float)(input->GetLeftStick().x * 1.5);
 	}
 	else if (input->GetLeftStick().x > 0.0f)
 	{
 		tracking_flag = false;
-		location.x += (float)input->GetLeftStick().x * 1.5;
+		location.x += (float)(input->GetLeftStick().x * 1.5);
+	}
+	// 手動スクロール（キーボード）
+	if (input->GetKeyState(KEY_INPUT_D) == eInputState::Hold)
+	{
+		location.x += 2.0f;
+	}
+	if (input->GetKeyState(KEY_INPUT_A) == eInputState::Hold)
+	{
+		location.x -= 2.0f;
 	}
 
 	// 自動スクロール
@@ -92,65 +175,12 @@ void Camera::Update()
 			}
 		}
 	}
-	
-	// 最前線へ移動
-	if (input->GetButtonState(XINPUT_BUTTON_LEFT_SHOULDER) == eInputState::Pressed)
-	{
-		tracking_flag = true;
-	}
-
-	// 初期座標へ移動
-	if (input->GetButtonState(XINPUT_BUTTON_RIGHT_SHOULDER) == eInputState::Pressed)
-	{
-		tracking_flag = false;
-		// カメラの座標を初期化
-		this->location.x = ProjectConfig::STAGE_WIDTH - (size.x / 2);
-		this->location.y = size.y / 2;
-	}
-
-	//キーボード操作
-	if (input->GetKeyState(KEY_INPUT_D) == eInputState::Hold)
-	{
-		location.x += 2.0f;
-	}
-	if (input->GetKeyState(KEY_INPUT_A) == eInputState::Hold)
-	{
-		location.x -= 2.0f;
-	}
-
-	/// ステージ外にいかないようにする処理
-	float right,left;
-	right = ProjectConfig::STAGE_WIDTH - (size.x / 2);
-	left = size.x / 2;
-
-	//右端の制限
-	if (location.x > right)
-	{
-		location.x = right;
-	}
-	//左端の制限
-	if (location.x < left)
-	{
-		location.x = left;
-	}
-}
-
-// カメラ座標取得処理
-Vector2D Camera::GetCameraPos()
-{
-	return this->location;
 }
 
 // カメラ座標設定処理
 void Camera::SetCameraPos(Vector2D location)
 {
 	this->location = location;
-}
-
-// スクリーンサイズ取得処理
-Vector2D Camera::GetScreeenSize()
-{
-	return this->size;
 }
 
 // 巫女情報設定処理

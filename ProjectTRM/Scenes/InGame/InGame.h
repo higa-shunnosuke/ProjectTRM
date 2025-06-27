@@ -55,6 +55,7 @@ private:
 	int bgmHandle[5];				// BGM
 	int SummonSE[2];				// 召喚SE
 
+	int back_buffer;	// 仮想画面
 public:
 	// コンストラクタ
 	InGame();

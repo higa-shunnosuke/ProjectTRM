@@ -16,6 +16,7 @@ private:
 	int light_graph = 0;					// 光の画像
 	int light_screen = 0;					// ライトマップ
 	int screen_brightness = 0;				// 画面の明るさ（0～255）
+	int back_buffer;						// 仮想画面
 
 public:
 
@@ -71,7 +72,7 @@ public:
 	/// <summary>
 	/// 光の加算合成処理
 	/// </summary>
-	void DrawLights(const Vector2D camera_pos) const
+	void DrawLights() const
 	{
 		// 描画先をライトマップに反映する
 		SetDrawScreen(light_screen);
@@ -91,8 +92,6 @@ public:
 			{
 				// 座標を取得
 				Vector2D light_pos = light->GetLocation();
-				// カメラ座標をもとに描画位置を計算
-				light_pos.x -= camera_pos.x - D_WIN_MAX_X / 2;
 				// ライトの半径を取得
 				Collision lc = light->GetCollision();
 				float radius = (float)(lc.light_size * 0.2);
@@ -106,7 +105,7 @@ public:
 		// ブレンドモードを初期化
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		// 描画先を表画面に戻す
-		SetDrawScreen(DX_SCREEN_BACK);
+		SetDrawScreen(back_buffer);
 
 		if (ProjectConfig::DEBUG)
 		{
@@ -117,8 +116,6 @@ public:
 					// 座標を取得
 					Vector2D light_pos = light->GetLocation();
 
-					// カメラ座標をもとに描画位置を計算
-					light_pos.x -= camera_pos.x - D_WIN_MAX_X / 2;
 					// ライトの半径を取得
 					Collision lc = light->GetCollision();
 					float radius = lc.light_size;
@@ -161,5 +158,14 @@ public:
 	const std::vector<GameObject*>& GetLightsList() const
 	{
 		return lights_list;
+	}
+
+	/// <summary>
+	/// 仮想画面設定処理
+	/// </summary>
+	/// <param name="back_buffer">仮想画面</param>	
+	void SetBackBuffer(int back_buffer)
+	{
+		this->back_buffer = back_buffer;
 	}
 };

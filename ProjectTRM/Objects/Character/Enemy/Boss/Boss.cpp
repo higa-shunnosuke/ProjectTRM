@@ -63,36 +63,32 @@ void Boss::Update(float delta_second)
 }
 
 // 描画処理
-void Boss::Draw(const Vector2D camera_pos) const
+void Boss::Draw() const
 {
 	// 画像のずれ
 	Vector2D offset;
 	offset.x = 100.0f;
 	offset.y = -50.0f;
 
-	// カメラ座標をもとに描画位置を計算
-	Vector2D position = this->GetLocation();
-	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-
 	// 敵近接の描画
-	DrawRotaGraphF(position.x + offset.x, position.y + offset.y,
+	DrawRotaGraphF(location.x + offset.x, location.y + offset.y,
 		3.0, 0.0, image, TRUE, flip_flag);
 
 	if (now_state != State::Death)
 	{
 		// エフェクト１の描画
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawRotaGraphF(position.x, position.y - 110.0f,
+		DrawRotaGraphF(location.x, location.y - 110.0f,
 			5.0, 0.0, effect[0], TRUE, flip_flag);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		// エフェクト２の描画
-		DrawRotaGraphF(position.x - 5.0f, position.y + 5.0f,
+		DrawRotaGraphF(location.x - 5.0f, location.y + 5.0f,
 			1.0, 0.0, effect[1], TRUE, flip_flag);
 	}
 	
 	// 親クラスの描画
-	__super::Draw(camera_pos);
+	__super::Draw();
 }
 
 // 終了時処理

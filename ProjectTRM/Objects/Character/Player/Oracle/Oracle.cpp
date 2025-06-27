@@ -90,18 +90,17 @@ void Oracle::Update(float delta_second)
 }
 
 // •`‰æˆ—
-void Oracle::Draw(const Vector2D camera_pos) const
+void Oracle::Draw() const
 {
 	Vector2D position;
 	if (now_state == State::Summon)
 	{
 		position = Vector2D(move_location,this->GetLocation().y);
-		position.x -= camera_pos.x - D_WIN_MAX_X / 2;
+		position.x -= location.x;
 	}
 	else
 	{
 		position = this->GetLocation();
-		position.x -= camera_pos.x - D_WIN_MAX_X / 2;
 	}
 
 	if (ProjectConfig::DEBUG)

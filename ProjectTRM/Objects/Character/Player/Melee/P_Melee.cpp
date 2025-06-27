@@ -59,16 +59,12 @@ void P_Melee::Update(float delta_second)
 }
 
 // ï`âÊèàóù
-void P_Melee::Draw(const Vector2D camera_pos) const
+void P_Melee::Draw() const
 {
-	Vector2D position = this->GetLocation();
-	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-	position.y += z_layer * 2;
-
 	//è¢ä´êwï`âÊ
 	if (now_state == State::Summon)
 	{
-		DrawRotaGraphF(position.x, position.y + collision.collision_size.y / 2, 0.5f, 0.0, effect_image, TRUE, flip_flag);
+		DrawRotaGraphF(location.x, location.y + collision.collision_size.y / 2, 0.5f, 0.0, effect_image, TRUE, flip_flag);
 	}
 
 	// ãﬂê⁄ÉÜÉjÉbÉgÇÃï`âÊ
@@ -76,30 +72,29 @@ void P_Melee::Draw(const Vector2D camera_pos) const
 	if (Anim_count <= anim_max_count)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawRotaGraphF(position.x, position.y - 7.0f, 2.0, 0.0, image, TRUE, flip_flag);
+		DrawRotaGraphF(location.x, location.y - 7.0f, 2.0, 0.0, image, TRUE, flip_flag);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
 	if (!reduction_amount.empty() && now_state != State::Death)
 	{
 		for (int i = reduction_amount.size() - 1; i >= 0; --i) {
-			DrawRotaGraphF(position.x - 20.0f, (position.y - 100.0f) + damage_time[i] * 100, 0.7, 0.0, minus, TRUE);
-			DrawRotaGraphF(position.x, (position.y - 100.0f) + damage_time[i] * 100, 1.0, 0.0, text[reduction_amount[i]], TRUE);
+			DrawRotaGraphF(location.x - 20.0f, (location.y - 100.0f) + damage_time[i] * 100, 0.7, 0.0, minus, TRUE);
+			DrawRotaGraphF(location.x, (location.y - 100.0f) + damage_time[i] * 100, 1.0, 0.0, text[reduction_amount[i]], TRUE);
 		}
 	}
 
 	switch (now_state)
 	{
 	case State::Death:
-		position.y -= Effect_count * 10 + Effect_flame * 100;
+		float positionY = location.y;
+		positionY -= Effect_count * 10 + Effect_flame * 100;
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, effect_alpha);
-		DrawRotaGraphF(position.x, position.y, 2.0, 0.0, effect_image, TRUE, flip_flag);
+		DrawRotaGraphF(location.x, positionY, 2.0, 0.0, effect_image, TRUE, flip_flag);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		break;
-	default:
-		break;
 	}
-	__super::Draw(camera_pos);
+	__super::Draw();
 }
 
 // èIóπéûèàóù

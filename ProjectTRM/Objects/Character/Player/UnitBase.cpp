@@ -140,29 +140,25 @@ void UnitBase::Update(float delta_second)
 }
 
 // 描画処理
-void UnitBase::Draw(const Vector2D camera_pos) const
+void UnitBase::Draw() const
 {
-	Vector2D position = this->GetLocation();
-	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-	position.y += z_layer * 2;
-
 	if (power_up  && now_state != State::Summon)
 	{
-		DrawRotaGraph(position.x, position.y + 2.0f, 1.0, 0.0, effect_image, TRUE);
+		DrawRotaGraph(location.x, location.y + 2.0f, 1.0, 0.0, effect_image, TRUE);
 	}
 
 	if (ProjectConfig::DEBUG)
 	{
 		// 中心を表示
-		DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
+		DrawCircle((int)location.x, (int)location.y, 2, 0x0000ff, TRUE);
 		// 当たり判定表示
-		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
-			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0x0000ff, FALSE);
+		DrawBox((int)(location.x - collision.collision_size.x / 2), (int)(location.y - collision.collision_size.y / 2),
+			(int)(location.x + collision.collision_size.x / 2), (int)(location.y + collision.collision_size.y / 2), 0x0000ff, FALSE);
 		// 攻撃範囲を表示
-		DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
-			(int)(position.x - collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
+		DrawBox((int)location.x, (int)(location.y - collision.hitbox_size.y / 2),
+			(int)(location.x - collision.hitbox_size.x), (int)(location.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
 		// 攻撃力を表示
-		DrawFormatString(position.x, position.y - 20.0f, 0x00ffff, "%f", velocity.x);
+		DrawFormatString(location.x, location.y - 20.0f, 0x00ffff, "%f", velocity.x);
 	}
 }
 

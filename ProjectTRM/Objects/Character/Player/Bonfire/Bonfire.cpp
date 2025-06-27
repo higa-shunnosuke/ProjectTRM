@@ -106,16 +106,12 @@ void Bonfire::Update(float delta_second)
 }
 
 // 描画処理
-void Bonfire::Draw(const Vector2D camera_pos) const
+void Bonfire::Draw() const
 {
-	Vector2D position = this->GetLocation();
-	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-	position.y += 30;
-
 	// 近接ユニットの描画
 	// オフセット値を基に画像の描画を行う
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(position.x, position.y, 2.0f, 0.0, image, TRUE, flip_flag);
+	DrawRotaGraphF(location.x, location.y, 2.0f, 0.0, image, TRUE, flip_flag);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	/*DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
@@ -124,13 +120,13 @@ void Bonfire::Draw(const Vector2D camera_pos) const
 	if (ProjectConfig::DEBUG)
 	{
 		// 中心を表示
-		DrawCircle((int)position.x, (int)position.y, 2, 0x0000ff, TRUE);
+		DrawCircle((int)location.x, (int)location.y, 2, 0x0000ff, TRUE);
 		// 当たり判定表示
-		DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
-			(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0x0000ff, FALSE);
+		DrawBox((int)(location.x - collision.collision_size.x / 2), (int)(location.y - collision.collision_size.y / 2),
+			(int)(location.x + collision.collision_size.x / 2), (int)(location.y + collision.collision_size.y / 2), 0x0000ff, FALSE);
 		// 攻撃範囲を表示
-		DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
-			(int)(position.x - collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
+		DrawBox((int)location.x, (int)(location.y - collision.hitbox_size.y / 2),
+			(int)(location.x - collision.hitbox_size.x), (int)(location.y + collision.hitbox_size.y / 2), 0x0000ff, FALSE);
 	}
 }
 

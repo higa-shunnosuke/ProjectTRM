@@ -236,11 +236,8 @@ void Heretic::Update(float delta_second)
 }
 
 // ï`âÊèàóù
-void Heretic::Draw(const Vector2D camera_pos) const
+void Heretic::Draw() const
 {
-	Vector2D position = this->GetLocation();
-	position.x -= camera_pos.x - D_WIN_MAX_X / 2;
-
 	switch (nowsta)
 	{
 	case Death:
@@ -249,20 +246,20 @@ void Heretic::Draw(const Vector2D camera_pos) const
 			int w = 1;
 			int h = 1;
 
-			DrawGraphF(position.x - collision.collision_size.x / 2-50.0f, position.y - collision.collision_size.y / 2 - 50.0f, SoptLight, true);
+			DrawGraphF(location.x - collision.collision_size.x / 2-50.0f, location.y - collision.collision_size.y / 2 - 50.0f, SoptLight, true);
 
 			//// ÉLÉÉÉââÊëúÇíÜêSÇ…ï`âÊ		
-			DrawRotaGraphF(position.x - 0.0f, position.y - 20.0f, 2.0, 0.0, image, TRUE, flip_flag);
+			DrawRotaGraphF(location.x - 0.0f, location.y - 20.0f, 2.0, 0.0, image, TRUE, flip_flag);
 
 		}
 		else
 		{
 
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-			DrawGraphF(position.x - collision.collision_size.x / 2 - 50.0f, position.y - collision.collision_size.y / 2 - 50.0f, SoptLight, true);
+			DrawGraphF(location.x - collision.collision_size.x / 2 - 50.0f, location.y - collision.collision_size.y / 2 - 50.0f, SoptLight, true);
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 			// ÉLÉÉÉââÊëúÇíÜêSÇ…ï`âÊ
-			DrawRotaGraphF(position.x - 0.0f, position.y - 20.0f, 2.0, 0.0, image, TRUE, flip_flag);
+			DrawRotaGraphF(location.x - 0.0f, location.y - 20.0f, 2.0, 0.0, image, TRUE, flip_flag);
 
 		}
 		break;
@@ -271,8 +268,8 @@ void Heretic::Draw(const Vector2D camera_pos) const
 
 		if (ProjectConfig::DEBUG)
 		{	//îwåiÇ≈å©Ç¶Ç»Ç¢ÅcÇ¢Ç¡ÇªâÊëúîíÇ≠Ç∑ÇÈÇ©ñ¿Ç¢íÜ
-			DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
-				(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0xffffff, TRUE);
+			DrawBox((int)(location.x - collision.collision_size.x / 2), (int)(location.y - collision.collision_size.y / 2),
+				(int)(location.x + collision.collision_size.x / 2), (int)(location.y + collision.collision_size.y / 2), 0xffffff, TRUE);
 			DrawFormatString(0, 70, 0xFFFFFF, "5:Enemy Damage");
 		}
 
@@ -283,18 +280,18 @@ void Heretic::Draw(const Vector2D camera_pos) const
 		DrawFormatString(10, 690, 0xFFFFFF, "4:Boss");
 #endif // ENEMY_TEST
 
-		DrawRotaGraphF(position.x - 0.0f, position.y - 20.0f,
+		DrawRotaGraphF(location.x - 0.0f, location.y - 20.0f,
 			2.0, 0.0, image, TRUE, flip_flag);
 
 		// àŸí[é“ÇÃï`âÊ
 		//DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		//	(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, TRUE);
 
-		DrawBoxAA(position.x - 50.0f, position.y - 150.0f, position.x + (50.0f - (100 - ((double)HP / 500) * 100)), position.y - 135.0f, 0xFFFFFF, true);
+		DrawBoxAA(location.x - 50.0f, location.y - 150.0f, location.x + (50.0f - (100 - ((double)HP / 500) * 100)), location.y - 135.0f, 0xFFFFFF, true);
 
 		if (summon_effect)
 		{
-			DrawGraphF(position.x + 10.0f, position.y - 30.0f, EffectImage[EffectCount], true);
+			DrawGraphF(location.x + 10.0f, location.y - 30.0f, EffectImage[EffectCount], true);
 		}
 
 		if (ProjectConfig::DEBUG)
@@ -302,13 +299,13 @@ void Heretic::Draw(const Vector2D camera_pos) const
 			DrawFormatString(500, 20, 0xFFFFFF, "EC:%d", Cost);
 			DrawFormatString(600, 20, 0xFFFFFF, "time:%d", RushTimer);
 			// íÜêSÇï\é¶
-			DrawCircle((int)position.x, (int)position.y, 2, 0xff0000, TRUE);
+			DrawCircle((int)location.x, (int)location.y, 2, 0xff0000, TRUE);
 			// ìñÇΩÇËîªíËï\é¶
-			DrawBox((int)(position.x - collision.collision_size.x / 2), (int)(position.y - collision.collision_size.y / 2),
-				(int)(position.x + collision.collision_size.x / 2), (int)(position.y + collision.collision_size.y / 2), 0xff0000, FALSE);
+			DrawBox((int)(location.x - collision.collision_size.x / 2), (int)(location.y - collision.collision_size.y / 2),
+				(int)(location.x + collision.collision_size.x / 2), (int)(location.y + collision.collision_size.y / 2), 0xff0000, FALSE);
 			// çUåÇîÕàÕÇï\é¶
-			DrawBox((int)position.x, (int)(position.y - collision.hitbox_size.y / 2),
-				(int)(position.x + collision.hitbox_size.x), (int)(position.y + collision.hitbox_size.y / 2), 0xff0000, FALSE);
+			DrawBox((int)location.x, (int)(location.y - collision.hitbox_size.y / 2),
+				(int)(location.x + collision.hitbox_size.x), (int)(location.y + collision.hitbox_size.y / 2), 0xff0000, FALSE);
 		}
 		break;
 	}

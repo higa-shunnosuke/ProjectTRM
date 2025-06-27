@@ -57,7 +57,7 @@ public:
 	/// <summary>
 	/// •`‰æˆ—
 	/// </summary>
-	virtual void Draw(const Vector2D camera_pos) const;
+	virtual void Draw() const;
 	/// <summary>
 	/// I—¹ˆ—
 	/// </summary>

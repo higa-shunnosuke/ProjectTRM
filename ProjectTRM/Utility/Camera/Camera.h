@@ -11,6 +11,11 @@ private:
 	Vector2D size;		// スクリーンサイズ
 	Oracle* oracle;		// 巫女のポインタ
 	bool tracking_flag;	// 追跡フラグ
+	float zoom = 1.0f;	// ズーム倍率
+
+	// ズーム倍率の範囲
+	const float ZOOM_MIN = 1.0f;
+	const float ZOOM_MAX = 2.0f;
 
 public:
 	// コンストラクタ
@@ -30,22 +35,26 @@ public:
 	void Update();
 
 	/// <summary>
-	/// カメラ座標取得処理
+	/// スクリーン描画
 	/// </summary>
-	/// <returns>カメラ座標</returns>
-	Vector2D GetCameraPos();
+	/// <param name="back_buffer">表示する画面</param>
+	void Draw(int back_buffer);
+
+	/// <summary>
+	/// ズーム処理
+	/// </summary>
+	void Zoom();
+
+	/// <summary>
+	/// スクロール処理
+	/// </summary>
+	void Scroll();
 
 	/// <summary>
 	///	カメラ座標指定処理
 	/// </summary>
 	/// <param name="location">指定座標</param>
 	void SetCameraPos(Vector2D location);
-
-	/// <summary>
-	/// スクリーンサイズ取得処理
-	/// </summary>
-	/// <returns>スクリーンサイズ</returns>
-	Vector2D GetScreeenSize();
 
 	/// <summary>
 	/// 巫女情報設定処理

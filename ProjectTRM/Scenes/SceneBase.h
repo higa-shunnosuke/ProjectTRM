@@ -107,7 +107,7 @@ public:
 		for (GameObject* obj : object->GetObjectsList())
 		{
 			// ƒJƒƒ‰‚ÌÀ•W‚ðˆø”‚Å“n‚·
-			obj->Draw(camera->GetCameraPos());
+			obj->Draw();
 		}
 	}
 
