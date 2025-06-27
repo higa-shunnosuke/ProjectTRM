@@ -60,7 +60,7 @@ void E_Projectile::Update(float delta_second)
         float distance = std::sqrt(dx * dx + dy * dy);
 
         // 簡易的に放物線になるような角度を計算（高さに余裕がある場合）
-        float angle_init = std::atan2(dy + 1.0 * GRAVITY * (distance / speed) * (distance / speed), dx);
+        float angle_init = std::atan2(dy + 0.7 * GRAVITY * (distance / speed) * (distance / speed), dx);
 
         // 初速度ベクトルに分解
         velocity.x = speed * std::cos(angle_init);
