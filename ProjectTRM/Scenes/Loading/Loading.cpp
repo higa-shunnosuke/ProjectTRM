@@ -80,14 +80,14 @@ eSceneType Loading::Update(const float& delta_second)
 void Loading::Draw() const
 {
 	// UIï`âÊ
-	DrawString(300, 200, "Now Loading...", GetColor(255, 255, 255));
+	DrawString(50, 580, "Now Loading...", GetColor(255, 255, 255));
 
 	// ÉQÅ[ÉWÉoÅ[ÇÃï`âÊ
 	float rate = (float)count / size;
 	int barWidth = 400;
 	int barHeight = 20;
-	int x = 200;
-	int y = 300;
+	int x = 50;
+	int y = 720 - barHeight-50;
 	DrawBox(x, y, x + barWidth, y + barHeight, GetColor(100, 100, 100), TRUE);         // îwåi
 	DrawBox(x, y, x + (int)(barWidth * rate), y + barHeight, GetColor(0, 255, 0), TRUE); // óŒÇÃêiíª
 	DrawBox(x, y, x + barWidth, y + barHeight, GetColor(255, 255, 255), FALSE);         // ògê¸
