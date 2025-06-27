@@ -103,14 +103,14 @@ eSceneType End::Update(const float& delta_second)
 		// Aボタン押しながらで加速する仕様
 		if (input->GetButtonState(XINPUT_BUTTON_A) == eInputState::Hold)
 		{
-			y--;
+			y -= 10;
 			time++;
 		}
 
 		//通常スクロール(3フレームごとに１ピクセル)
-		if (time % 3 == 0)
+		if (time % 1 == 0)
 		{
-			y--;
+			y-=3;
 		}
 	}
 

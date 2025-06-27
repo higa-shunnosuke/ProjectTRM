@@ -88,24 +88,39 @@ void Camera::Draw(int back_buffer)
 // ズーム処理
 void Camera::Zoom()
 {
+	// ズーム変更前の値を記録
+	float prevZoom = zoom;
+
+	// マウス
 	int wheel = GetMouseWheelRotVol();
 	if (wheel != 0) 
 	{
-		// ズーム変更前の値を記録
-		float prevZoom = zoom;
-
-		// 新しいズーム倍率を計算
+		// ズーム倍率を計算
 		zoom += wheel * 0.1f;
-		if (zoom < ZOOM_MIN) zoom = ZOOM_MIN;
-		if (zoom > ZOOM_MAX) zoom = ZOOM_MAX;
-
-		// 画面中央のワールド座標を保つためにカメラ位置を補正
-		float centerX = location.x + (640.0f / prevZoom);
-		float centerY = location.y + (360.0f / prevZoom);
-
-		location.x = centerX - (640.0f / zoom);
-		location.y = centerY - (360.0f / zoom);
 	}
+	// コントローラー
+	InputManager* input = InputManager::GetInstance();
+	if (input->GetLeftTrigger() > 0.0f)
+	{
+		// 倍率を計算
+		zoom -= input->GetLeftTrigger() * 0.01f;
+	}
+	if (input->GetRightTrigger() > 0.0f)
+	{
+		// 倍率を計算
+		zoom += input->GetRightTrigger() * 0.01f;
+	}
+
+
+	if (zoom < ZOOM_MIN) zoom = ZOOM_MIN;
+	if (zoom > ZOOM_MAX) zoom = ZOOM_MAX;
+
+	// 画面中央のワールド座標を保つためにカメラ位置を補正
+	float centerX = location.x + (640.0f / prevZoom);
+	float centerY = location.y + (360.0f / prevZoom);
+
+	location.x = centerX - (640.0f / zoom);
+	location.y = centerY - (360.0f / zoom);
 }
 
 // スクロール処理
