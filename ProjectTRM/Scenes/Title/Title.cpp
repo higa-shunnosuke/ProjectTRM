@@ -213,7 +213,6 @@ void Title::Draw() const
 		if (Selected == 0)
 		{
 			DrawExtendGraphF(350, 390, 870, 650, Select_Start, true);
-			//DrawString(415, 481, "Game Start", SelectColor);			
 			DrawExtendGraphF(400, 500, 900, 800, Default_End, true);
 
 		}
