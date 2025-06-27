@@ -3,7 +3,19 @@
 // コンストラクタ
 Title::Title()
 {
-
+	Anim_count = 0;
+	Anim_flame = 0;
+	BGM = 0;
+	BackBackGroundImage = 0;
+	BackGroundImage = 0;
+	DecisionSE = 0;
+	Default_End = 0;
+	Default_Start = 0;
+	Select_Start = 0;
+	Select_End = 0;
+	MovieHandle = 0;
+	SelectBackGroundImage = 0;
+	Y = 0;
 }
 
 // デストラクタ
@@ -169,38 +181,12 @@ void Title::Draw() const
 
 	switch (State)
 	{
-
-	/*
-	SetFontSize(120);
-	DrawFormatString(500, 150, 0xff5500, "Project\n -TRM-");
-	SetFontSize(60);
-
-	if (Anim_count == 1)
-	{
-	DrawFormatString(500, 450, 0xff5500, "Press A Button");
-	}
-	DrawFormatString(1080, 620, 0xff5500, "B:End");
-
-	if (ProjectConfig::DEBUG)
-	{
-		SetFontSize(60);
-		DrawFormatString(100, 140, 0xffffff, "Title");
-		SetFontSize(32);
-		DrawFormatString(100, 300, 0xffffff, "Enterを押してね!");
-	}
-	*/
-
 	case SELECT_WAIT:
 
 		DrawGraph(0, 0, BackGroundImage, 1);
 		break;
-	case USEING:
-		//DrawBox(0, Y, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
-		break;
 	case SELECTED:
 	{
-		//DrawBox(0, 450, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
-		//DrawBox(0, 450, D_WIN_MAX_X, D_WIN_MAX_Y, 0xffffff, 0);
 
 		DrawGraph(0, 0, SelectBackGroundImage, 1);
 		

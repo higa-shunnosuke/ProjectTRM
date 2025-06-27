@@ -37,30 +37,28 @@ enum E_enemy :int
 class Heretic :public Character
 {
 private:
-	State nowsta = State::Idle;
-	std::vector<int> EffectImage;
-	int EffectCount;
-	std::vector<int> DeadImage;
-	std::vector<int> AppearImage;
-	int SoptLight;
-	int LightStrong = 0 ;
+	State nowsta = State::Idle;									//現在の状態
+	std::vector<int> EffectImage;								//召喚エフェクト
+	int EffectCount;											//エフェクトの添え字
+	float HPColor;												//残HPにより、色を変更する
+	std::vector<int> DeadImage;									//死亡時のアニメーション
+	std::vector<int> AppearImage;								//登場時のアニメーション
+	int SpotLight;												//死亡時に上からの光の画像
 	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数
 	std::chrono::steady_clock::time_point	rush_time;			// コスト加算用変数
 	std::chrono::steady_clock::time_point	efect_time;			// エフェクト加算用変数
 	std::chrono::steady_clock::time_point	anime_time;			// アニメーション加算用変数
-	int Player_evaluation[4];
-	int Enemy_evaluation[3];
-	float Cost;
+	float Cost;													//現在のコスト
 	bool Summon_Boss = false;	//ボス1度でも生成したかどうか
 	bool	JustDead = false;	//死亡時アニメーションも終わって丁度死んだ
-	bool	Iam_Dead = false;
-	bool	Time_rush = false;;
+	bool	Iam_Dead = false;	//死亡アニメーションを再生するかどうか
+	bool	Time_rush = false;	//ラッシュする時間
 	bool	summon_flag;	//召喚フラグ
 	bool	summon_effect;	//召喚フラグ
-	std::vector<GameObject*> ObjectList;
+	std::vector<GameObject*> ObjectList;	//ゲーム上に何がいるのかを保有
 
-	int RushTimer;
-	short int old_EnemySum;
+	int RushTimer;				//実際に何秒間ラッシュするのか
+	short int old_EnemySum;		//古い敵の出現数
 
 	class	InGame* Ingame;	//InGameのポインター
 	float	CountFlame;		//flameの管理
@@ -101,6 +99,9 @@ public:
 	/// エネミーの思案処理
 	/// </summary>
 	void ThinkingEnemy();
+	/// <summary>
+	/// 第１ステージの際の簡単な処理
+	/// </summary>
 	void FirstStageEnemy();
 
 
@@ -118,9 +119,14 @@ public:
 	/// <param name="hit_object">ダメージ</param>
 	virtual void HPControl(float Damage);
 
+	/// <summary>
+/// エネミーが死んだかどうか
+/// </summary>
 	bool GetDead();
 
-
+	/// <summary>
+/// エネミーの召喚処理
+/// </summary>
 	void SamonEnemy(int e_enem);
 
 private:

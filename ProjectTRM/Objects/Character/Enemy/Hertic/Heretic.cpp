@@ -37,9 +37,11 @@ Heretic::Heretic() :
 	CountTime(0),
 	Cost(0),
 	summon_effect(),
-	Player_evaluation(),
 	Ingame(),
-	Enemy_evaluation()
+	RushTimer(),
+	SpotLight(),
+	HPColor(0x00FF00),
+	old_EnemySum()
 {
 
 }
@@ -61,7 +63,7 @@ void Heretic::Initialize()
 	AppearImage = rm->GetImages("Resource/Images/Enemy/Heretic/Attack2.png", 8, 8, 1, 250, 250);
 	EffectImage = rm->GetImages("Resource/Images/Effect/Gravity-Sheet.png", 20, 4, 5, 96, 80);
 	image = animation[0];
-	SoptLight = rm->GetImages("Resource/Images/Enemy/Heretic/SpotLight.png")[0];
+	SpotLight = rm->GetImages("Resource/Images/Enemy/Heretic/SpotLight.png")[0];
 
 	is_mobility = false;
 	
@@ -82,6 +84,15 @@ void Heretic::Initialize()
 void Heretic::Update(float delta_second)
 {
 	auto now_time = std::chrono::steady_clock::now();
+	//残りHPにより色が変わる
+	if (HP < 125)
+	{
+		HPColor = 0xff0000;
+	}
+	else if (HP < 250)
+	{
+		HPColor = 0xfff000;
+	}
 
 	switch (nowsta)
 	{
@@ -125,6 +136,7 @@ void Heretic::Update(float delta_second)
 
 		summon_flag = false;
 
+		//エネミー側の召喚を自在に出来るように設定した(デバッグ用)
 #ifdef ENEMY_TEST
 
 		InputManager* input = InputManager::GetInstance();
@@ -246,7 +258,7 @@ void Heretic::Draw() const
 			int w = 1;
 			int h = 1;
 
-			DrawGraphF(location.x - collision.collision_size.x / 2-50.0f, location.y - collision.collision_size.y / 2 - 50.0f, SoptLight, true);
+			DrawGraphF(location.x - collision.collision_size.x / 2-50.0f, location.y - collision.collision_size.y / 2 - 50.0f, SpotLight, true);
 
 			//// キャラ画像を中心に描画		
 			DrawRotaGraphF(location.x - 0.0f, location.y - 20.0f, 2.0, 0.0, image, TRUE, flip_flag);
@@ -256,7 +268,7 @@ void Heretic::Draw() const
 		{
 
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-			DrawGraphF(location.x - collision.collision_size.x / 2 - 50.0f, location.y - collision.collision_size.y / 2 - 50.0f, SoptLight, true);
+			DrawGraphF(location.x - collision.collision_size.x / 2 - 50.0f, location.y - collision.collision_size.y / 2 - 50.0f, SpotLight, true);
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 			// キャラ画像を中心に描画
 			DrawRotaGraphF(location.x - 0.0f, location.y - 20.0f, 2.0, 0.0, image, TRUE, flip_flag);
@@ -287,7 +299,8 @@ void Heretic::Draw() const
 		//DrawBox((int)(position.x - collision.box_size.x / 2), (int)(position.y - collision.box_size.y / 2),
 		//	(int)(position.x + collision.box_size.x / 2), (int)(position.y + collision.box_size.y / 2), 0x0000ff, TRUE);
 
-		DrawBoxAA(location.x - 50.0f, location.y - 150.0f, location.x + (50.0f - (100 - ((double)HP / 500) * 100)), location.y - 135.0f, 0xFFFFFF, true);
+		DrawBoxAA(location.x - 50.0f, location.y - 100.0f, location.x + 50.0f, location.y - 85.0f, 0xFFFFFFF, false);
+		DrawBoxAA(location.x - 50.0f, location.y - 100.0f, location.x + (50.0f - (100 - ((double)HP / 500) * 100)), location.y - 85.0f, HPColor, true);
 
 		if (summon_effect)
 		{

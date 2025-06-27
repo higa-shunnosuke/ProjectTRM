@@ -14,7 +14,8 @@ Oracle::Oracle() :
 	anime_max_count(),
 	JustDead(false),
 	move_location(0.0f),
-	sounds()
+	sounds(),
+	HPColor(0x00ff00)
 {
 
 }
@@ -70,6 +71,15 @@ void Oracle::Update(float delta_second)
 		}
 	}
 
+	if (HP < 25)
+	{
+		HPColor = 0xff0000;
+	}
+	else if (HP < 50)
+	{
+		HPColor = 0xfff000;
+	}
+
 	if (Ingame->GetSunLevel() != old_sun_level)
 	{
 		power_up = !power_up;
@@ -123,7 +133,8 @@ void Oracle::Draw() const
 
 	if (now_state != State::Death && now_state != State::Summon)
 	{
-		DrawBoxAA(position.x - 50.0f, position.y - 150.0f, position.x + (50.0f - (100 - HP)), position.y - 135.0f, 0xFFFFFF, true);
+		DrawBoxAA(position.x - 50.0f, position.y - 100.0f, position.x + 50.0f, position.y - 85.0f, 0xFFFFFF, true);
+		DrawBoxAA(position.x - 50.0f, position.y - 100.0f, position.x + (50.0f - (100 - HP)), position.y - 85.0f, HPColor, true);
 	}
 
 
