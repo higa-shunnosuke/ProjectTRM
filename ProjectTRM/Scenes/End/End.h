@@ -7,6 +7,14 @@
 class End : public SceneBase
 {
 private:
+	int background;
+	int BGM;
+	int y = 700;
+	int time = 0;
+	std::vector<std::string> creditText;
+	int titleImage;
+	int imageWidth;
+	int imageHeight;
 public:
 	// コンストラクタ
 	End();
