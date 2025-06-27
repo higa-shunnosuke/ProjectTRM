@@ -96,7 +96,7 @@ void Oracle::Draw() const
 	if (now_state == State::Summon)
 	{
 		position = Vector2D(move_location,this->GetLocation().y);
-		position.x -= location.x;
+		position.x -= velocity.x;
 	}
 	else
 	{

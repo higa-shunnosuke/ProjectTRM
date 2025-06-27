@@ -61,5 +61,17 @@ public:
 	/// </summary>
 	/// <param name="oracle"></param>
 	void SetPlayer(Oracle* oracle);
+
+	/// <summary>
+	/// ƒJƒƒ‰Šg‘å—¦w’èˆ—
+	/// </summary>
+	/// <param name="zoom"></param>
+	void SetZoom(float zoom);
+
+	/// <summary>
+	/// ƒJƒƒ‰Šg‘å—¦æ“¾ˆ—
+	/// </summary>
+	/// <returns></returns>
+	float GetZoom();
 };
 

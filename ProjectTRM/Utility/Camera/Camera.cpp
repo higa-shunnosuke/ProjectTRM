@@ -203,3 +203,13 @@ void Camera::SetPlayer(Oracle* oracle)
 {
 	this->oracle = oracle;
 }
+
+void Camera::SetZoom(float zoom)
+{
+	this->zoom = zoom;
+}
+
+float Camera::GetZoom()
+{
+	return zoom;
+}

@@ -38,7 +38,9 @@ InGame::InGame():
 	alpha(0),
 	digit(0),
 	cost_ui(),
-	back_buffer()
+	back_buffer(),
+	move_flame(0.0f),
+	now_zoom(0.0f)
 {
 	
 }
@@ -242,6 +244,12 @@ eSceneType InGame::Update(const float& delta_second)
 			return eSceneType::result;
 		}
 
+		//カメラの情報を取得
+		Camera* camera = Camera::GetInstance();
+
+		//カメラの更新
+		camera->Update();
+
 		// 勝敗判定処理
 		if (enemy->GetHP() <= 0 || player->GetHP() <= 0)
 		{
@@ -249,6 +257,7 @@ eSceneType InGame::Update(const float& delta_second)
 			{
 				if (!CheckSoundMem(bgmHandle[4]))
 				{
+					now_zoom = camera->GetZoom();
 					ChangeVolumeSoundMem(150, bgmHandle[4]);
 					PlaySoundMem(bgmHandle[4], DX_PLAYTYPE_BACK);
 				}
@@ -259,6 +268,7 @@ eSceneType InGame::Update(const float& delta_second)
 			{
 				if (!CheckSoundMem(bgmHandle[3]))
 				{
+					now_zoom = camera->GetZoom();
 					ChangeVolumeSoundMem(100, bgmHandle[3]);
 					PlaySoundMem(bgmHandle[3], DX_PLAYTYPE_BACK);
 				}
@@ -271,11 +281,7 @@ eSceneType InGame::Update(const float& delta_second)
 			}
 		}
 
-		//カメラの情報を取得
-		Camera* camera = Camera::GetInstance();
 
-		//カメラの更新
-		camera->Update();
 
 		switch (state)
 		{
@@ -309,6 +315,17 @@ eSceneType InGame::Update(const float& delta_second)
 			{
 				return eSceneType::result;
 			}
+			move_flame += delta_second;
+			if (move_flame >= 0.01f)
+			{
+				if (now_zoom <= 2.0f)
+				{
+					now_zoom += 0.1f;
+				}
+				move_flame = 0;
+			}
+			camera->SetCameraPos(Vector2D(ProjectConfig::STAGE_WIDTH - (D_WIN_MAX_X / 2), D_WIN_MAX_Y / 2));
+			camera->SetZoom(now_zoom);
 			break;
 
 		case GameState::BOSS_DEAD:
@@ -331,8 +348,17 @@ eSceneType InGame::Update(const float& delta_second)
 					}
 				}
 			}
-
-			camera->SetCameraPos(enemy->GetLocation());
+			move_flame += delta_second;
+			if (move_flame >= 0.01f)
+			{
+				if (now_zoom <= 2.0f)
+				{
+					now_zoom += 0.1f;
+				}
+				move_flame = 0;
+			}
+			camera->SetZoom(now_zoom);
+			camera->SetCameraPos(enemy->GetLocation() - 50.0f);
 			if (enemy->GetDead())
 			{
 				return eSceneType::result;
@@ -663,6 +689,8 @@ void InGame::Draw() const
 			SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
 		}
 
+		//レベル表記
+		//太陽を選択していたらレベルの表記が画像とかぶらないように少し上に移動
 		if (cursor == 4)
 		{
 			DrawRotaGraph(1100, 25, 1.0, 0.0, Text_Images[2], TRUE);
@@ -751,7 +779,7 @@ void InGame::Draw() const
 
 		DrawGraph(D_WIN_MAX_X / 2 - 700, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha / 2);
-		DrawRotaGraph(D_WIN_MAX_X / 2 , D_WIN_MAX_Y / 2, 1.0f, 0.0f, Text_Images[0], true);
+		DrawRotaGraph(player->GetLocation().x - 120.0f, D_WIN_MAX_Y / 2 + 70.0f, 0.5f, 0.0f, Text_Images[0], true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		__super::Draw();
 
@@ -773,7 +801,7 @@ void InGame::Draw() const
 
 		DrawGraph(enemy->GetLocation().x - 100.0f, ShowBackGround_Y, BackGroundImage[StageNumber - 1], 0);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha / 2);
-		DrawRotaGraph(D_WIN_MAX_X / 2, D_WIN_MAX_Y / 2, 1.0f, 0.0f, Text_Images[1], true);
+		DrawRotaGraph(enemy->GetLocation().x + 180.0f, D_WIN_MAX_Y /2 + 70.0f, 0.5f, 0.0f, Text_Images[1], true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		LightMapManager* light_map = LightMapManager::GetInstance();

@@ -55,6 +55,8 @@ private:
 	int			unit_ui[5];			// ユニット選択UIの画像
 	int bgmHandle[5];				// BGM
 	int SummonSE[2];				// 召喚SE
+	float move_flame;
+	float now_zoom;
 
 	int back_buffer;	// 仮想画面
 public:
