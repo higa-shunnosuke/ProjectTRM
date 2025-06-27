@@ -252,22 +252,6 @@ eSceneType Result::Update(const float& delta_second)
 			}
 			break;
 		}
-		auto now_time = std::chrono::steady_clock::now();
-
-		if (now_time - prev_time > std::chrono::milliseconds(1000))
-		{
-			count--;
-			//カウントが減った時にSEを再生
-			if (count > 0)
-			{
-				PlaySoundMem(CountdownSE, DX_PLAYTYPE_BACK);
-			}
-			prev_time = std::chrono::steady_clock::now();
-		}
-		else if (count == 0)
-		{
-			return eSceneType::title;
-		}
 	}
 	auto  now_time = std::chrono::steady_clock::now();
 
@@ -311,9 +295,9 @@ void Result::Draw() const
 	DrawGraph(0, 0, BackGroued_Image, 0);
 	DrawFormatString(500, 150, 0xffffff, "死亡したユニット:%d\n生産したユニット:%d", -dead_unit, make_unit - 1);
 
-	SetFontSize(60);
+	/*SetFontSize(60);
 	DrawFormatString(220, 140, 0xffffff, "Result");
-	SetFontSize(32);
+	SetFontSize(32);*/
 	if (win_flg)
 	{
 		switch (cursor)
@@ -350,9 +334,6 @@ void Result::Draw() const
 	}
 	else
 	{
-		SetFontSize(80);
-		DrawFormatString(500, 350, 0xffffff, "%d", count);
-		SetFontSize(32);		
 		switch (cursor)
 		{
 		case 1:
