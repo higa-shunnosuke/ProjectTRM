@@ -27,14 +27,16 @@ void Title::Initialize()
 	SeekMovieToGraph(MovieHandle, 0000);
 	PlayMovieToGraph(MovieHandle);           // ÄÄ¶
 
-
 	// ‰æ‘œ‚Ì“Ç‚İ‚İ
 	ResourceManager* rm = ResourceManager::GetInstance();
 
-
-	BackGroundImage = rm->GetImages("Resource/Images/BackGround/Title.png")[0];
-	BackBackGroundImage = rm->GetImages("Resource/Images/BackGround/TitleBack.png")[0];
-	SellectImage = rm->GetImages("Resource/Images/Effect/Flamethrower.png",10,3,4,96,48);
+	BackGroundImage		= rm->GetImages		("Resource/Images/BackGround/Title.png")[0];
+	BackBackGroundImage = rm->GetImages		("Resource/Images/BackGround/TitleBack.png")[0];
+	Select_Start		= rm->GetImages		("Resource/Images/Title/Select_Start.png")[0];
+	Select_End			= rm->GetImages		("Resource/Images/Title/Select_End.png")[0];
+	Default_Start		= rm->GetImages		("Resource/Images/Title/Default_Start.png")[0];
+	Default_End			= rm->GetImages		("Resource/Images/Title/Default_End.png")[0];
+	SellectImage		= rm->GetImages		("Resource/Images/Effect/Flamethrower.png",10,3,4,96,48);
 
 	BGM = rm->GetSounds("Resource/Sounds/Title/BGM/OP.mp3");
 	DecisionSE = rm->GetSounds("Resource/Sounds/Decision.mp3");
@@ -53,16 +55,13 @@ void Title::Initialize()
 // XVˆ—
 eSceneType Title::Update(const float& delta_second)
 {
-
-	
 	// “ü—Íî•ñ‚ğæ“¾
 	InputManager* input = InputManager::GetInstance();
 	int state = GetMovieStateToGraph(MovieHandle);
 	if (state == 0) { // ’â~ó‘Ô
-		SeekMovieToGraph(MovieHandle, 6500);        // æ“ª‚É–ß‚·
+		SeekMovieToGraph(MovieHandle, 7000);        // æ“ª‚É–ß‚·
 		PlayMovieToGraph(MovieHandle);           // Ä¶
 	}
-
 
 	switch (State)
 	{
@@ -200,20 +199,23 @@ void Title::Draw() const
 	{
 		DrawBox(0, 450, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
 		DrawBox(0, 450, D_WIN_MAX_X, D_WIN_MAX_Y, 0xffffff, 0);
-		DrawExtendGraphF(300, 450 + Selected * 84, 450, 582 + Selected * 84, SellectImage[Anim_count], true);
+		DrawExtendGraphF(300, 450 + Selected * 130, 450, 582 + Selected * 130, SellectImage[Anim_count], true);
 
 		SetFontSize(64);
 		float SelectColor = 0xffff00, Color = 0xff0000;
 
 		if (Selected == 0)
 		{
-			DrawString(415, 481, "Game Start", SelectColor);
-			DrawString(415, 481 + 84, " Game End", Color);
+			DrawExtendGraphF(350, 390, 870, 650, Select_Start, true);
+			//DrawString(415, 481, "Game Start", SelectColor);			
+			DrawExtendGraphF(400, 500, 900, 800, Default_End, true);
+
 		}
 		else
 		{
-			DrawString(415, 481, " Game Start", Color);
-			DrawString(415, 481 + 84, "Game End", SelectColor);
+			DrawExtendGraphF(415, 390, 900, 650, Default_Start, true);			
+			DrawExtendGraphF(350, 500, 870, 800, Select_End, true);
+
 		}
 
 		SetFontSize(32);

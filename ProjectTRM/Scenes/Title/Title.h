@@ -26,6 +26,10 @@ private:
 
 	int BackGroundImage;
 	int BackBackGroundImage;
+	int Select_End;
+	int Default_End;
+	int Select_Start;
+	int Default_Start;
 	std::vector<int> SellectImage;
 	int BGM;
 	int DecisionSE;
