@@ -35,9 +35,10 @@ private:
 	std::chrono::steady_clock::time_point	prev_time;			// コスト加算用変数
 	int SunImages[10];
 	int BackGroundImage[3];
-	int Text_Images[2];				//勝敗演の文字画像
+	int Text_Images[4];			//勝敗演の文字画像
 	int cost_ui;
-	std::vector<int> numbers;		//コストやレベルの数字画像
+	std::vector<int> numbers;		//コストの数字描画
+	std::vector<int> level_num;
 	std::vector<int>draw_number;	//描画する数字
 	int digit;
 	int sound;

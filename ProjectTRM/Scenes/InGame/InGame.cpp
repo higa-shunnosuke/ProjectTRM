@@ -71,13 +71,17 @@ void InGame::Initialize()
 	//文字
 	Text_Images[0] = rm->GetImages("Resource/Images/BackGround/text_fail.png")[0];
 	Text_Images[1] = rm->GetImages("Resource/Images/BackGround/text_clear.png")[0];
+	Text_Images[2] = rm->GetImages("Resource/Images/BackGround/Level.png")[0];
+	Text_Images[3] = rm->GetImages("Resource/Images/BackGround/text_max.png")[0];
 
 	Text_BackGround = rm->GetImages("Resource/Images/BackGround/Text.png")[0];
 	LText_BackGround = rm->GetImages("Resource/Images/BackGround/TextLeft.png")[0];
 
 	//コスト、レベル描画用
 	numbers = rm->GetImages("Resource/Images/BackGround/numbers_gray.png", 10, 5, 2, 32, 32);
+	level_num = rm->GetImages("Resource/Images/BackGround/numbers_orange.png", 10, 5, 2, 32, 32);
 	numbers.push_back(rm->GetImages("Resource/Images/BackGround/Cost_Over_Gray.png")[0]);
+
 	cost_ui = rm->GetImages("Resource/Images/BackGround/Cost_Out.png")[0];
 
 
@@ -662,7 +666,30 @@ void InGame::Draw() const
 			SetDrawArea(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y);
 		}
 
-		DrawFormatString(1000, 30, 0x00ffff, "Level:%d/10", Sun_Level);
+		if (cursor == 4)
+		{
+			DrawRotaGraph(1100, 25, 1.0, 0.0, Text_Images[2], TRUE);
+			if (Sun_Level == 10)
+			{
+				DrawRotaGraph(1200, 25, 1.0, 0.0, Text_Images[3], TRUE);
+			}
+			else
+			{
+				DrawRotaGraph(1180, 25, 1.0, 0.0, level_num[Sun_Level], TRUE);
+			}
+		}
+		else
+		{
+			DrawRotaGraph(1100, 35, 1.0, 0.0, Text_Images[2], TRUE);
+			if (Sun_Level == 10)
+			{
+				DrawRotaGraph(1200, 35, 1.0, 0.0, Text_Images[3], TRUE);
+			}
+			else
+			{
+				DrawRotaGraph(1180, 35, 1.0, 0.0, level_num[Sun_Level], TRUE);
+			}
+		}
 		// コスト表示
 
 		DrawRotaGraph(1200, 680, 0.15, 0.0, cost_ui, TRUE);

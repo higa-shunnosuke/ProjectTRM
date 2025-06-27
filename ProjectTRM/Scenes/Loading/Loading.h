@@ -40,6 +40,8 @@ private:
 		{"image","BackGround/Text"},
 		{"image","BackGround/TextLeft"},
 		{"image","BackGround/Cost_Out"},
+		{"image","BackGround/text_max"},
+		{"image","BackGround/Level"},
 		// リザルト
 		{"image","BackGround/Result"},
 		// タイトル
