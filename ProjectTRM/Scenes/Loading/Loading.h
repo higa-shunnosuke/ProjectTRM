@@ -20,6 +20,7 @@ private:
 	std::vector<LoadItem> load_list = {
 		// ƒ^ƒCƒgƒ‹
 		{"image","BackGround/Title"},
+		{"image","BackGround/Select_Title"},
 		{"image","Title/Select_End"},
 		{"image","Title/Default_End"},
 		{"image","Title/Select_Start"},

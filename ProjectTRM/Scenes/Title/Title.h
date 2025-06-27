@@ -25,6 +25,7 @@ private:
 	int MovieHandle;
 
 	int BackGroundImage;
+	int SelectBackGroundImage;
 	int BackBackGroundImage;
 	int Select_End;
 	int Default_End;

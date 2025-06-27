@@ -30,13 +30,14 @@ void Title::Initialize()
 	// âÊëúÇÃì«Ç›çûÇ›
 	ResourceManager* rm = ResourceManager::GetInstance();
 
-	BackGroundImage		= rm->GetImages		("Resource/Images/BackGround/Title.png")[0];
-	BackBackGroundImage = rm->GetImages		("Resource/Images/BackGround/TitleBack.png")[0];
-	Select_Start		= rm->GetImages		("Resource/Images/Title/Select_Start.png")[0];
-	Select_End			= rm->GetImages		("Resource/Images/Title/Select_End.png")[0];
-	Default_Start		= rm->GetImages		("Resource/Images/Title/Default_Start.png")[0];
-	Default_End			= rm->GetImages		("Resource/Images/Title/Default_End.png")[0];
-	SellectImage		= rm->GetImages		("Resource/Images/Effect/Flamethrower.png",10,3,4,96,48);
+	SelectBackGroundImage = rm->GetImages		("Resource/Images/BackGround/Select_Title.png")[0];
+	BackGroundImage		  = rm->GetImages		("Resource/Images/BackGround/Title.png")[0];
+	BackBackGroundImage   = rm->GetImages		("Resource/Images/BackGround/TitleBack.png")[0];
+	Select_Start		  = rm->GetImages		("Resource/Images/Title/Select_Start.png")[0];
+	Select_End			  = rm->GetImages		("Resource/Images/Title/Select_End.png")[0];
+	Default_Start		  = rm->GetImages		("Resource/Images/Title/Default_Start.png")[0];
+	Default_End			  = rm->GetImages		("Resource/Images/Title/Default_End.png")[0];
+	SellectImage		  = rm->GetImages		("Resource/Images/Effect/Flamethrower.png",10,3,4,96,48);
 
 	BGM = rm->GetSounds("Resource/Sounds/Title/BGM/OP.mp3");
 	DecisionSE = rm->GetSounds("Resource/Sounds/Decision.mp3");
@@ -165,7 +166,6 @@ void Title::Draw() const
 {
 	// ÉÄÅ[ÉrÅ[âfëúÇâÊñ Ç¢Ç¡ÇœÇ¢Ç…ï`âÊÇµÇ‹Ç∑
 	DrawExtendGraph(0, 0, D_WIN_MAX_X, D_WIN_MAX_Y, MovieHandle, FALSE);
-	DrawGraph(0, 0, BackGroundImage, 1);
 
 	switch (State)
 	{
@@ -191,18 +191,24 @@ void Title::Draw() const
 	*/
 
 	case SELECT_WAIT:
+
+		DrawGraph(0, 0, BackGroundImage, 1);
 		break;
 	case USEING:
-		DrawBox(0, Y, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
+		//DrawBox(0, Y, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
 		break;
 	case SELECTED:
 	{
-		DrawBox(0, 450, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
-		DrawBox(0, 450, D_WIN_MAX_X, D_WIN_MAX_Y, 0xffffff, 0);
-		DrawExtendGraphF(300, 450 + Selected * 130, 450, 582 + Selected * 130, SellectImage[Anim_count], true);
+		//DrawBox(0, 450, D_WIN_MAX_X, D_WIN_MAX_Y, 0x000000, 1);
+		//DrawBox(0, 450, D_WIN_MAX_X, D_WIN_MAX_Y, 0xffffff, 0);
+
+		DrawGraph(0, 0, SelectBackGroundImage, 1);
+		
 
 		SetFontSize(64);
 		float SelectColor = 0xffff00, Color = 0xff0000;
+
+
 
 		if (Selected == 0)
 		{
@@ -213,7 +219,7 @@ void Title::Draw() const
 		}
 		else
 		{
-			DrawExtendGraphF(415, 390, 900, 650, Default_Start, true);			
+			DrawExtendGraphF(400, 390, 900, 650, Default_Start, true);			
 			DrawExtendGraphF(350, 500, 870, 800, Select_End, true);
 
 		}
