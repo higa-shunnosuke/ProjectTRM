@@ -100,17 +100,11 @@ void Camera::Zoom()
 	}
 	// ƒRƒ“ƒgƒ[ƒ‰[
 	InputManager* input = InputManager::GetInstance();
-	if (input->GetLeftTrigger() > 0.0f)
+	if (input->GetLeftStick().y != 0.0f)
 	{
 		// ”{—¦‚ðŒvŽZ
-		zoom -= input->GetLeftTrigger() * 0.01f;
+		zoom += input->GetLeftStick().y * 0.005f;
 	}
-	if (input->GetRightTrigger() > 0.0f)
-	{
-		// ”{—¦‚ðŒvŽZ
-		zoom += input->GetRightTrigger() * 0.01f;
-	}
-
 
 	if (zoom < ZOOM_MIN) zoom = ZOOM_MIN;
 	if (zoom > ZOOM_MAX) zoom = ZOOM_MAX;
