@@ -33,9 +33,9 @@ void StageSelect::Initialize()
 
 	DecisionSE = rm->GetSounds("Resource/Sounds/Decision.mp3");
 	CursorMoveSE= rm->GetSounds("Resource/Sounds/StageSelect/CursorMove.mp3");
-	Stage_Image[0] = rm->GetImages("Resource/Images/BackGround/BlueMoonUI.png")[0];
+	Stage_Image[0] = rm->GetImages("Resource/Images/BackGround/RedMoonUI.png")[0];
 	Stage_Image[1] = rm->GetImages("Resource/Images/BackGround/YelloMoonUI.png")[0];
-	Stage_Image[2] = rm->GetImages("Resource/Images/BackGround/RedMoonUI.png")[0];
+	Stage_Image[2] = rm->GetImages("Resource/Images/BackGround/BlueMoonUI.png")[0]; 
 	BackGroued_Image = rm->GetImages("Resource/Images/BackGround/StageSelect.png")[0];
 
 		ChangeFontType(DX_FONTTYPE_ANTIALIASING_EDGE);
