@@ -133,7 +133,7 @@ void Oracle::Draw() const
 
 	if (now_state != State::Death && now_state != State::Summon)
 	{
-		DrawBoxAA(position.x - 50.0f, position.y - 100.0f, position.x + 50.0f, position.y - 85.0f, 0xFFFFFF, true);
+		DrawBoxAA(position.x - 50.0f, position.y - 100.0f, position.x + 50.0f, position.y - 85.0f, 0xFFFFFF, false);
 		DrawBoxAA(position.x - 50.0f, position.y - 100.0f, position.x + (50.0f - (100 - HP)), position.y - 85.0f, HPColor, true);
 	}
 
