@@ -238,13 +238,6 @@ eSceneType InGame::Update(const float& delta_second)
 		}
 		max_enemy = Ecount_sum;
 
-		// Zキーでプレイヤーの勝利（デバック用）
-		if (CheckHitKey(KEY_INPUT_Z))
-		{
-			IsPlayerWin(false);
-			return eSceneType::result;
-		}
-
 		//カメラの情報を取得
 		Camera* camera = Camera::GetInstance();
 
@@ -577,10 +570,10 @@ void InGame::Draw() const
 							case 1:
 							{
 								DrawExtendGraph(
-									(int)x - 50, (int)y + h,
+									(int)x - 300, (int)y + h,
 									(int)x + 500, (int)y + h + 120,
 									Text_BackGround, TRUE);
-								DrawFormatString(x - 10, y + h + 40, 0x000000, "兵士 cost:50\n灯りを持たない近接ユニット");
+								DrawFormatString(x - 250, y + h + 40, 0x000000, "兵士 cost:50\n灯りを持たない近距離で攻撃するユニット");
 							}
 							break;
 							case 2:
@@ -596,9 +589,9 @@ void InGame::Draw() const
 							{
 								DrawExtendGraph(
 									(int)x - 120, (int)y + h,
-									(int)x + 500, (int)y + h + 120,
+									(int)x + 550, (int)y + h + 120,
 									Text_BackGround, TRUE);
-								DrawFormatString(x - 70, y + h + 40, 0x000000, "騎士 cost:500\n灯りを持たない上級近接ユニット");
+								DrawFormatString(x - 70, y + h + 40, 0x000000, "騎士 cost:500\n灯りを持たない強い近距離ユニット");
 							}
 							break;
 
